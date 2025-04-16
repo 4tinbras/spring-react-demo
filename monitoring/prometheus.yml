@@ -1,0 +1,25 @@
+global:
+  scrape_interval: 60s
+  evaluation_interval: 60s
+
+#TODO add alertmanager config and uncomment
+#alerting:
+#  alertmanagers:
+#    - static_configs:
+#        - targets:
+##          default alertmanager port
+#           - alertmanager:9093
+
+rule_files:
+ - "rules.yml"
+
+scrape_configs:
+  - job_name: "spring-backend"
+
+    metrics_path: /actuator/prometheus
+    # scheme defaults to 'http'
+    static_configs:
+      # if run outside of the container - use localhost:8071 instead
+      - targets: ["host.docker.internal:8071"]
+        labels:
+          app: "spring"

@@ -1,0 +1,58 @@
+
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+apply plugin: 'java'
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '3.4.0'
+    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.4.0') {
+        //filter out unnecessary dependencies
+//        exclude module: 'spring-webmvc'
+    }
+    implementation group: 'org.springframework.security', name: 'spring-security-web', version: '6.4.0'
+    implementation group: 'org.springframework.security', name: 'spring-security-config', version: '6.4.0'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.4.0'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.4.0'
+    implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: '3.0.0'
+
+    implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.14.6'
+
+    //TODO: run db in separate container with a persistent volume
+    implementation 'com.h2database:h2:2.1.214'
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.4.0'
+}
+
+test {
+    useJUnitPlatform()
+    // TODO: add jacoco coverage check
+}
+
+jar {
+    //TODO: trips over the fact that JPA repo is created by Spring boot, hence bootJar step in dockerfile
+    //i.e. same happens for other fat-jar plugins bundling jars
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes(
+                'Main-Class': 'org.example.Main',
+                'Class-Path': configurations.runtimeClasspath.files.collect { "lib/$it.name" }.join(' '),
+                'Implementation-Version': project.version
+
+        )
+    }
+    from(configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }) {}
+}

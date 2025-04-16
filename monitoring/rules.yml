@@ -1,0 +1,11 @@
+groups:
+- name: HTTP requests
+  rules:
+     - alert: HighErrorRate
+       expr: http_server_requests_seconds_count{outcome!="SUCCESS"} / http_server_requests_seconds_count > 0.1
+       for: 5m
+       keep_firing_for: 5m
+       labels:
+         severity: high
+       annotations:
+         summary: High request error rate

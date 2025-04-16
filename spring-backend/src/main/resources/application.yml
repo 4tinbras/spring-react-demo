@@ -1,0 +1,29 @@
+management:
+  defaults:
+    metrics:
+      export:
+        enabled: true
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "info", "metrics", "prometheus"]
+  server:
+    port: 8071
+
+  #    TODO: reconfigure when they return specific values as per k8s guide
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+#TODO: technically speaking unnecessary as connection is generated automatically with def values
+#driverClassName: org:h2:Driver
+#url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1
+#username: admin
+#password: admin1
