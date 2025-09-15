@@ -22,6 +22,11 @@ management:
     readinessstate:
       enabled: true
 
+spring:
+  threads:
+    virtual:
+      enabled: true
+
 #TODO: technically speaking unnecessary as connection is generated automatically with def values
 #driverClassName: org:h2:Driver
 #url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1
