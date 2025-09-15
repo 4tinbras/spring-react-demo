@@ -1,6 +1,7 @@
 package org.example.contact;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class ContactController {
     }
 
     @DeleteMapping(path="/contact/{id}")
-    public ResponseEntity<ContactDetails> deleteContact(@NotBlank @PathVariable("id") String id) {
+    public ResponseEntity<ContactDetails> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") String id) {
         contactService.deleteById(id);
         return new ResponseEntity<>(HttpStatusCode.valueOf(204));
     }

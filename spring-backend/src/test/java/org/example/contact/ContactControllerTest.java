@@ -127,4 +127,19 @@ class ContactControllerTest {
 
         verify(contactRepository).deleteById("0");
     }
+
+    @Test
+    void whenDeleteByInvalidId_thenReturn400() throws Exception {
+        //when
+        objectMapper = new ObjectMapper();
+        ContactDetails requestBody = new ContactDetails(0L, "Tom", "Smith", "ts@example.com", "079678234");
+        doNothing().when(contactRepository).deleteById("0");
+
+        MvcResult result = mockMvc.perform(delete("/contact/ ")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        verify(contactRepository, never()).deleteById("0");
+    }
 }
