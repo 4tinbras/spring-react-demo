@@ -37,6 +37,8 @@ class ContactControllerTest {
 
     private ObjectMapper objectMapper;
 
+    private ContactDetails validRecord = new ContactDetails(0L, "Tom", "Smith", "ts@example.com", "079678234");
+
     @Test
     void whenGetContacts_thenReturnValidSetOfRecords_andReturn200() throws Exception {
         //given
@@ -54,7 +56,7 @@ class ContactControllerTest {
     void whenPostValidContact_thenReturnValidSetOfRecords_andReturn200() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, "Tom", "Smith", "ts@example.com", "079678234");
+        ContactDetails requestBody = validRecord;
 
         when(contactRepository.save(any())).thenReturn(requestBody);
 
@@ -132,7 +134,7 @@ class ContactControllerTest {
     void whenDeleteByInvalidId_thenReturn400() throws Exception {
         //when
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, "Tom", "Smith", "ts@example.com", "079678234");
+        ContactDetails requestBody = validRecord;
         doNothing().when(contactRepository).deleteById("0");
 
         MvcResult result = mockMvc.perform(delete("/contact/ ")
