@@ -1,3 +1,5 @@
 rootProject.name = 'spring-react'
 include 'spring-backend'
 
+
+include 'email-serv'

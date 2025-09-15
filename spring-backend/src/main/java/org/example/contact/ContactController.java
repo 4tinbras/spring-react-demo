@@ -1,9 +1,10 @@
 package org.example.contact;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.persistence.ContactDetails;
-import org.example.persistence.ContactRepository;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +28,15 @@ public class ContactController {
     }
 
     @PostMapping(path="/contact")
-    public ResponseEntity<ContactDetails> createContact(@RequestBody ContactDetails contactDetails) throws URISyntaxException {
+    public ResponseEntity<ContactDetails> updateContact(@Valid @RequestBody ContactDetails contactDetails)
+            throws URISyntaxException {
         ContactDetails savedContact = contactService.save(contactDetails);
-        log.debug("added contact with id: {}", savedContact.getUuid());
+        log.debug("Updated contact with id: {}", savedContact.getUuid());
         return ResponseEntity.created(new URI("/contacts/" + savedContact.getUuid())).body(savedContact);
     }
 
     @DeleteMapping(path="/contact/{id}")
-    public ResponseEntity<ContactDetails> deleteContact(@PathVariable("id") String id) {
+    public ResponseEntity<ContactDetails> deleteContact(@NotBlank @PathVariable("id") String id) {
         contactService.deleteById(id);
         return new ResponseEntity<>(HttpStatusCode.valueOf(204));
     }

@@ -1,14 +1,15 @@
 package org.example.persistence;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Getter
 @Entity
@@ -22,9 +23,14 @@ public class ContactDetails {
     @GeneratedValue
     private Long uuid;
 
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotBlank
+    @Email
     private String email;
+    @Digits(integer = 15, fraction = 0)
     private String phoneNo;
 
 }
