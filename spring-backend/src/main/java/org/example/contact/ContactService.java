@@ -1,6 +1,5 @@
 package org.example.contact;
 
-import lombok.RequiredArgsConstructor;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.springframework.stereotype.Service;
@@ -27,4 +26,9 @@ public class ContactService {
     public void deleteById(String id) {
         contactRepository.deleteById(id);
     }
+
+    public ContactDetails findByEmail(String email) {
+        return contactRepository.findByEmail(email);
+    }
+
 }

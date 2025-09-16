@@ -31,6 +31,10 @@ public class ContactController {
     @PostMapping(path="/contact")
     public ResponseEntity<ContactDetails> updateContact(@Valid @RequestBody ContactDetails contactDetails)
             throws URISyntaxException {
+        if (contactService.findByEmail(contactDetails.getEmail()) != null) {
+            log.error("Provided email is already associated with an account.");
+            return new ResponseEntity<>(HttpStatusCode.valueOf(422));
+        }
         ContactDetails savedContact = contactService.save(contactDetails);
         log.debug("Updated contact with id: {}", savedContact.getUuid());
         return ResponseEntity.created(new URI("/contacts/" + savedContact.getUuid())).body(savedContact);
