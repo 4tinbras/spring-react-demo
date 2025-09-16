@@ -36,6 +36,21 @@ services:
       - demo
     ports:
       - "3000:3000"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
+    volumes:
+      - keycloak_backup:/opt/keycloak/data
+    ports:
+      - "9090:8061"
+    command:
+      - 'start-dev'
+
 networks:
   demo:
     driver: bridge
+volumes:
+  keycloak_backup:
