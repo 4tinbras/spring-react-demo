@@ -45,7 +45,7 @@ services:
     volumes:
       - keycloak_backup:/opt/keycloak/data
     ports:
-      - "9090:8061"
+      - "8061:8080"
     command:
       - 'start-dev'
 
