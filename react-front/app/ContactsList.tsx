@@ -28,5 +28,10 @@ export default function ContactsList({contacts}) {
       <tbody>
         {listItems}
       </tbody>
-  </Table>;
+        </Table>;
+        }
+
+        export function EditContactButton({redirectionUrl, contact, onClick}) {
+        return <button onClick={onClick} key={`Edit${contact.uuid}`}
+                                         form={`form${contact.uuid}`}>{contact.active ? `Save` : `Edit`}</button>;
 }

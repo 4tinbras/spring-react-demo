@@ -41,3 +41,23 @@ it('with an empty contacts prop list renders fallback info', async () => {
     expect(screen.queryByRole('Tom Smith')).toBeNull()
 })
 });
+
+describe('EditContactButton ', () => {
+    it('displays edit when inactive', async () => {
+        const inactiveStateButton = render(
+            <EditContactButton redirectionUrl={`/edit/1`} contact={inactiveContact}
+                               onClick={undefined}></EditContactButton>
+        );
+
+        expect(screen.getByRole('button')).toHaveTextContent('Edit');
+    });
+
+
+    it('displays save when active', async () => {
+        const activeStateButton = render(
+            <EditContactButton redirectionUrl={`/edit/1`} contact={activeContact}
+                               onClick={undefined}></EditContactButton>
+        );
+        expect(screen.getByRole('button')).toHaveTextContent('Save');
+    });
+});
