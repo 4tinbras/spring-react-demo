@@ -16,15 +16,18 @@ export default function ContactBlock() {
         fetch('http://localhost:8080/contacts')
             .then(response => response.json())
             .then(body => {
-                setLoading(false);
-                console.log(body)
-
                 if (Array.isArray(body)) {
+                    body.forEach(contact => {
+                        contact.active = false;
+                        return contact;
+                    })
+
                     // @ts-ignore
                     setContacts(body)
                 } else {
                     setContacts(null)
                 }
+                setLoading(false);
             })
         .catch(error => {
             setLoading(false);

@@ -1,14 +1,9 @@
 import React from "react";
 import ContactsBlock from "@/app/ContactsBlock";
 import {fireEvent, render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom'
 import {http, HttpResponse} from 'msw'
 import {setupServer} from "msw/node";
 
-
-// const mockFetch = jest.fn(
-//     () => {return {uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"};});
 
 // declare which API requests to mock
 const server = setupServer(
@@ -16,7 +11,7 @@ const server = setupServer(
     http.get('http://localhost:8080/contacts', () => {
         // respond using a mocked JSON body
         return HttpResponse.json(
-            {uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"})
+            [{uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"}])
     }),
 )
 
@@ -28,7 +23,7 @@ afterEach(() => server.resetHandlers())
 // clean up once the tests are done
 afterAll(() => server.close())
 
-describe('MyComponent', () => {
+describe('ContactsBlock', () => {
     it('renders with link to example.com', async () => {
 
         //renders as if state was empty even though it always is there
@@ -36,27 +31,27 @@ describe('MyComponent', () => {
             <ContactsBlock></ContactsBlock>
         );
 
-        fetch('http://localhost:8080/contacts')
-            .then(response => response.json())
-            .then(body => {
-                // console.log(body)
-            });
-
         expect(screen.getByRole('paragraph')).toHaveTextContent('No contacts found so far.')
 
         // ACT
-        await userEvent.click(screen.getByText('Get Contacts'))
-        // fireEvent.click(screen.getByText('Get Contacts'))
+        // await userEvent.click(screen.getByText('Get Contacts'))
+        const button = screen.getByRole('button', {name: 'Get Contacts'})
+        fireEvent.click(button);
         await screen.findByRole('table')
 
         // ASSERT
-        expect(screen.getByRole('th')).toHaveTextContent('Person')
-        expect(screen.getByRole('th')).toHaveTextContent('Phone no.')
-        expect(screen.getByRole('th')).toHaveTextContent('Email address')
-        // expect(screen.getByRole('button')).toBeDisabled()
+        expect(screen.getByText('Person'))
+        expect(screen.getByText('Phone no.'))
+        expect(screen.getByText('Email address'))
 
-        //assert that shows empty list
+        expect(screen.getByDisplayValue('Tom Smith')).toHaveAttribute('form', 'form1');
+        expect(screen.getByDisplayValue('test@test.com')).toHaveAttribute('form', 'form1');
+        expect(screen.getByDisplayValue('1234567890')).toHaveAttribute('form', 'form1');
+        expect(screen.getByRole('button', {name: 'Edit'}));
 
-        //change state and assert that
+        //click edit to change state and assert that value has changed
     });
+
+    it('error handling resets state', async () => {
+    })
 });
