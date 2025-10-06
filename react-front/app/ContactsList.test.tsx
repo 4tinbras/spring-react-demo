@@ -1,19 +1,38 @@
 import React from "react";
-import ContactsBlock from "@/app/ContactsBlock";
-import {fireEvent, render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import {render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom'
-import {http, HttpResponse} from 'msw'
-import {setupServer} from "msw/node";
-import ContactsList from "@/app/ContactsList";
+import ContactsList, {EditContactButton} from "@/app/ContactsList";
 
+
+const inactiveContact = {
+    uuid: "1",
+    firstName: "Tom",
+    lastName: "Smith",
+    email: "test@test.com",
+    phoneNo: "1234567890",
+    active: false
+}
+
+const activeContact = {
+    uuid: "1",
+    firstName: "Tom",
+    lastName: "Smith",
+    email: "test@test.com",
+    phoneNo: "1234567890",
+    active: true
+}
 
 describe('ContactsList ', () => {
-    it('with a valid contact prop renders a list representing the item', async () => {
+    it('with a valid contact prop renders a list representing the item and creates related form', async () => {
 
-        //renders as if state was empty even though it always is there
         const component = render(
-            <ContactsList contacts={[{uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"}]}></ContactsList>
+            <ContactsList contacts={[{
+                uuid: "1",
+                firstName: "Tom",
+                lastName: "Smith",
+                email: "test@test.com",
+                phoneNo: "1234567890"
+            }]} handleClick={undefined}></ContactsList>
         );
 
         await screen.findByRole('table')
@@ -23,14 +42,18 @@ describe('ContactsList ', () => {
         expect(screen.getByText('Phone no.'))
         expect(screen.getByText('Email address'))
 
-        expect(screen.getByText('Tom Smith'))
+        expect(screen.getByDisplayValue('Tom Smith')).toHaveAttribute('form', 'form1');
+        expect(screen.getByDisplayValue('test@test.com')).toHaveAttribute('form', 'form1');
+        expect(screen.getByDisplayValue('1234567890')).toHaveAttribute('form', 'form1');
+
+        expect(screen.getByRole('form')).toHaveAttribute('id', 'form1');
+        expect(screen.getByRole('form')).toHaveAttribute('action', 'https://localhost:8080/contact');
     })
 
 it('with an empty contacts prop list renders fallback info', async () => {
 
-    //renders as if state was empty even though it always is there
     const component = render(
-        <ContactsList contacts={[]}></ContactsList>
+        <ContactsList contacts={[]} handleClick={undefined}></ContactsList>
     );
 
     // ASSERT
@@ -38,7 +61,7 @@ it('with an empty contacts prop list renders fallback info', async () => {
     expect(screen.getByText('Phone no.'))
     expect(screen.getByText('Email address'))
 
-    expect(screen.queryByRole('Tom Smith')).toBeNull()
+    expect(screen.queryByRole('input', {name: 'Tom Smith'})).not.toBeInTheDocument();
 })
 });
 

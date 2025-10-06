@@ -7,9 +7,7 @@ import {setupServer} from "msw/node";
 
 // declare which API requests to mock
 const server = setupServer(
-    // capture "GET /greeting" requests
     http.get('http://localhost:8080/contacts', () => {
-        // respond using a mocked JSON body
         return HttpResponse.json(
             [{uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"}])
     }),
@@ -17,8 +15,7 @@ const server = setupServer(
 
 // establish API mocking before all tests
 beforeAll(() => server.listen())
-// reset any request handlers that are declared as a part of our tests
-// (i.e. for testing one-time error scenarios)
+// reset any request handlers that are declared as a part of the tests
 afterEach(() => server.resetHandlers())
 // clean up once the tests are done
 afterAll(() => server.close())
@@ -26,7 +23,6 @@ afterAll(() => server.close())
 describe('ContactsBlock', () => {
     it('renders with link to example.com', async () => {
 
-        //renders as if state was empty even though it always is there
         const component = render(
             <ContactsBlock></ContactsBlock>
         );
@@ -34,10 +30,11 @@ describe('ContactsBlock', () => {
         expect(screen.getByRole('paragraph')).toHaveTextContent('No contacts found so far.')
 
         // ACT
-        // await userEvent.click(screen.getByText('Get Contacts'))
-        const button = screen.getByRole('button', {name: 'Get Contacts'})
-        fireEvent.click(button);
+        const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
+        fireEvent.click(contactsButton);
         await screen.findByRole('table')
+
+        expect(screen.queryByRole('paragraph', {name: 'No contacts found so far.'})).not.toBeInTheDocument();
 
         // ASSERT
         expect(screen.getByText('Person'))
@@ -48,8 +45,12 @@ describe('ContactsBlock', () => {
         expect(screen.getByDisplayValue('test@test.com')).toHaveAttribute('form', 'form1');
         expect(screen.getByDisplayValue('1234567890')).toHaveAttribute('form', 'form1');
         expect(screen.getByRole('button', {name: 'Edit'}));
+        expect(screen.queryByRole('button', {name: 'Save'})).not.toBeInTheDocument();
 
-        //click edit to change state and assert that value has changed
+        const editButton = screen.getByRole('button', {name: 'Edit'})
+        fireEvent.click(editButton);
+        expect(screen.getByRole('button', {name: 'Save'}));
+        expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
     });
 
     it('error handling resets state', async () => {
