@@ -32,8 +32,13 @@ describe('ContactsBlock', () => {
         // ACT
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
         fireEvent.click(contactsButton);
+
+        //TODO: doesn't seem to be captured; visually it does flicker in and out; perhaps gets reduced in test case
+
+        // await screen.findByRole('paragraph', {name: 'Loading...'})
         await screen.findByRole('table')
 
+        expect(screen.queryByRole('paragraph', {name: 'Loading...'})).not.toBeInTheDocument();
         expect(screen.queryByRole('paragraph', {name: 'No contacts found so far.'})).not.toBeInTheDocument();
 
         // ASSERT
