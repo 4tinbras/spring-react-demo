@@ -5,7 +5,6 @@ import ContactsList from "@/app/ContactsList";
 
 export default function ContactBlock() {
     const initialState = {contacts: [], loading: false}
-    let newArray;
 
     const reducer = (state, action) => {
         switch (action.type) {
@@ -44,9 +43,7 @@ export default function ContactBlock() {
         if (indexToMutate === undefined) {
             throw new Error('Couldn\'t find contact to handle.');
         }
-        // @ts-ignore
-        newArray = state.contacts.map(mapItemsFunc);
-        // @ts-ignore
+        const newArray = state.contacts.map(mapItemsFunc);
         dispatch({type: 'SET_CONTACTS', payload: {contacts: newArray}})
     }
 
