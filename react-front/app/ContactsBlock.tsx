@@ -48,7 +48,7 @@ export default function ContactBlock() {
     }
 
 
-    async function handleGetContacts() {
+    function handleGetContacts() {
         dispatch({type: 'SET_LOADING', payload: {loading: true}});
 
         //TODO: add handling for exceptions
