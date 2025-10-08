@@ -1,14 +1,16 @@
-import renderer from 'react-test-renderer';
-import {expect, it} from "@jest/globals";
+import {it} from "@jest/globals";
 import React from "react";
 import NavBar from "@/app/NavBar";
-import { render } from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 
 describe('MyComponent', () => {
-it('renders with link to example.com', () => {
+    it('renders with link to example.com', async () => {
 
     render(
       <NavBar></NavBar>
     );
+
+        await screen.findByRole('navigation')
+        await screen.findByRole('link', {name: 'example'})
 });
 });
