@@ -1,6 +1,3 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import ContactList from "@/app/ContactsBlock";
 import ContactBlock from "@/app/ContactsBlock";
 import NavBar from "@/app/NavBar";
 // import 'bootstrap/dist/css/bootstrap.min.css'; //not necessary if added CDN link
