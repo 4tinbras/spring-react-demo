@@ -1,4 +1,3 @@
-import {it} from "@jest/globals";
 import React from "react";
 import NavBar from "@/app/NavBar";
 import {render, screen} from '@testing-library/react';
