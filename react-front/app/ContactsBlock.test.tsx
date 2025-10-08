@@ -56,3 +56,9 @@ describe('ContactsBlock', () => {
     it('error handling resets state', async () => {
     })
 });
+
+describe('Reducer', () => {
+    it('correctly return updates', async () => {
+        //TODO: add unit test coverage
+    })
+});

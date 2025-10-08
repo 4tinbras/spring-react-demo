@@ -1,35 +1,59 @@
 'use client'
 
-import {useState} from "react";
+import {useReducer} from "react";
 import ContactsList from "@/app/ContactsList";
 
 export default function ContactBlock() {
-    const [contacts, setContacts] = useState<[] | null>([]);
-    const [loading, setLoading] = useState(false);
+    const initialState = {contacts: [], loading: false}
+    let newArray;
+
+    const reducer = (state, action) => {
+        switch (action.type) {
+            case 'SET_CONTACTS': {
+                return {...state, contacts: action.payload.contacts};
+            }
+            case 'SET_LOADING': {
+                return {...state, loading: action.payload.loading};
+            }
+            case 'SET_ALL': {
+                return {...state, ...action.payload}
+            }
+        }
+    }
+
+    const [state, dispatch] = useReducer(reducer, initialState)
 
 
     //TODO probably worth investigating some optimization i.e. perhaps via reducer?
     const handleClick = (event, contact) => {
-        contact.active = !contact.active;
-
         event.preventDefault()
 
-        const findContactByContactUuid = (item) => item.uuid === contact.uuid;
-        const mapItemsFunc = (original) => original.uuid === indexToMutate ? contact : original
+        const replacement = {
+            uuid: contact.uuid,
+            firstName: contact.firstName,
+            lastName: contact.lastName,
+            phoneNo: contact.phoneNo,
+            email: contact.email,
+            active: !contact.active
+        }
 
-        const indexToMutate = contacts?.findIndex(findContactByContactUuid);
+        const findContactByContactUuid = (item) => item.uuid === contact.uuid;
+        const mapItemsFunc = (original) => original.uuid === state.contacts?.at(indexToMutate).uuid ? replacement : original
+
+
+        const indexToMutate = state.contacts?.findIndex(findContactByContactUuid);
         if (indexToMutate === undefined) {
             throw new Error('Couldn\'t find contact to handle.');
         }
         // @ts-ignore
-        const newArray = contacts.map(mapItemsFunc);
+        newArray = state.contacts.map(mapItemsFunc);
         // @ts-ignore
-        setContacts(newArray);
+        dispatch({type: 'SET_CONTACTS', payload: {contacts: newArray}})
     }
 
 
-    function handleGetContacts() {
-        setLoading(true);
+    async function handleGetContacts() {
+        dispatch({type: 'SET_LOADING', payload: {loading: true}});
 
         //TODO: add handling for exceptions
         fetch('http://localhost:8080/contacts')
@@ -40,17 +64,12 @@ export default function ContactBlock() {
                         contact.active = false;
                         return contact;
                     })
-
-                    // @ts-ignore
-                    setContacts(body)
                 } else {
-                    setContacts(null)
                 }
-                setLoading(false);
+                dispatch({type: 'SET_ALL', payload: {contacts: Array.isArray(body) ? body : null, loading: false}});
             })
         .catch(error => {
-            setLoading(false);
-            setContacts(null)
+            dispatch({type: 'SET_ALL', payload: {contacts: null, loading: false}});
         })
 
     }
@@ -59,14 +78,12 @@ export default function ContactBlock() {
         <div style={{width: '100%'}}>
             <button onClick={() => handleGetContacts()}>Get Contacts</button>
 
-
-            { Array.isArray(contacts) && contacts.length > 0 ? (
-                <ContactsList contacts={contacts} handleClick={handleClick}></ContactsList>
+            {state.loading && (<p>Loading...</p>)
+                || (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
+                    <ContactsList contacts={state.contacts} handleClick={handleClick}></ContactsList>
             ) : (
                 <p>No contacts found so far.</p>
-            )}
-
-            {loading && (<p>Loading...</p>)}
+                ))}
         </div>
     );
 }
