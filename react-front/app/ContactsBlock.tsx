@@ -24,7 +24,6 @@ export default function ContactBlock() {
     const [state, dispatch] = useReducer(reducer, initialState)
 
 
-    //TODO probably worth investigating some optimization i.e. perhaps via reducer?
     const handleClick = (event, contact) => {
         event.preventDefault()
 
