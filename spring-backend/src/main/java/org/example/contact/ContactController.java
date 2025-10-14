@@ -31,7 +31,6 @@ public class ContactController {
     @PostMapping(path="/contact")
     public ResponseEntity<ContactDetails> updateContact(@Valid @RequestBody ContactDetails contactDetails)
             throws URISyntaxException {
-        //TODO: add testing
         ContactDetails foundDetails = contactService.findByEmail(contactDetails.getEmail());
         ContactDetails savedContact;
         if (foundDetails != null) {
@@ -40,7 +39,6 @@ public class ContactController {
                 return new ResponseEntity<>(HttpStatusCode.valueOf(422));
             }
             contactDetails.setUuid(foundDetails.getUuid());
-            savedContact = contactService.save(contactDetails);
         }
 
         savedContact = contactService.save(contactDetails);
