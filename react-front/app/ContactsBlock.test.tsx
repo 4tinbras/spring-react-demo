@@ -42,11 +42,13 @@ describe('ContactsBlock', () => {
         expect(screen.queryByRole('paragraph', {name: 'No contacts found so far.'})).not.toBeInTheDocument();
 
         // ASSERT
-        expect(screen.getByText('Person'))
+        expect(screen.getByText('First Name'))
+        expect(screen.getByText('Last Name'))
         expect(screen.getByText('Phone no.'))
         expect(screen.getByText('Email address'))
 
-        expect(screen.getByDisplayValue('Tom Smith')).toHaveAttribute('form', 'form1');
+        expect(screen.getByDisplayValue('Tom')).toHaveAttribute('form', 'form1');
+        expect(screen.getByDisplayValue('Smith')).toHaveAttribute('form', 'form1');
         expect(screen.getByDisplayValue('test@test.com')).toHaveAttribute('form', 'form1');
         expect(screen.getByDisplayValue('1234567890')).toHaveAttribute('form', 'form1');
         expect(screen.getByRole('button', {name: 'Edit'}));

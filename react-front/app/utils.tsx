@@ -1,4 +1,4 @@
-interface ContactState {
+export interface ContactState {
     uuid: string;
     firstName: string;
     lastName: string;
@@ -7,3 +7,21 @@ interface ContactState {
     active: boolean;
 }
 
+export interface ContactViewModel {
+    contact: ContactState;
+    active: boolean;
+    formStatus: FormStatus;
+}
+
+export const enum FormStatus {
+    Editing = "EDITING",
+    Pending = "PENDING",
+    Ok = "OK",
+    Failed = "FAILED"
+}
+
+export const enum ContactBlockActions {
+    SetContacts = 'SET_CONTACTS',
+    SetLoading = 'SET_LOADING',
+    SetAll = 'SET_ALL',
+}
