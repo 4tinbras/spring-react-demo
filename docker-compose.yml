@@ -30,6 +30,12 @@ services:
     ports:
       - "8080:8080"
       - "8071:8071"
+  envoy:
+    image: envoyproxy/envoy:v1.31.0
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./proxy/envoy_config.yml:/etc/envoy/envoy.yaml
   frontend:
     build: ./react-front/.
     networks:
