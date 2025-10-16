@@ -4,7 +4,7 @@ static_resources:
       address:
         socket_address:
           address: 0.0.0.0
-          port_value: 10000
+          port_value: 10000 #port on which envoy is going to listen
       filter_chains:
         - filters:
             - name: envoy.filters.network.http_connection_manager
@@ -23,11 +23,14 @@ static_resources:
                             cluster: user_info_backend
                 http_filters:
                   - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
   clusters:
     - name: user_info_backend
       connect_timeout: 0.25s
       type: strict_dns
       lb_policy: round_robin
+      dns_lookup_family: V4_ONLY
       load_assignment:
         cluster_name: user_info_backend
         endpoints:
@@ -36,7 +39,7 @@ static_resources:
                   address:
                     socket_address:
                       address: localhost
-                      port_value: 8071
+                      port_value: 8080
 admin:
   access_log_path: /dev/null
   address:
