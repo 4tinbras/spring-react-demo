@@ -3,6 +3,7 @@
 import {useReducer} from "react";
 import ContactsList from "@/app/ContactsList";
 import {ContactBlockActions, ContactState, ContactViewModel, FormStatus} from "@/app/utils";
+import {ContactsDispatchContext} from "@/app/ContactsBlockContext";
 
 export default function ContactBlock() {
     const initialState = {contacts: [], loading: false}
@@ -32,10 +33,6 @@ export default function ContactBlock() {
     }
 
     const [state, dispatch] = useReducer(reducer, initialState)
-
-    const tunnelDispatch = (eventType: string, payload: any) =>
-        dispatch({type: eventType, payload: payload});
-
 
     const handleClick = (event, contactvm) => {
         const contact: ContactState = contactvm.contact;
@@ -97,7 +94,6 @@ export default function ContactBlock() {
                     })
                 } else {
                 }
-                console.log(cvmArray);
                 dispatch({
                     type: ContactBlockActions.SetAll,
                     payload: {contacts: Array.isArray(body) ? cvmArray : null, loading: false}
@@ -115,8 +111,9 @@ export default function ContactBlock() {
 
             {state.loading && (<p>Loading...</p>)
                 || (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
-                    <ContactsList contacts={state.contacts} handleClick={handleClick}
-                                  tunnelDispatch={tunnelDispatch}></ContactsList>
+                    <ContactsDispatchContext value={dispatch}>
+                        <ContactsList contacts={state.contacts} handleClick={handleClick}></ContactsList>
+                    </ContactsDispatchContext>
             ) : (
                 <p>No contacts found so far.</p>
                 ))}
