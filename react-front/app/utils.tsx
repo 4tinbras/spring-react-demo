@@ -25,3 +25,8 @@ export const enum ContactBlockActions {
     SetLoading = 'SET_LOADING',
     SetAll = 'SET_ALL',
 }
+
+export interface ReducerAction {
+    type: string;
+    payload: any;
+}

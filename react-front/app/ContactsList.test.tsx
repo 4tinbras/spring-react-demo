@@ -5,21 +5,29 @@ import {FormStatus} from "@/app/utils";
 
 
 const inactiveContact = {
-    uuid: "1",
-    firstName: "Tom",
-    lastName: "Smith",
-    email: "test@test.com",
-    phoneNo: "1234567890",
-    active: false
+    active: false,
+    contact: {
+        uuid: "1",
+        firstName: "Tom",
+        lastName: "Smith",
+        email: "test@test.com",
+        phoneNo: "1234567890",
+        active: false
+    },
+    formStatus: FormStatus.Editing
 }
 
 const activeContact = {
-    uuid: "1",
-    firstName: "Tom",
-    lastName: "Smith",
-    email: "test@test.com",
-    phoneNo: "1234567890",
-    active: true
+    active: true,
+    contact: {
+        uuid: "1",
+        firstName: "Tom",
+        lastName: "Smith",
+        email: "test@test.com",
+        phoneNo: "1234567890",
+        active: true
+    },
+    formStatus: FormStatus.Editing
 }
 
 describe('ContactsList ', () => {
@@ -63,7 +71,8 @@ it('with an empty contacts prop list renders fallback info', async () => {
     );
 
     // ASSERT
-    expect(screen.getByText('Person'))
+    expect(screen.getByText('First Name'))
+    expect(screen.getByText('Last Name'))
     expect(screen.getByText('Phone no.'))
     expect(screen.getByText('Email address'))
 
@@ -74,8 +83,9 @@ it('with an empty contacts prop list renders fallback info', async () => {
 describe('EditContactButton ', () => {
     it('displays edit when inactive', async () => {
         const inactiveStateButton = render(
-            <EditContactButton redirectionUrl={`/edit/1`} contact={inactiveContact}
-                               onClick={undefined}></EditContactButton>
+            <EditContactButton contactvm={inactiveContact} onClick={(event) => {
+                return null
+            }}></EditContactButton>
         );
 
         expect(screen.getByRole('button')).toHaveTextContent('Edit');
@@ -84,8 +94,9 @@ describe('EditContactButton ', () => {
 
     it('displays save when active', async () => {
         const activeStateButton = render(
-            <EditContactButton redirectionUrl={`/edit/1`} contact={activeContact}
-                               onClick={undefined}></EditContactButton>
+            <EditContactButton contactvm={activeContact} onClick={(event) => {
+                return null
+            }}></EditContactButton>
         );
         expect(screen.getByRole('button')).toHaveTextContent('Save');
     });

@@ -2,15 +2,17 @@
 
 import {useReducer} from "react";
 import ContactsList from "@/app/ContactsList";
-import {ContactBlockActions, ContactState, ContactViewModel, FormStatus} from "@/app/utils";
+import {ContactBlockActions, ContactState, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
 import {ContactsDispatchContext} from "@/app/ContactsBlockContext";
 
 export default function ContactBlock() {
     const initialState = {contacts: [], loading: false}
 
-    const reducer = (state, action) => {
+    const reducer = (state: any, action: ReducerAction) => {
+        // @ts-ignore
         if (Object.values(FormStatus).includes(action.type)) {
             return {...state}
+            // @ts-ignore
         } else if (Object.values(ContactBlockActions).includes(action.type)) {
             switch (action.type) {
                 case ContactBlockActions.SetContacts: {
@@ -34,7 +36,7 @@ export default function ContactBlock() {
 
     const [state, dispatch] = useReducer(reducer, initialState)
 
-    const handleClick = (event, contactvm) => {
+    const handleClick = (event: any, contactvm: ContactViewModel) => {
         const contact: ContactState = contactvm.contact;
 
         if (contact.active !== true) {
@@ -58,12 +60,12 @@ export default function ContactBlock() {
         dispatch({type: ContactBlockActions.SetContacts, payload: {contacts: newArray}})
     }
 
-    const replaceContact = (contactvm: ContactViewModel, replacement: ContactViewModel, state): any => {
+    const replaceContact = (contactvm: ContactViewModel, replacement: ContactViewModel, state: any): any => {
 
-        const findContactByContactUuid = (item) => {
+        const findContactByContactUuid = (item: ContactViewModel) => {
             return item.contact.uuid === contactvm.contact.uuid;
         }
-        const mapItemsFunc = (original) => original.contact.uuid === state.contacts?.at(indexToMutate).contact.uuid ? replacement : original
+        const mapItemsFunc = (original: ContactViewModel) => original.contact.uuid === state.contacts?.at(indexToMutate).contact.uuid ? replacement : original
 
 
         const indexToMutate = state.contacts?.findIndex(findContactByContactUuid);
@@ -111,6 +113,7 @@ export default function ContactBlock() {
 
             {state.loading && (<p>Loading...</p>)
                 || (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
+                    // @ts-ignore
                     <ContactsDispatchContext value={dispatch}>
                         <ContactsList contacts={state.contacts} handleClick={handleClick}></ContactsList>
                     </ContactsDispatchContext>
