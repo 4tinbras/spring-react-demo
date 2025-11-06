@@ -15,21 +15,26 @@ repositories {
 }
 
 dependencies {
+    def springBootVer='3.5.7'
+    def springSecurityVer='6.5.6'
+    def jakartaVer='3.0.0'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '3.4.0'
-    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.4.0') {
-        //filter out unnecessary dependencies
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: springBootVer
+    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVer) {
+        //TODO: filter out unnecessary dependencies
 //        exclude module: 'spring-webmvc'
     }
-    implementation group: 'org.springframework.security', name: 'spring-security-web', version: '6.4.0'
-    implementation group: 'org.springframework.security', name: 'spring-security-config', version: '6.4.0'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.4.0'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.4.0'
-    implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: '3.0.0'
-    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'
+    implementation group: 'org.springframework.security', name: 'spring-security-web', version: springSecurityVer
+    implementation group: 'org.springframework.security', name: 'spring-security-config', version: springSecurityVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBootVer
+    implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: jakartaVer
+    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: jakartaVer
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server', version: springBootVer
 
     //swagger generated based on code
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
@@ -39,7 +44,7 @@ dependencies {
     //TODO: run db in separate container with a persistent volume
     implementation 'com.h2database:h2:2.1.214'
 
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.4.0'
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVer
 }
 
 test {
