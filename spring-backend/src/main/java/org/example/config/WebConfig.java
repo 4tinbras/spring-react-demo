@@ -30,7 +30,6 @@ public class WebConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 //        TODO: specific role-creds for monitoring
-//        TODO: actuator
 //        TODO: Default - require creds
         return httpSecurity
                 .authorizeHttpRequests((auth) -> auth
@@ -40,7 +39,6 @@ public class WebConfig {
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(
                         Customizer.withDefaults()
-//                        jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
                 ))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
