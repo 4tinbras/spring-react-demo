@@ -44,16 +44,22 @@ services:
       - "3000:3000"
 
   keycloak:
-    image: quay.io/keycloak/keycloak
+    build: ./authz-store/.
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: password
+      KEYCLOAK_ADMIN: sample-admin
+      KEYCLOAK_ADMIN_PASSWORD: sample-pass
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8030
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
+      KC_LOG_LEVEL: info
+#      TODO:ADD healthcheck
     volumes:
-      - keycloak_backup:/opt/keycloak/data
+      - ./authz-store/kc-spreact.json:/opt/keycloak/data/import/kc-spreact.json
+    networks:
+      - demo
     ports:
-      - "8061:8080"
-    command:
-      - 'start-dev'
+      - "8030:8030"
+      - "8020:8020"
 
 networks:
   demo:
