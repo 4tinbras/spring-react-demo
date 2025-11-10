@@ -133,7 +133,7 @@ export function RecordForm({contact}: { contact: ContactState }) {
     };
 
     const [onSubmit, refStatus, data] = useSubmitForm(
-        `http://localhost:8080/contact`,
+        `${process.env.REACT_APP_BACKEND_HOST}`,
         fieldsArray
     );
 
