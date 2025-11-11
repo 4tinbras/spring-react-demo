@@ -47,6 +47,8 @@ dependencies {
     implementation 'com.h2database:h2:2.1.214'
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVer
+
+    testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }
 
 test {
