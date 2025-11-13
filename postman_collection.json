@@ -1,0 +1,763 @@
+{
+  "info": {
+    "_postman_id": "6ff801c8-b88c-4dac-b7b4-e42d94e88953",
+    "name": "Contacts demo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "43583744",
+    "_collection_link": "https://kacperprzychodzki.postman.co/workspace/Kacper-Przychodzki's-Workspace~4f30b30d-7b89-469a-8fd3-e8529043d2be/collection/43583744-6ff801c8-b88c-4dac-b7b4-e42d94e88953?action=share&source=collection_link&creator=43583744"
+  },
+  "item": [
+    {
+      "name": "keycloak",
+      "item": [
+        {
+          "name": "kc authorize",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var cheerio = require('cheerio');",
+                  "",
+                  "const $ = cheerio.load(pm.response.text());",
+                  "const actionPropValue = $(\"form\").prop(\"action\");",
+                  "",
+                  "console.log(actionPropValue);",
+                  "",
+                  "pm.test(\"Status code is 200 and has expected action\", function () {",
+                  "  pm.expect(pm.response).to.have.status(200);",
+                  "  pm.expect(actionPropValue).to.not.be.undefined;",
+                  "});",
+                  "",
+                  "if (actionPropValue.includes(\"login-actions/authenticate\")) {",
+                  "    console.log(\"login action has been found\");",
+                  "    const queryParamsSection = actionPropValue.split(\"?\")[1];",
+                  "    console.log(queryParamsSection);",
+                  "    const queryParams = queryParamsSection.split(\"&\");",
+                  "    for (i=0; i<queryParams.length; i++) {",
+                  "        const keyValue = queryParams[i].split(\"=\");",
+                  "        pm.environment.set(keyValue[0].toUpperCase(), keyValue[1]);",
+                  "    }",
+                  "} else {",
+                  "    console.log(\"login action has not been found\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{KEYCLOAK_SERVER}}/realms/{{REALM}}/protocol/openid-connect/auth?client_id={{CLIENT_ID}}&redirect_uri={{CURRENT_REDIRECT_URI}}&grant_type=authorization_code&response_type=code&code_challenge=My_Custom_CodeVerifier_But_Its_Length_Must_Be_AtLeast_43_Characters&code_challenge_method=plain",
+              "host": [
+                "{{KEYCLOAK_SERVER}}"
+              ],
+              "path": [
+                "realms",
+                "{{REALM}}",
+                "protocol",
+                "openid-connect",
+                "auth"
+              ],
+              "query": [
+                {
+                  "key": "client_id",
+                  "value": "{{CLIENT_ID}}"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "{{CURRENT_REDIRECT_URI}}"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "description": "authorization_code || password"
+                },
+                {
+                  "key": "response_type",
+                  "value": "code"
+                },
+                {
+                  "key": "scope",
+                  "value": "{{CURRENT_SCOPES}}",
+                  "disabled": true
+                },
+                {
+                  "key": "code_challenge",
+                  "value": "My_Custom_CodeVerifier_But_Its_Length_Must_Be_AtLeast_43_Characters",
+                  "description": "PKCE flow"
+                },
+                {
+                  "key": "code_challenge_method",
+                  "value": "plain",
+                  "description": "plain | S256 <- PKCE flow"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "kc get login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{KEYCLOAK_SERVER}}/realms/{{REALM}}/protocol/openid-connect/auth?client_id={{CLIENT_ID}}&redirect_uri={{CURRENT_REDIRECT_URI}}&grant_type=authorization_code&response_type=code",
+              "host": [
+                "{{KEYCLOAK_SERVER}}"
+              ],
+              "path": [
+                "realms",
+                "{{REALM}}",
+                "protocol",
+                "openid-connect",
+                "auth"
+              ],
+              "query": [
+                {
+                  "key": "client_id",
+                  "value": "{{CLIENT_ID}}"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "{{CURRENT_REDIRECT_URI}}"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                },
+                {
+                  "key": "response_type",
+                  "value": "code"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "kc login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const locationHeader=pm.response.headers.get('location');",
+                  "const headerQuery=locationHeader.split('?')[1];",
+                  "",
+                  "pm.test(\"Status code is 302 and has expected header\", function () {",
+                  "  pm.expect(pm.response).to.have.status(302);",
+                  "  pm.expect(headerQuery).to.include(\"code\");",
+                  "});",
+                  "",
+                  "if (headerQuery.includes(\"code\")) {",
+                  "    console.log(\"code found\");",
+                  "    const headerQueryParams = headerQuery.split(\"&\");",
+                  "    for (i=0; i<headerQueryParams.length; i++) {",
+                  "        const keyValue = headerQueryParams[i].split(\"=\");",
+                  "        if (keyValue[0] === 'code') {",
+                  "            pm.environment.set('AUTHZ_CODE', keyValue[1]);",
+                  "        }",
+                  "    }",
+                  "} else {",
+                  "    console.log(\"failed to retrieve code\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "username",
+                  "value": "{{CURRENT_USER}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{CURRENT_PASS}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{KEYCLOAK_SERVER}}/realms/{{REALM}}/login-actions/authenticate?session_code={{SESSION_CODE}}&execution={{EXECUTION}}&client_id={{CLIENT_ID}}&tab_id={{TAB_ID}}&client_data={{CLIENT_DATA}}",
+              "host": [
+                "{{KEYCLOAK_SERVER}}"
+              ],
+              "path": [
+                "realms",
+                "{{REALM}}",
+                "login-actions",
+                "authenticate"
+              ],
+              "query": [
+                {
+                  "key": "session_code",
+                  "value": "{{SESSION_CODE}}"
+                },
+                {
+                  "key": "execution",
+                  "value": "{{EXECUTION}}"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{CLIENT_ID}}"
+                },
+                {
+                  "key": "tab_id",
+                  "value": "{{TAB_ID}}"
+                },
+                {
+                  "key": "client_data",
+                  "value": "{{CLIENT_DATA}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "kc token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// const body = pm.response.body();",
+                  "const responseData=pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200 and has expected tokens\", function () {",
+                  "  pm.expect(pm.response).to.have.status(200);",
+                  "  pm.expect(responseData.access_token).to.not.be.undefined",
+                  "});",
+                  "",
+                  "pm.environment.set('ACCESS_TOKEN', responseData.access_token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "{{CURRENT_CLIENT_PASS}}",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "{{CURRENT_CLIENT}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "client_id",
+                  "value": "{{CLIENT_ID}}",
+                  "description": "PKCE flow",
+                  "type": "text"
+                },
+                {
+                  "key": "scope",
+                  "value": "{{CURRENT_SCOPES}}",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials",
+                  "description": "client_credentials | password",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "code_verifier",
+                  "value": "My_Custom_CodeVerifier_But_Its_Length_Must_Be_AtLeast_43_Characters",
+                  "description": "PKCE flow",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "sample-pass",
+                  "description": "password migration flow",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "username",
+                  "value": "sample-admin",
+                  "description": "password migration flow",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "{{CURRENT_REDIRECT_URI}}",
+                  "type": "text"
+                },
+                {
+                  "key": "code",
+                  "value": "{{AUTHZ_CODE}}",
+                  "type": "text"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{KEYCLOAK_SERVER}}/realms/{{REALM}}/protocol/openid-connect/token",
+              "host": [
+                "{{KEYCLOAK_SERVER}}"
+              ],
+              "path": [
+                "realms",
+                "{{REALM}}",
+                "protocol",
+                "openid-connect",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "kc jwks",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{KEYCLOAK_SERVER}}/realms/{{REALM}}/.well-known/openid-configuration",
+              "host": [
+                "{{KEYCLOAK_SERVER}}"
+              ],
+              "path": [
+                "realms",
+                "{{REALM}}",
+                ".well-known",
+                "openid-configuration"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "kc register user",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{KEYCLOAK_SERVER}}/realms/{{REALM}}/login-actions/registration?client_id={{CLIENT_ID}}&tab_id={{TAB_ID}}&client_data={{CLIENT_DATA}}",
+              "host": [
+                "{{KEYCLOAK_SERVER}}"
+              ],
+              "path": [
+                "realms",
+                "{{REALM}}",
+                "login-actions",
+                "registration"
+              ],
+              "query": [
+                {
+                  "key": "client_id",
+                  "value": "{{CLIENT_ID}}"
+                },
+                {
+                  "key": "tab_id",
+                  "value": "{{TAB_ID}}"
+                },
+                {
+                  "key": "client_data",
+                  "value": "{{CLIENT_DATA}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "kc post register user",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "client_id",
+                "value": "{{CLIENT_ID}}",
+                "type": "text"
+              },
+              {
+                "key": "tab_id",
+                "value": "{{TAB_ID}}",
+                "type": "text"
+              },
+              {
+                "key": "client_data",
+                "value": "{{CLIENT_DATA}}",
+                "type": "text"
+              },
+              {
+                "key": "username",
+                "value": "{{CURRENT_USER}}",
+                "type": "text"
+              },
+              {
+                "key": "password",
+                "value": "{{CURRENT_PASS}}",
+                "type": "text"
+              },
+              {
+                "key": "password-confirm",
+                "value": "{{CURRENT_PASS}}",
+                "type": "text"
+              },
+              {
+                "key": "email",
+                "value": "{{CURRENT_EMAIL}}",
+                "type": "text"
+              },
+              {
+                "key": "firstName",
+                "value": "{{$randomFirstName}}",
+                "type": "text"
+              },
+              {
+                "key": "lastName",
+                "value": "{{$randomLastName}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{KEYCLOAK_SERVER}}/realms/{{REALM}}/login-actions/registration",
+              "host": [
+                "{{KEYCLOAK_SERVER}}"
+              ],
+              "path": [
+                "realms",
+                "{{REALM}}",
+                "login-actions",
+                "registration"
+              ],
+              "query": [
+                {
+                  "key": "client_id",
+                  "value": "{{CLIENT_ID}}",
+                  "disabled": true
+                },
+                {
+                  "key": "tab_id",
+                  "value": "{{TAB_ID}}",
+                  "disabled": true
+                },
+                {
+                  "key": "client_data",
+                  "value": "{{CLIENT_DATA}}",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "backend API",
+      "item": [
+        {
+          "name": "add contact",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "connection": true,
+              "user-agent": true,
+              "accept-encoding": true
+            }
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ACCESS_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Postman-Token",
+                "value": "none",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstName\": \"Tom\",\n    \"lastName\": \"Smith\",\n    \"email\": \"ts1@example.com\",\n    \"phoneNo\": \"79156930\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/contact",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "contact"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete contact by uuid",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "connection": true,
+              "user-agent": true,
+              "accept-encoding": true
+            }
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ACCESS_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Postman-Token",
+                "value": "none",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \n    \"firstName\": \"Tom\",\n    \"lastName\": \"Smith\",\n    \"email\": \"ts@example.com\",\n    \"phoneNo\": \"79156930\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/contact/{{uuid}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "contact",
+                "{{uuid}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all contacts",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "connection": true,
+              "user-agent": true,
+              "accept-encoding": true
+            },
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ACCESS_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Postman-Token",
+                "value": "none",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/contacts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "contacts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "health",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "connection": true,
+              "user-agent": true
+            }
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8071/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8071",
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "prometheus",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "connection": true,
+              "user-agent": true
+            }
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8071/actuator/prometheus",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8071",
+              "path": [
+                "actuator",
+                "prometheus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "add contact (via proxy)",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "connection": true,
+              "user-agent": true,
+              "accept-encoding": true
+            }
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Postman-Token",
+                "value": "none",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstName\": \"Tom\",\n    \"lastName\": \"Smith\",\n    \"email\": \"ts1@example.com\",\n    \"phoneNo\": \"79156930\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:10000/contact",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "10000",
+              "path": [
+                "contact"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
