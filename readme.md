@@ -12,8 +12,11 @@ Alternatively you can use docker-compose to run containers bundled in root direc
 ``docker-compose up .``
 
 [//]: # (TODO: Ideally that would become part of a setup script.)
-In order to use OAuth2 authorization it is necessary to configure keycloak as
-per: https://www.keycloak.org/getting-started/getting-started-docker
+In order to use OAuth2 authorization it is necessary to start the container with predefined realm as in
+docker-compose.yml.
+It is possible to do that manually sending relevant curls to login user and obtain Access Token for backend or login via
+frontend,
+which will facilitate that exchange.
 
 ## Current status
 * Spring project uses JPA to connect to H2 (in embedded mode) in memory DB
@@ -23,6 +26,6 @@ per: https://www.keycloak.org/getting-started/getting-started-docker
 ## TODOs
 * non-root container executions
 * add missing frontend functionality
-* add missing error handling and unhappy paths
 * add missing monitoring
-* add backend authZ
+* add proper backend model hierarchy and sample microservices
+* add terraform script for simple AWS deployment
