@@ -5,7 +5,7 @@ import ContactsList from "@/app/ContactsList";
 import {ContactBlockActions, ContactState, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
 import {ContactsDispatchContext} from "@/app/ContactsBlockContext";
 
-export default function ContactBlock() {
+export default function ContactBlock({accessToken}: { accessToken: string }) {
     const initialState = {contacts: [], loading: false}
 
     const reducer = (state: any, action: ReducerAction) => {
@@ -80,7 +80,12 @@ export default function ContactBlock() {
         dispatch({type: ContactBlockActions.SetLoading, payload: {loading: true}});
 
         //TODO: add handling for exceptions
-        fetch('http://localhost:8080/contacts')
+        fetch('http://localhost:8080/contacts', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
             .then(response => response.json())
             .then(body => {
                 const cvmArray: ContactViewModel[] = [];
@@ -111,15 +116,19 @@ export default function ContactBlock() {
         <div style={{width: '100%'}}>
             <button onClick={() => handleGetContacts()}>Get Contacts</button>
 
-            {state.loading && (<p>Loading...</p>)
+            {accessToken !== "" && accessToken !== undefined && (
+                state.loading && (<p>Loading...</p>)
                 || (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
                     // @ts-ignore
                     <ContactsDispatchContext value={dispatch}>
-                        <ContactsList contacts={state.contacts} handleClick={handleClick}></ContactsList>
+                        <ContactsList contacts={state.contacts} handleClick={handleClick}
+                                      accessToken={accessToken}></ContactsList>
                     </ContactsDispatchContext>
             ) : (
                 <p>No contacts found so far.</p>
-                ))}
+                ))
+            ) || (<p>Please authenticate yourself in login tab.</p>)
+            }
         </div>
     );
 }

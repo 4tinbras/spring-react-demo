@@ -7,10 +7,15 @@ import {setupServer} from "msw/node";
 
 // declare which API requests to mock
 const server = setupServer(
-    http.get('http://localhost:8080/contacts', () => {
-        return HttpResponse.json(
-            [{uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"}])
-    }),
+    http.get('http://localhost:8080/contacts', (request) => {
+        // @ts-ignore
+        if (request.request.headers.get('Authorization') === 'Bearer accessToken') {
+            return HttpResponse.json(
+                [{uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"}])
+        } else {
+            return HttpResponse.json({error: 'Not authorised'}, {status: 401})
+        }
+    },),
 )
 
 // establish API mocking before all tests
@@ -24,7 +29,7 @@ describe('ContactsBlock', () => {
     it('renders with link to example.com', async () => {
 
         const component = render(
-            <ContactsBlock></ContactsBlock>
+            <ContactsBlock accessToken={"accessToken"}></ContactsBlock>
         );
 
         expect(screen.getByRole('paragraph')).toHaveTextContent('No contacts found so far.')
@@ -59,6 +64,15 @@ describe('ContactsBlock', () => {
         expect(screen.getByRole('button', {name: 'Save'}));
         expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
     });
+
+    it('renders with login request if no access token', async () => {
+
+        const component = render(
+            <ContactsBlock accessToken={""}></ContactsBlock>
+        );
+
+        expect(screen.getByRole('paragraph')).toHaveTextContent('Please authenticate yourself in login tab.')
+    })
 
     it('error handling resets state', async () => {
     })
