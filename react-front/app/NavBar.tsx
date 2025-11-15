@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState } from 'react';
-import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
 
-export default function NavBar() {
+export default function NavBar({activeTab, onNavbarClick}: { activeTab: String, onNavbarClick: any }) {
 
     const [isOpen, setIsOpen] = useState(true);
 
@@ -17,9 +16,15 @@ export default function NavBar() {
                 setIsOpen(!isOpen)
             }}/>
             <Collapse isOpen={isOpen} navbar>
-                <Nav className="justify-content-start" style={{ width: "100%" }} navbar>
+                <Nav className="justify-content-start" style={{width: "100%"}} navbar pills>
                     <NavItem>
-                        <NavLink href="https://example.com">example</NavLink>
+                        {activeTab === 'HOME' && (<NavLink active onClick={() => onNavbarClick('HOME')}>Home</NavLink>)
+                            || (<NavLink onClick={() => onNavbarClick('HOME')}>Home</NavLink>)}
+                    </NavItem>
+                    <NavItem>
+                        {activeTab === 'LOGIN' && (
+                                <NavLink active onClick={() => onNavbarClick('LOGIN')}>Login</NavLink>)
+                            || (<NavLink onClick={() => onNavbarClick('LOGIN')}>Login</NavLink>)}
                     </NavItem>
                 </Nav>
             </Collapse>

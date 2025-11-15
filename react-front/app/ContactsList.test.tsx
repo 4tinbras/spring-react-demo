@@ -45,7 +45,9 @@ describe('ContactsList ', () => {
                     active: false
                 },
                 formStatus: FormStatus.Editing
-            }]} handleClick={undefined}></ContactsList>
+            }]}
+                          handleClick={undefined}
+                          accessToken={""}></ContactsList>
         );
 
         await screen.findByRole('table')
@@ -67,7 +69,7 @@ describe('ContactsList ', () => {
 it('with an empty contacts prop list renders fallback info', async () => {
 
     const component = render(
-        <ContactsList contacts={[]} handleClick={undefined}></ContactsList>
+        <ContactsList contacts={[]} handleClick={undefined} accessToken={""}></ContactsList>
     );
 
     // ASSERT
