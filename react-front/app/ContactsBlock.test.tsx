@@ -5,10 +5,8 @@ import {http, HttpResponse} from 'msw'
 import {setupServer} from "msw/node";
 
 
-// declare which API requests to mock
 const server = setupServer(
     http.get('http://localhost:8080/contacts', (request) => {
-        // @ts-ignore
         if (request.request.headers.get('Authorization') === 'Bearer accessToken') {
             return HttpResponse.json(
                 [{uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"}])
@@ -18,11 +16,9 @@ const server = setupServer(
     },),
 )
 
-// establish API mocking before all tests
 beforeAll(() => server.listen())
 // reset any request handlers that are declared as a part of the tests
 afterEach(() => server.resetHandlers())
-// clean up once the tests are done
 afterAll(() => server.close())
 
 describe('ContactsBlock', () => {
