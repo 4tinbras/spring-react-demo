@@ -9,15 +9,6 @@ export default function ContactsList({contacts, handleClick, accessToken}:
 // @ts-ignore
     const listItems = contacts.map((contactvm: ContactViewModel) => {
 
-      const props = {
-          readOnly: undefined
-      };
-        if (!contactvm.active) {
-            // @ts-ignore
-            props.readOnly = contactvm.active
-      }
-
-      // TODO: via props readonly isn't picked up; via property it is always present
         return <tr key={`${contactvm.contact.uuid}`}>
             <ContactsRecord key={`${contactvm.contact.uuid}records`} contactvm={contactvm}
                             handleClick={handleClick}></ContactsRecord>
