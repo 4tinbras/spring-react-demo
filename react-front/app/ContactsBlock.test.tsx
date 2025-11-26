@@ -3,14 +3,21 @@ import ContactsBlock from "@/app/ContactsBlock";
 import {fireEvent, render, screen} from '@testing-library/react'
 import {http, HttpResponse} from 'msw'
 import {setupServer} from "msw/node";
+import {ContactDto, ErrorResp} from "@/app/utils";
 
 
 const server = setupServer(
-    http.get('http://localhost:8080/contacts', (request) => {
+    http.get<{}, never, ContactDto[] | ErrorResp>('http://localhost:8080/contacts', function* (request) {
+        let response: ContactDto | ErrorResp;
+        console.log('entered response mocking')
+
         if (request.request.headers.get('Authorization') === 'Bearer accessToken') {
-            return HttpResponse.json(
-                [{uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"}])
+            response = {uuid: "1", firstName: "Tom", lastName: "Smith", email: "test@test.com", phoneNo: "1234567890"};
+            yield HttpResponse.json([response])
+            response = {error: 'Not found'};
+            yield HttpResponse.json(response, {status: 404})
         } else {
+            console.log('setting response to invalid')
             return HttpResponse.json({error: 'Not authorised'}, {status: 401})
         }
     },),
@@ -70,12 +77,28 @@ describe('ContactsBlock', () => {
         expect(screen.getByRole('paragraph')).toHaveTextContent('Please authenticate yourself in login tab.')
     })
 
-    it('error handling resets state', async () => {
-    })
-});
+    it('error handling resets state and erases table', async () => {
+        const component = render(
+            <ContactsBlock accessToken={"accessToken"}></ContactsBlock>
+        );
 
-describe('Reducer', () => {
-    it('correctly return updates', async () => {
-        //TODO: add unit test coverage
+        expect(screen.getByRole('paragraph')).toHaveTextContent('No contacts found so far.')
+
+        const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
+        fireEvent.click(contactsButton);
+
+        await screen.findByRole('table')
+
+        expect(screen.queryByRole('paragraph', {name: 'Loading...'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('paragraph', {name: 'No contacts found so far.'})).not.toBeInTheDocument();
+
+        expect(screen.getByText('First Name'))
+
+        fireEvent.click(contactsButton);
+
+        await screen.findByText('No contacts found so far.');
+
+        expect(screen.queryByRole('paragraph', {name: 'Loading...'})).not.toBeInTheDocument();
+        expect(screen.queryByText('First Name')).not.toBeInTheDocument();
     })
 });
