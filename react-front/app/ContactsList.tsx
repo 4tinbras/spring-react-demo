@@ -93,8 +93,11 @@ export function RecordForm({contact, accessToken}: { contact: ContactState, acce
         fieldsArray,
         responseData,
         setData,
-        accessToken,
-        dispatch
+        dispatch,
+        new Map([
+            ['Content-Type', 'application/json'],
+            ['Authorization', `Bearer ${accessToken}`]
+        ])
     );
 
     return <form id={`form${contact.uuid}`} name={`form${contact.uuid}`} onSubmit={onSubmit}></form>
