@@ -59,13 +59,26 @@ export default function ContactsList({contacts, handleClick, accessToken}:
 export function ContactsRecord({contactvm, handleClick}: { contactvm: ContactViewModel, handleClick: any }) {
     const contact: ContactState = contactvm.contact;
 
+    const inputProps = {
+        readOnly: undefined,
+    };
+    if (!contactvm.active) {
+        // @ts-ignore
+        inputProps.readOnly = true
+    }
+
+    //TODO: if readonly - change styling
     return <>
-        <td><input type="text" name="firstName" form={`form${contact.uuid}`} defaultValue={contact.firstName}></input>
+        <td><input type="text" name="firstName" form={`form${contact.uuid}`}
+                   defaultValue={contact.firstName} {...inputProps}></input>
         </td>
-        <td><input type="text" name="lastName" form={`form${contact.uuid}`} defaultValue={contact.lastName}></input>
+        <td><input type="text" name="lastName" form={`form${contact.uuid}`}
+                   defaultValue={contact.lastName} {...inputProps}></input>
         </td>
-        <td><input type="text" name="phoneNo" form={`form${contact.uuid}`} defaultValue={contact.phoneNo}></input></td>
-        <td><input type="text" name="email" form={`form${contact.uuid}`} defaultValue={contact.email}></input></td>
+        <td><input type="text" name="phoneNo" form={`form${contact.uuid}`}
+                   defaultValue={contact.phoneNo} {...inputProps}></input></td>
+        <td><input type="text" name="email" form={`form${contact.uuid}`}
+                   defaultValue={contact.email} {...inputProps}></input></td>
         <td><EditContactButton contactvm={contactvm}
                                onClick={(event) => handleClick(event, contactvm)}></EditContactButton></td>
         <td hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
