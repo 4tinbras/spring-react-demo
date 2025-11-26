@@ -9,6 +9,25 @@ export interface ContactState {
     active: boolean;
 }
 
+export interface ContactDto {
+    readonly discriminator?: Discriminator.ContactDto;
+    uuid: string;
+    firstName: string;
+    lastName: string;
+    phoneNo: string;
+    email: string;
+}
+
+export interface ErrorResp {
+    readonly discriminator?: Discriminator.ErrorResp;
+    error: string;
+}
+
+export const enum Discriminator {
+    ContactDto = 'ContactDto',
+    ErrorResp = 'ErrorResp'
+}
+
 export interface ContactViewModel {
     contact: ContactState;
     active: boolean;
