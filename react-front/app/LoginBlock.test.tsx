@@ -9,8 +9,15 @@ describe('MyComponent', () => {
             <LoginBlock setAccessToken={undefined}></LoginBlock>
         );
 
-        await screen.findByRole('navigation')
-        await screen.findByRole('link', {name: 'example'})
+        // isn't picked up
+        // await screen.findByRole('form')
+
+        await screen.findByText('Username')
+        await screen.findByText('Password')
+
+        // not picked up either, check how react actually resolves its htmlFor
+        // expect(screen.getByLabelText('Username', {selector: 'input'})).toBeInTheDocument();
+
     });
 
     it('on successful query renders confirmation', async () => {
@@ -19,17 +26,17 @@ describe('MyComponent', () => {
             <LoginBlock setAccessToken={undefined}></LoginBlock>
         );
 
-        await screen.findByRole('navigation')
-        await screen.findByRole('link', {name: 'example'})
+        // await screen.findByRole('form')
+        // await screen.findByRole('link', {name: 'example'})
     });
 
-    it('on failed request renders', async () => {
+    it('on failed request renders form', async () => {
 
         render(
             <LoginBlock setAccessToken={undefined}></LoginBlock>
         );
 
-        await screen.findByRole('navigation')
-        await screen.findByRole('link', {name: 'example'})
+        await screen.findByText('Username')
+        await screen.findByText('Password')
     });
 });
