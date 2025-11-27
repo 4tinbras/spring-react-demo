@@ -21,6 +21,8 @@ which will facilitate that exchange.
 ## Current status
 * Spring project uses JPA to connect to H2 (in embedded mode) in memory DB
 * Frontend allows only to look up records in DB, other interactions need to be facilitated through direct http calls
+* To call any backend endpoints an Access Token is needed, That can be obtained from keycloak service.
+* Repository includes postman collection which guides through login process and backend interactions.
 * Monitoring currently includes only a simple error rate rule
 
 ## TODOs
