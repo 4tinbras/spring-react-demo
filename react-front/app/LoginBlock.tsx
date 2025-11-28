@@ -39,13 +39,23 @@ export default function LoginBlock({setAccessToken}: { setAccessToken: any }) {
     // @ts-ignore
 
     const [onSubmit, refStatus, data] = genericSubmitForm(`${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}`,
-        FIELDS_ARRAY,
+        [],
         responseData,
         setData,
         dispatch,
         new Map([]),
-        FieldsSubmissionType.QueryParams
+        FieldsSubmissionType.QueryParams,
+        new Map([
+            ['client_id', 'spreact-conf'],
+            ['redirect_uri', 'http%3A%2F%2Flocalhost%3A8020'],
+            ['grant_type', 'authorization_code'],
+            ['response_type', 'code']
+        ])
     );
+
+    const promisedSubmit = new Promise((resolve, reject) => {
+        resolve(onSubmit);
+    })
 
     // @ts-ignore
     return (

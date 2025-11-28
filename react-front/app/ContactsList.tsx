@@ -89,7 +89,7 @@ export function RecordForm({contact, accessToken}: { contact: ContactState, acce
     // @ts-ignore
     const dispatch: React.Dispatch<any> = useContext(ContactsDispatchContext);
 
-    const [onSubmit, refStatus, data] = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
+    const [onSubmit, data] = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
         fieldsArray,
         responseData,
         setData,
