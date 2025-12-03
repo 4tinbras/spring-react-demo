@@ -36,21 +36,25 @@ export default function LoginBlock({setAccessToken}: { setAccessToken: any }) {
 
 
     const [responseData, setData] = useState<[]>([]);
-    // @ts-ignore
 
+    let additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
+        [FieldsSubmissionType.QueryParams, new Map([
+            ['client_id', 'spreact-conf'],
+            ['redirect_uri', 'http%3A%2F%2Flocalhost%3A8020'],
+            ['grant_type', 'authorization_code'],
+            ['response_type', 'code']
+        ])]
+    ])
+
+    // @ts-ignore
     const [onSubmit, refStatus, data] = genericSubmitForm(`${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}`,
         [],
         responseData,
         setData,
         dispatch,
-        new Map([]),
-        FieldsSubmissionType.QueryParams,
-        new Map([
-            ['client_id', 'spreact-conf'],
-            ['redirect_uri', 'http%3A%2F%2Flocalhost%3A8020'],
-            ['grant_type', 'authorization_code'],
-            ['response_type', 'code']
-        ])
+        FieldsSubmissionType.None,
+        additionalData,
+        'GET'
     );
 
     const promisedSubmit = new Promise((resolve, reject) => {

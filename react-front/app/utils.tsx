@@ -69,6 +69,7 @@ export const enum FieldsSubmissionType {
     QueryParams = 'QueryParams',
     UrlFormParams = 'UrlFormParams',
     JsonFormParams = 'JsonFormParams',
+    HeaderParams = 'HeaderParams',
     None = 'None',
 }
 
@@ -78,13 +79,13 @@ export const genericSubmitForm = (
     responseData: any,
     setStateData: React.Dispatch<SetStateAction<any>>,
     dispatch: React.Dispatch<ReducerAction>,
-    additionalHeaders: Map<string, string> = new Map<string, string>(),
-    fieldsSubmissionType: FieldsSubmissionType = FieldsSubmissionType.JsonFormParams,
-    additionalRequestParams: Map<string, string> = new Map<string, string>()
+    fieldsSubmissionType: FieldsSubmissionType,
+    additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
+    method: string = 'GET',
 ): [FormEventHandler, []] => {
 
-    const fetchData = async (formData: any): Promise<void> => {
-        await fetchDataWrapper(url, fields, formData, setStateData, dispatch, additionalHeaders, fieldsSubmissionType, additionalRequestParams);
+    const fetchData = async (formData: Map<string, string>): Promise<void> => {
+        await fetchDataWrapper(url, formData, setStateData, dispatch, fieldsSubmissionType, additionalData, method);
     };
 
     const onSubmit = (e: any) => {
@@ -98,19 +99,20 @@ export const genericSubmitForm = (
 
 export async function fetchDataWrapper(
     url: string,
-    fields: string[],
-    formData: any,
+    formData: Map<string, string>,
     setStateData: React.Dispatch<SetStateAction<any>>,
     dispatch: React.Dispatch<ReducerAction>,
-    additionalHeaders: Map<string, string> = new Map<string, string>(),
-    fieldsSubmissionType: FieldsSubmissionType = FieldsSubmissionType.JsonFormParams,
-    additionalRequestParams: Map<string, string> = new Map<string, string>()
+    fieldsSubmissionType: FieldsSubmissionType,
+    additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
+    method: string = 'GET',
 ): Promise<void> {
     dispatch({type: FormStatus.Pending.toString(), payload: null});
 
     try {
-        //TODO: try using spread syntax | constructing/deconstructing to pass in function wuth varargs and execute it
-        const response = genericFetch(url, fields, additionalHeaders, fieldsSubmissionType, additionalRequestParams, formData);
+        additionalData.set(fieldsSubmissionType, formData)
+
+        //TODO: try using spread syntax | constructing/deconstructing to pass in function with varargs and execute it
+        const response = genericFetch(url, additionalData, method);
 
         let data;
 
@@ -124,43 +126,47 @@ export async function fetchDataWrapper(
     }
 }
 
-export function onSubmitFetchData(fields: string[], fetchData: (formData: any) => Promise<void>, e: any): Promise<void> {
+export function onSubmitFetchData(fields: string[], fetchData: (formData: Map<string, string>) => Promise<void>, e: any): Promise<void> {
+    const result: Map<string, string> = new Map<string, string>();
 
-    const formData = fields.reduce((formData, field) => ({
-        ...formData,
-        [field]: e.target[field].value,
-    }), {});
-    return fetchData(formData);
+    fields.forEach((field) =>
+        result.set(field, e.target[field].value));
+
+    return fetchData(result);
 }
 
 export async function genericFetch(
     url: string,
-    fields: string[],
-    additionalHeaders: Map<string, string> = new Map<string, string>(),
-    fieldsSubmissionType: FieldsSubmissionType = FieldsSubmissionType.JsonFormParams,
-    additionalRequestParams: Map<string, string> = new Map<string, string>(),
-    formData: any
+    additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
+    method: string = 'GET',
 ): Promise<Response> {
+
     let requestConfs: RequestInit = {
-        method: "POST",
+        method: method,
         headers: {
             Accept: "*",
             "Access-Control-Allow-Origin": "*",
         },
-        body: fieldsSubmissionType === FieldsSubmissionType.QueryParams ? undefined
-            : fieldsSubmissionType === FieldsSubmissionType.UrlFormParams ? new URLSearchParams(formData)
-                : JSON.stringify(formData)
+        body: additionalData.has(FieldsSubmissionType.UrlFormParams) ?
+            new URLSearchParams([...additionalData.get(FieldsSubmissionType.UrlFormParams) as Map<string, string>])
+            : additionalData.has(FieldsSubmissionType.JsonFormParams) ?
+                JSON.stringify(Object.fromEntries(additionalData.get(FieldsSubmissionType.JsonFormParams) as Map<string, string>))
+                : undefined
     }
-    additionalHeaders.entries().forEach(([key, value]) => {
+
+
+    // TODO: refactor to a list that gets expanded with spread operator in original definition
+    additionalData.get(FieldsSubmissionType.HeaderParams)?.entries().forEach(([key, value]) => {
         // @ts-ignore
         requestConfs.headers[key] = value;
     });
 
-    if (fieldsSubmissionType === FieldsSubmissionType.QueryParams) {
+    if (additionalData.has(FieldsSubmissionType.QueryParams)) {
+        const queryParams = additionalData.get(FieldsSubmissionType.QueryParams) as Map<string, string>;
         url += "?";
-        fields.forEach(key => url += key + '=' + formData[key] + '&');
-        additionalRequestParams.forEach(key => url += key + '=' + formData[key] + '&');
-        url = url.at(url.length) === '&' ? url.substring(0, url.length - 1) : url;
+        queryParams.forEach((value, key) => url += key + '=' + value + '&');
+
+        url = url.endsWith('&') ? url.substring(0, url.length - 1) : url;
     }
 
     return await fetch(url, requestConfs);

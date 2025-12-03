@@ -1,6 +1,6 @@
 import {Table} from "reactstrap";
 import React, {MouseEventHandler, useContext, useState} from "react";
-import {ContactState, ContactViewModel, genericSubmitForm} from './utils';
+import {ContactState, ContactViewModel, FieldsSubmissionType, genericSubmitForm} from './utils';
 import {ContactsDispatchContext} from "@/app/ContactsBlockContext";
 
 export default function ContactsList({contacts, handleClick, accessToken}:
@@ -89,15 +89,22 @@ export function RecordForm({contact, accessToken}: { contact: ContactState, acce
     // @ts-ignore
     const dispatch: React.Dispatch<any> = useContext(ContactsDispatchContext);
 
+    // let additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>()
+    let additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
+        [FieldsSubmissionType.HeaderParams, new Map([
+            ['Content-Type', 'application/json'],
+            ['Authorization', `Bearer ${accessToken}`]
+        ])]
+    ])
+
     const [onSubmit, data] = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
         fieldsArray,
         responseData,
         setData,
         dispatch,
-        new Map([
-            ['Content-Type', 'application/json'],
-            ['Authorization', `Bearer ${accessToken}`]
-        ])
+        FieldsSubmissionType.JsonFormParams,
+        additionalData,
+        'POST'
     );
 
     return <form id={`form${contact.uuid}`} name={`form${contact.uuid}`} onSubmit={onSubmit}></form>
