@@ -111,7 +111,6 @@ export async function fetchDataWrapper(
     try {
         additionalData.set(fieldsSubmissionType, formData)
 
-        //TODO: try using spread syntax | constructing/deconstructing to pass in function with varargs and execute it
         const response = genericFetch(url, additionalData, method);
 
         let data;
