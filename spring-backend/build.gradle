@@ -26,7 +26,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
     //core
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-classic', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webservices', version: springBootVer
