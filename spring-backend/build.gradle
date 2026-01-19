@@ -1,8 +1,7 @@
-
 plugins {
     id 'java'
     id 'jacoco'
-    id 'org.springframework.boot' version '3.4.0'
+    id 'org.springframework.boot' version '4.0.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 apply plugin: 'java'
@@ -14,29 +13,37 @@ repositories {
     mavenCentral()
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21) //TODO: increment to 25
+    }
+}
+
 dependencies {
-    def springBootVer='3.5.7'
-    def springSecurityVer='6.5.6'
+    def springBootVer = '4.0.0'
     def jakartaVer='3.0.0'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: springBootVer
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springBootVer
-    implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVer) {
-        //TODO: filter out unnecessary dependencies
-//        exclude module: 'spring-webmvc'
-    }
-    implementation group: 'org.springframework.security', name: 'spring-security-web', version: springSecurityVer
-    implementation group: 'org.springframework.security', name: 'spring-security-config', version: springSecurityVer
+    //core
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-classic', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webservices', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: springBootVer
+    //security
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-oauth2-resource-server', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-oauth2-client', version: springBootVer
+    //aux
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-micrometer-metrics', version: springBootVer
+
     implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: jakartaVer
     implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: jakartaVer
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-resource-server', version: springBootVer
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: springBootVer
+    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0'
 
     //swagger generated based on code
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
@@ -46,7 +53,9 @@ dependencies {
     //TODO: run db in separate container with a persistent volume
     implementation 'com.h2database:h2:2.1.214'
 
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVer
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-test', version: springBootVer
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test', version: springBootVer
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-restclient-test', version: springBootVer
 
     testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }
