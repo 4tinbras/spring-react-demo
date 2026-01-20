@@ -19,7 +19,7 @@ export default function Home() {
 
     const TABS = {
         'HOME': <ContactBlock accessToken={accessToken}/>,
-        'LOGIN': <LoginBlock setAccessToken={setAccessToken}/>
+        'LOGIN': <LoginBlock accessToken={accessToken} setAccessToken={setAccessToken}/>
     }
 
     {/*https://react.dev/learn/synchronizing-with-effects
@@ -50,6 +50,7 @@ export default function Home() {
                           {/*<Route path="home" element={<ContactBlock accessToken={accessToken}/>} />*/}
                           <Route path='login'
                                  element={<LoginBlock accessToken={accessToken} setAccessToken={setAccessToken}/>}/>
+                          {/*    TODO: add placeholder route as return target from login; then internally redirect to login page if needed*/}
                       </Routes>
                   }
               </div>
