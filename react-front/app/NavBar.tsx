@@ -1,7 +1,8 @@
 'use client'
 
 import React, {useState} from 'react';
-import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
+import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem} from 'reactstrap';
+import {NavLink as RouterNavLink} from "react-router";
 
 export default function NavBar({activeTab, onNavbarClick}: { activeTab: String, onNavbarClick: any }) {
 
@@ -18,13 +19,15 @@ export default function NavBar({activeTab, onNavbarClick}: { activeTab: String, 
             <Collapse isOpen={isOpen} navbar>
                 <Nav className="justify-content-start" style={{width: "100%"}} navbar pills>
                     <NavItem>
-                        {activeTab === 'HOME' && (<NavLink active onClick={() => onNavbarClick('HOME')}>Home</NavLink>)
-                            || (<NavLink onClick={() => onNavbarClick('HOME')}>Home</NavLink>)}
+                        {activeTab === 'HOME' && (
+                                <RouterNavLink to="/" onClick={() => onNavbarClick('HOME')}>Home</RouterNavLink>)
+                            || (<RouterNavLink to="/" onClick={() => onNavbarClick('HOME')}>Home</RouterNavLink>)}
                     </NavItem>
                     <NavItem>
                         {activeTab === 'LOGIN' && (
-                                <NavLink active onClick={() => onNavbarClick('LOGIN')}>Login</NavLink>)
-                            || (<NavLink onClick={() => onNavbarClick('LOGIN')}>Login</NavLink>)}
+                                <RouterNavLink to="/login" onClick={() => onNavbarClick('LOGIN')}>Login</RouterNavLink>)
+                            || (<RouterNavLink to="/login"
+                                               onClick={() => onNavbarClick('LOGIN')}>Login</RouterNavLink>)}
                     </NavItem>
                 </Nav>
             </Collapse>
