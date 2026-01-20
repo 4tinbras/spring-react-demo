@@ -89,7 +89,6 @@ export function RecordForm({contact, accessToken}: { contact: ContactState, acce
     // @ts-ignore
     const dispatch: React.Dispatch<any> = useContext(ContactsDispatchContext);
 
-    // let additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>()
     let additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
         [FieldsSubmissionType.HeaderParams, new Map([
             ['Content-Type', 'application/json'],
