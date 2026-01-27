@@ -6,7 +6,8 @@ export const enum Discriminator {
     ContactViewModel = 'ContactViewModel',
     ReducerAction = 'ReducerAction',
     ErrorResp = 'ErrorResp',
-    FormState = 'FormState'
+    FormState = 'FormState',
+    TokenResponseDto = 'TokenResponseDto'
 }
 
 export interface ContactState {
@@ -26,6 +27,18 @@ export interface ContactDto {
     lastName: string;
     phoneNo: string;
     email: string;
+}
+
+export interface TokenResponseDto {
+    readonly discriminator?: Discriminator.TokenResponseDto;
+    access_token: string;
+    expires_in: number;
+    refresh_expires_in: number;
+    refresh_token: string;
+    token_type: string;
+    'not-before-policy': number;
+    session_state: string;
+    scope: string;
 }
 
 export interface ErrorResp {
@@ -145,6 +158,7 @@ export async function genericFetch(
         headers: {
             Accept: "*",
             "Access-Control-Allow-Origin": "*",
+            credentials: 'include',
         },
         body: additionalData.has(FieldsSubmissionType.UrlFormParams) ?
             new URLSearchParams([...additionalData.get(FieldsSubmissionType.UrlFormParams) as Map<string, string>])
