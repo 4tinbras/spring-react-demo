@@ -2,9 +2,9 @@
 
 import React, {useState} from 'react';
 import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem} from 'reactstrap';
-import {NavLink as RouterNavLink} from "react-router";
+import Link from "next/link";
 
-export default function NavBar({activeTab, onNavbarClick}: { activeTab: String, onNavbarClick: any }) {
+export default function NavBar() {
 
     const [isOpen, setIsOpen] = useState(true);
 
@@ -19,15 +19,10 @@ export default function NavBar({activeTab, onNavbarClick}: { activeTab: String, 
             <Collapse isOpen={isOpen} navbar>
                 <Nav className="justify-content-start" style={{width: "100%"}} navbar pills>
                     <NavItem>
-                        {activeTab === 'HOME' && (
-                                <RouterNavLink to="/" onClick={() => onNavbarClick('HOME')}>Home</RouterNavLink>)
-                            || (<RouterNavLink to="/" onClick={() => onNavbarClick('HOME')}>Home</RouterNavLink>)}
+                        <Link href="/contacts">Home</Link>
                     </NavItem>
                     <NavItem>
-                        {activeTab === 'LOGIN' && (
-                                <RouterNavLink to="/login" onClick={() => onNavbarClick('LOGIN')}>Login</RouterNavLink>)
-                            || (<RouterNavLink to="/login"
-                                               onClick={() => onNavbarClick('LOGIN')}>Login</RouterNavLink>)}
+                        <Link href="/login">Login</Link>
                     </NavItem>
                 </Nav>
             </Collapse>
