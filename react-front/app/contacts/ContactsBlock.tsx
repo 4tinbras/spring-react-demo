@@ -62,7 +62,6 @@ export default function ContactsBlock({}: {}) {
 
     const {authZToken, setAuthZToken} = useAuthZ();
     const accessToken = authZToken;
-    console.log("accessTokenValue", accessToken);
 
     const replaceContact = (contactvm: ContactViewModel, replacement: ContactViewModel, state: any): any => {
 
