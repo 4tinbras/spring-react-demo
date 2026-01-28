@@ -37,7 +37,7 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
              */}
             <AuthZProvider>
                 <NavBar></NavBar>
-                <div className={'container justify-content-center d-flex my-5'}>
+                <div className={'container justify-content-center my-5'}>
                     <Suspense fallback={<div>Loading...</div>}>
                         {children}
                     </Suspense>
