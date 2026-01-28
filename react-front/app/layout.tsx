@@ -32,6 +32,9 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
             crossOrigin="anonymous"
         />
         <div>
+            {/*https://react.dev/learn/synchronizing-with-effects
+                TODO: add interval checkup on access token expiry and show pop-up or try to refresh
+             */}
             <AuthZProvider>
                 <NavBar></NavBar>
                 <div className={'container justify-content-center d-flex my-5'}>

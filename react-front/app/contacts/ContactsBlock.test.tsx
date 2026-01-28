@@ -4,7 +4,7 @@ import {fireEvent, render, screen} from '@testing-library/react'
 import {http, HttpResponse} from 'msw'
 import {setupServer} from "msw/node";
 import {ContactDto, ErrorResp} from "@/app/utils";
-import {AuthZContext, AuthZContextProps, AuthZProvider} from "@/app/StateManagement";
+import {AuthZContext, AuthZContextProps} from "@/app/StateManagement";
 
 
 const server = setupServer(
@@ -41,7 +41,16 @@ const customRender = (ui: any, {providerProps, ...renderOptions}: {
 
 const validTokenProps: AuthZContextProps = {
     authZToken: "accessToken",
-    setAuthZToken: jest.fn()
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
+}
+
+const invalidTokenProps: AuthZContextProps = {
+    authZToken: "",
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
 }
 
 describe('ContactsBlock', () => {
@@ -59,9 +68,8 @@ describe('ContactsBlock', () => {
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
         fireEvent.click(contactsButton);
 
-        //TODO: doesn't seem to be captured; visually it does flicker in and out; perhaps gets reduced in test case
+        await screen.findByText('Loading...')
 
-        // await screen.findByRole('paragraph', {name: 'Loading...'})
         await screen.findByRole('table')
 
         expect(screen.queryByRole('paragraph', {name: 'Loading...'})).not.toBeInTheDocument();
@@ -88,17 +96,15 @@ describe('ContactsBlock', () => {
 
     it('renders with login request if no access token', async () => {
 
-        const component = render(
-            <AuthZProvider>
-                <ContactsBlock></ContactsBlock>
-            </AuthZProvider>
-        );
+        customRender(<AuthZContext.Consumer>
+            {value => <ContactsBlock/>}
+        </AuthZContext.Consumer>, {providerProps: invalidTokenProps, renderOptions: []})
 
         expect(screen.getByRole('paragraph')).toHaveTextContent('Please authenticate yourself in login tab.')
     })
 
-    //TODO: context broke event handling, update separately
-    it.skip('error handling resets state and erases table', async () => {
+    //TODO: separately run - it passes; run as suite enters jest mock only once during execution of first test
+    it('error handling resets state and erases table', async () => {
 
         customRender(<AuthZContext.Consumer>
             {value => <ContactsBlock/>}
@@ -108,6 +114,8 @@ describe('ContactsBlock', () => {
 
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
         fireEvent.click(contactsButton);
+
+        await screen.findByText('Loading...')
 
         await screen.findByRole('table')
 

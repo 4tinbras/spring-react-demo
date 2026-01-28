@@ -1,5 +1,5 @@
 import {FieldsSubmissionType, FormStatus, genericFetch, ReducerAction, TokenResponseDto} from "@/app/utils";
-import React, {useReducer, useState} from "react";
+import React, {useReducer} from "react";
 import {useSearchParams} from 'next/navigation'
 import {useAuthZ} from "@/app/StateManagement";
 
@@ -40,8 +40,6 @@ export default function LoginBlock({}: {}) {
     }
 
     const [state, dispatch] = useReducer(reducer, initialState)
-
-    const [responseData, setData] = useState<[]>([]);
 
     const postTokenAdditionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
         [FieldsSubmissionType.UrlFormParams, new Map([

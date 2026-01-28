@@ -45,34 +45,28 @@ const customRender = (ui: any, {providerProps, ...renderOptions}: {
 
 const initialStateProps: AuthZContextProps = {
     authZToken: "",
-    setAuthZToken: jest.fn()
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
 }
 
 
 const validTokenProps: AuthZContextProps = {
     authZToken: "accessToken",
-    setAuthZToken: jest.fn()
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
 }
 
 jest.mock('next/navigation');
 
-// add a return value to useRouter mock
-// const routerPushMock: jest.Mock = jest.fn();
-// (useRouter as jest.Mock).mockReturnValue({
-//     push: routerPushMock,
-// });
-
-// add return value to usePathname mock
-// (usePathname as jest.Mock).mockReturnValue('example.com');
 
 describe('MyComponent', () => {
     it('renders button with initial instruction', async () => {
 
         const getMock: jest.Mock = jest.fn(paramName => undefined);
-        // const toStringMock: jest.Mock = jest.fn();
         (useSearchParams as jest.Mock).mockReturnValue({
             get: getMock,
-            // toString: toStringMock,
         });
 
 
@@ -94,10 +88,8 @@ describe('MyComponent', () => {
     it('on successful query renders confirmation and button to continue', async () => {
 
         const getMock: jest.Mock = jest.fn(paramName => "authZCode");
-        // const toStringMock: jest.Mock = jest.fn();
         (useSearchParams as jest.Mock).mockReturnValue({
             get: getMock,
-            // toString: toStringMock,
         });
 
         customRender(<AuthZContext.Consumer>
@@ -105,19 +97,16 @@ describe('MyComponent', () => {
         </AuthZContext.Consumer>, {providerProps: initialStateProps, renderOptions: []})
 
         // await screen.findByRole('form')
-        // await screen.findByRole('link', {name: 'example'})
 
-        // await screen.findByText('Please submit form to finalise login')
+        await screen.findByText('Please submit form to finalise login')
         await screen.findByRole('button')
     });
 
     it('on successful return query renders confirmation of overall success', async () => {
 
         const getMock: jest.Mock = jest.fn(paramName => undefined);
-        // const toStringMock: jest.Mock = jest.fn();
         (useSearchParams as jest.Mock).mockReturnValue({
             get: getMock,
-            // toString: toStringMock,
         });
 
 
