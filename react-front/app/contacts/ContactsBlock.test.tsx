@@ -1,9 +1,10 @@
 import React from "react";
-import ContactsBlock from "@/app/ContactsBlock";
+import ContactsBlock from "@/app/contacts/ContactsBlock";
 import {fireEvent, render, screen} from '@testing-library/react'
 import {http, HttpResponse} from 'msw'
 import {setupServer} from "msw/node";
 import {ContactDto, ErrorResp} from "@/app/utils";
+import {AuthZContext, AuthZContextProps, AuthZProvider} from "@/app/StateManagement";
 
 
 const server = setupServer(
@@ -28,12 +29,29 @@ beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
-describe('ContactsBlock', () => {
-    it('renders with link to example.com', async () => {
+const customRender = (ui: any, {providerProps, ...renderOptions}: {
+    [x: string]: any,
+    providerProps: AuthZContextProps
+}) => {
+    return render(
+        <AuthZContext.Provider {...providerProps} value={providerProps}>{ui}</AuthZContext.Provider>,
+        renderOptions,
+    )
+}
 
-        const component = render(
-            <ContactsBlock accessToken={"accessToken"}></ContactsBlock>
-        );
+const validTokenProps: AuthZContextProps = {
+    authZToken: "accessToken",
+    setAuthZToken: jest.fn()
+}
+
+describe('ContactsBlock', () => {
+
+
+    it('renders with no contacts found if access token valid but no data retrieved', async () => {
+
+        customRender(<AuthZContext.Consumer>
+            {value => <ContactsBlock/>}
+        </AuthZContext.Consumer>, {providerProps: validTokenProps, renderOptions: []})
 
         expect(screen.getByRole('paragraph')).toHaveTextContent('No contacts found so far.')
 
@@ -71,16 +89,19 @@ describe('ContactsBlock', () => {
     it('renders with login request if no access token', async () => {
 
         const component = render(
-            <ContactsBlock accessToken={""}></ContactsBlock>
+            <AuthZProvider>
+                <ContactsBlock></ContactsBlock>
+            </AuthZProvider>
         );
 
         expect(screen.getByRole('paragraph')).toHaveTextContent('Please authenticate yourself in login tab.')
     })
 
     it('error handling resets state and erases table', async () => {
-        const component = render(
-            <ContactsBlock accessToken={"accessToken"}></ContactsBlock>
-        );
+
+        customRender(<AuthZContext.Consumer>
+            {value => <ContactsBlock/>}
+        </AuthZContext.Consumer>, {providerProps: validTokenProps, renderOptions: []})
 
         expect(screen.getByRole('paragraph')).toHaveTextContent('No contacts found so far.')
 

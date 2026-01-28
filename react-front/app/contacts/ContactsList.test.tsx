@@ -1,6 +1,6 @@
 import React from "react";
 import {render, screen} from '@testing-library/react'
-import ContactsList, {EditContactButton} from "@/app/ContactsList";
+import ContactsList, {EditContactButton} from "@/app/contacts/ContactsList";
 import {FormStatus} from "@/app/utils";
 
 

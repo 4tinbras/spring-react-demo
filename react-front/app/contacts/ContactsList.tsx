@@ -1,7 +1,7 @@
 import {Table} from "reactstrap";
 import React, {MouseEventHandler, useContext, useState} from "react";
-import {ContactState, ContactViewModel, FieldsSubmissionType, genericSubmitForm} from './utils';
-import {ContactsDispatchContext} from "@/app/ContactsBlockContext";
+import {ContactState, ContactViewModel, FieldsSubmissionType, genericSubmitForm} from '../utils';
+import {ContactsDispatchContext} from "@/app/StateManagement";
 
 export default function ContactsList({contacts, handleClick, accessToken}:
                                      { contacts: ContactViewModel[], handleClick: any, accessToken: string }) {
