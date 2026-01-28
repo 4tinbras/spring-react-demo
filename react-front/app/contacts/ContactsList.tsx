@@ -1,7 +1,7 @@
 import {Table} from "reactstrap";
 import React, {MouseEventHandler, useContext, useState} from "react";
-import {ContactState, ContactViewModel, genericSubmitForm} from './utils';
-import {ContactsDispatchContext} from "@/app/ContactsBlockContext";
+import {ContactState, ContactViewModel, FieldsSubmissionType, genericSubmitForm} from '../utils';
+import {ContactsDispatchContext} from "@/app/StateManagement";
 
 export default function ContactsList({contacts, handleClick, accessToken}:
                                      { contacts: ContactViewModel[], handleClick: any, accessToken: string }) {
@@ -9,15 +9,6 @@ export default function ContactsList({contacts, handleClick, accessToken}:
 // @ts-ignore
     const listItems = contacts.map((contactvm: ContactViewModel) => {
 
-      const props = {
-          readOnly: undefined
-      };
-        if (!contactvm.active) {
-            // @ts-ignore
-            props.readOnly = contactvm.active
-      }
-
-      // TODO: via props readonly isn't picked up; via property it is always present
         return <tr key={`${contactvm.contact.uuid}`}>
             <ContactsRecord key={`${contactvm.contact.uuid}records`} contactvm={contactvm}
                             handleClick={handleClick}></ContactsRecord>
@@ -59,13 +50,26 @@ export default function ContactsList({contacts, handleClick, accessToken}:
 export function ContactsRecord({contactvm, handleClick}: { contactvm: ContactViewModel, handleClick: any }) {
     const contact: ContactState = contactvm.contact;
 
+    const inputProps = {
+        readOnly: undefined,
+    };
+    if (!contactvm.active) {
+        // @ts-ignore
+        inputProps.readOnly = true
+    }
+
+    //TODO: if readonly - change styling
     return <>
-        <td><input type="text" name="firstName" form={`form${contact.uuid}`} defaultValue={contact.firstName}></input>
+        <td><input type="text" name="firstName" form={`form${contact.uuid}`}
+                   defaultValue={contact.firstName} {...inputProps}></input>
         </td>
-        <td><input type="text" name="lastName" form={`form${contact.uuid}`} defaultValue={contact.lastName}></input>
+        <td><input type="text" name="lastName" form={`form${contact.uuid}`}
+                   defaultValue={contact.lastName} {...inputProps}></input>
         </td>
-        <td><input type="text" name="phoneNo" form={`form${contact.uuid}`} defaultValue={contact.phoneNo}></input></td>
-        <td><input type="text" name="email" form={`form${contact.uuid}`} defaultValue={contact.email}></input></td>
+        <td><input type="text" name="phoneNo" form={`form${contact.uuid}`}
+                   defaultValue={contact.phoneNo} {...inputProps}></input></td>
+        <td><input type="text" name="email" form={`form${contact.uuid}`}
+                   defaultValue={contact.email} {...inputProps}></input></td>
         <td><EditContactButton contactvm={contactvm}
                                onClick={(event) => handleClick(event, contactvm)}></EditContactButton></td>
         <td hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
@@ -85,12 +89,21 @@ export function RecordForm({contact, accessToken}: { contact: ContactState, acce
     // @ts-ignore
     const dispatch: React.Dispatch<any> = useContext(ContactsDispatchContext);
 
-    const [onSubmit, refStatus, data] = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
+    let additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
+        [FieldsSubmissionType.HeaderParams, new Map([
+            ['Content-Type', 'application/json'],
+            ['Authorization', `Bearer ${accessToken}`]
+        ])]
+    ])
+
+    const [onSubmit, data] = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
         fieldsArray,
         responseData,
         setData,
-        accessToken,
-        dispatch
+        dispatch,
+        FieldsSubmissionType.JsonFormParams,
+        additionalData,
+        'POST'
     );
 
     return <form id={`form${contact.uuid}`} name={`form${contact.uuid}`} onSubmit={onSubmit}></form>

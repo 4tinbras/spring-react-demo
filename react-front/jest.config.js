@@ -1,8 +1,3 @@
-// //setup serde for fetch
-// import { TextDecoder, TextEncoder } from 'util';
-// global.TextEncoder = TextEncoder;
-// global.TextDecoder = TextDecoder;
-
 const nextJest = require("next/jest");
 
 const createJestConfig = nextJest({

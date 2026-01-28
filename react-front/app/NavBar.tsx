@@ -1,9 +1,10 @@
 'use client'
 
 import React, {useState} from 'react';
-import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
+import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem} from 'reactstrap';
+import Link from "next/link";
 
-export default function NavBar({activeTab, onNavbarClick}: { activeTab: String, onNavbarClick: any }) {
+export default function NavBar() {
 
     const [isOpen, setIsOpen] = useState(true);
 
@@ -18,13 +19,10 @@ export default function NavBar({activeTab, onNavbarClick}: { activeTab: String, 
             <Collapse isOpen={isOpen} navbar>
                 <Nav className="justify-content-start" style={{width: "100%"}} navbar pills>
                     <NavItem>
-                        {activeTab === 'HOME' && (<NavLink active onClick={() => onNavbarClick('HOME')}>Home</NavLink>)
-                            || (<NavLink onClick={() => onNavbarClick('HOME')}>Home</NavLink>)}
+                        <Link href="/contacts">Home</Link>
                     </NavItem>
                     <NavItem>
-                        {activeTab === 'LOGIN' && (
-                                <NavLink active onClick={() => onNavbarClick('LOGIN')}>Login</NavLink>)
-                            || (<NavLink onClick={() => onNavbarClick('LOGIN')}>Login</NavLink>)}
+                        <Link href="/login">Login</Link>
                     </NavItem>
                 </Nav>
             </Collapse>

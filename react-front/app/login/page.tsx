@@ -1,9 +1,10 @@
 'use client'
 
 import React from "react";
+import LoginBlock from "@/app/login/LoginBlock";
 // import 'bootstrap/dist/css/bootstrap.min.css'; //not necessary if added CDN link
 
-export default function Home() {
+export default function LoginPage() {
 
     {/*https://react.dev/learn/synchronizing-with-effects
     TODO: add interval checkup on access token expiry and show pop-up or try to refresh
@@ -11,12 +12,6 @@ export default function Home() {
     }
 
     return (
-      <>
-          <h1>Hello world!</h1>
-          <br/>
-          <text>Please use tabs to navigate demo.</text>
-      </>
-  )
-
-
+        <LoginBlock></LoginBlock>
+    )
 }

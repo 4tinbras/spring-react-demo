@@ -1,11 +1,11 @@
 'use client'
 
 import {useReducer} from "react";
-import ContactsList from "@/app/ContactsList";
+import ContactsList from "@/app/contacts/ContactsList";
 import {ContactBlockActions, ContactState, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
-import {ContactsDispatchContext} from "@/app/ContactsBlockContext";
+import {ContactsDispatchContext, useAuthZ} from "@/app/StateManagement";
 
-export default function ContactBlock({accessToken}: { accessToken: string }) {
+export default function ContactsBlock({}: {}) {
     const initialState = {contacts: [], loading: false}
 
     const reducer = (state: any, action: ReducerAction) => {
@@ -59,6 +59,10 @@ export default function ContactBlock({accessToken}: { accessToken: string }) {
         const newArray = replaceContact(contactvm, replacement, state);
         dispatch({type: ContactBlockActions.SetContacts, payload: {contacts: newArray}})
     }
+
+    const {authZToken, setAuthZToken} = useAuthZ();
+    const accessToken = authZToken;
+    console.log("accessTokenValue", accessToken);
 
     const replaceContact = (contactvm: ContactViewModel, replacement: ContactViewModel, state: any): any => {
 

@@ -1,5 +1,6 @@
 'use client'
 
+import ContactsBlock from "@/app/contacts/ContactsBlock";
 import React from "react";
 // import 'bootstrap/dist/css/bootstrap.min.css'; //not necessary if added CDN link
 
@@ -11,12 +12,10 @@ export default function Home() {
     }
 
     return (
-      <>
-          <h1>Hello world!</h1>
-          <br/>
-          <text>Please use tabs to navigate demo.</text>
-      </>
-  )
+        <>
+            <ContactsBlock></ContactsBlock>
+        </>
+    )
 
 
 }
