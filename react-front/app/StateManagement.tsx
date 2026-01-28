@@ -7,6 +7,8 @@ export const ContactsDispatchContext = createContext(null);
 export type AuthZContextProps = {
     authZToken: string;
     setAuthZToken: Dispatch<SetStateAction<string>>;
+    activeTab?: string;
+    setActiveTab?: Dispatch<SetStateAction<string>>;
 }
 
 // Create context
@@ -15,6 +17,7 @@ export const AuthZContext = createContext<AuthZContextProps | undefined>(undefin
 // Create a provider component
 export const AuthZProvider = ({children}: { children: any }) => {
     const [authZToken, setAuthZToken] = useState<string>('');
+    const [activeTab, setActiveTab] = useState<string>('HOME');
 
     return (
         // @ts-ignore

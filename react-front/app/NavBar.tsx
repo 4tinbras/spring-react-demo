@@ -3,10 +3,13 @@
 import React, {useState} from 'react';
 import {Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem} from 'reactstrap';
 import Link from "next/link";
+import {useAuthZ} from "@/app/StateManagement";
 
 export default function NavBar() {
 
     const [isOpen, setIsOpen] = useState(true);
+
+    const {authZToken, setAuthZToken, activeTab, setActiveTab} = useAuthZ();
 
     return (
         <Navbar color="dark" dark expand="md">
@@ -19,10 +22,14 @@ export default function NavBar() {
             <Collapse isOpen={isOpen} navbar>
                 <Nav className="justify-content-start" style={{width: "100%"}} navbar pills>
                     <NavItem>
-                        <Link href="/contacts">Home</Link>
+                        {activeTab === 'HOME' && (
+                                <Link href="/contacts" className={'active'}>Home</Link>)
+                            || (<Link href="/contacts">Home</Link>)}
                     </NavItem>
                     <NavItem>
-                        <Link href="/login">Login</Link>
+                        {activeTab === 'LOGIN' && (
+                                <Link href="/login" className={'active'}>Login</Link>)
+                            || (<Link href="/login">Login</Link>)}
                     </NavItem>
                 </Nav>
             </Collapse>
