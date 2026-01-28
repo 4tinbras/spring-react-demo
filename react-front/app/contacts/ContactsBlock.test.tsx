@@ -41,12 +41,16 @@ const customRender = (ui: any, {providerProps, ...renderOptions}: {
 
 const validTokenProps: AuthZContextProps = {
     authZToken: "accessToken",
-    setAuthZToken: jest.fn()
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
 }
 
 const invalidTokenProps: AuthZContextProps = {
     authZToken: "",
-    setAuthZToken: jest.fn()
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
 }
 
 describe('ContactsBlock', () => {

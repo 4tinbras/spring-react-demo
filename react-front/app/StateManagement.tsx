@@ -7,8 +7,8 @@ export const ContactsDispatchContext = createContext(null);
 export type AuthZContextProps = {
     authZToken: string;
     setAuthZToken: Dispatch<SetStateAction<string>>;
-    activeTab?: string;
-    setActiveTab?: Dispatch<SetStateAction<string>>;
+    activeTab: string;
+    setActiveTab: Dispatch<SetStateAction<string>>;
 }
 
 // Create context

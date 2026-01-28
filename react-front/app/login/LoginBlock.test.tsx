@@ -45,13 +45,17 @@ const customRender = (ui: any, {providerProps, ...renderOptions}: {
 
 const initialStateProps: AuthZContextProps = {
     authZToken: "",
-    setAuthZToken: jest.fn()
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
 }
 
 
 const validTokenProps: AuthZContextProps = {
     authZToken: "accessToken",
-    setAuthZToken: jest.fn()
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
 }
 
 jest.mock('next/navigation');
