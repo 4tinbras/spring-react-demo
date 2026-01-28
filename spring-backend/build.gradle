@@ -55,6 +55,7 @@ dependencies {
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-restclient-test', version: springBootVer
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator-test', version: springBootVer
 
     testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }
