@@ -153,12 +153,16 @@ export async function genericFetch(
     method: string = 'GET',
 ): Promise<Response> {
 
-    let requestConfs: RequestInit = {
+
+    const optionalHeaderParams = additionalData.get(FieldsSubmissionType.HeaderParams);
+
+    const requestConfs: RequestInit = {
         method: method,
         headers: {
             Accept: "*",
             "Access-Control-Allow-Origin": "*",
             credentials: 'include',
+            ...optionalHeaderParams !== undefined && Object.fromEntries(optionalHeaderParams)
         },
         body: additionalData.has(FieldsSubmissionType.UrlFormParams) ?
             new URLSearchParams([...additionalData.get(FieldsSubmissionType.UrlFormParams) as Map<string, string>])
@@ -166,13 +170,6 @@ export async function genericFetch(
                 JSON.stringify(Object.fromEntries(additionalData.get(FieldsSubmissionType.JsonFormParams) as Map<string, string>))
                 : undefined
     }
-
-
-    // TODO: refactor to a list that gets expanded with spread operator in original definition
-    additionalData.get(FieldsSubmissionType.HeaderParams)?.entries().forEach(([key, value]) => {
-        // @ts-ignore
-        requestConfs.headers[key] = value;
-    });
 
     if (additionalData.has(FieldsSubmissionType.QueryParams)) {
         const queryParams = additionalData.get(FieldsSubmissionType.QueryParams) as Map<string, string>;
