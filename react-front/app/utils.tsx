@@ -63,7 +63,8 @@ export const enum FormStatus {
     Editing = "EDITING",
     Pending = "PENDING",
     Ok = "OK",
-    Failed = "FAILED"
+    Failed = "FAILED",
+    Initial = "INITIAL",
 }
 
 export const enum ContactBlockActions {

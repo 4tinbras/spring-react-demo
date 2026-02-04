@@ -6,7 +6,7 @@ import {ContactBlockActions, ContactState, ContactViewModel, FormStatus, Reducer
 import {ContactsDispatchContext, useAuthZ} from "@/app/StateManagement";
 
 export default function ContactsBlock({}: {}) {
-    const initialState = {contacts: [], loading: false}
+    const initialState = {contacts: [], status: FormStatus.Initial}
 
     const reducer = (state: any, action: ReducerAction) => {
         // @ts-ignore
@@ -19,7 +19,7 @@ export default function ContactsBlock({}: {}) {
                     return {...state, contacts: action.payload.contacts};
                 }
                 case ContactBlockActions.SetLoading: {
-                    return {...state, loading: action.payload.loading};
+                    return {...state, status: action.payload.status};
                 }
                 case ContactBlockActions.SetAll: {
                     return {...state, ...action.payload}
@@ -80,7 +80,7 @@ export default function ContactsBlock({}: {}) {
 
 
     function handleGetContacts() {
-        dispatch({type: ContactBlockActions.SetLoading, payload: {loading: true}});
+        dispatch({type: ContactBlockActions.SetLoading, payload: {status: FormStatus.Pending}});
 
         //TODO: add handling for exceptions
         fetch('http://localhost:8080/contacts', {
@@ -103,14 +103,15 @@ export default function ContactsBlock({}: {}) {
                         cvmArray.push(contactvm);
                     })
                 } else {
+
                 }
                 dispatch({
                     type: ContactBlockActions.SetAll,
-                    payload: {contacts: Array.isArray(body) ? cvmArray : null, loading: false}
+                    payload: {contacts: Array.isArray(body) ? cvmArray : null, status: FormStatus.Ok}
                 });
             })
         .catch(error => {
-            dispatch({type: ContactBlockActions.SetAll, payload: {contacts: null, loading: false}});
+            dispatch({type: ContactBlockActions.SetAll, payload: {contacts: null, status: FormStatus.Failed}});
         })
 
     }
@@ -120,7 +121,7 @@ export default function ContactsBlock({}: {}) {
             <button onClick={() => handleGetContacts()}>Get Contacts</button>
 
             {accessToken !== "" && accessToken !== undefined && (
-                state.loading && (<p>Loading...</p>)
+                state.status === FormStatus.Pending && (<p>Loading...</p>)
                 || (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
                     // @ts-ignore
                     <ContactsDispatchContext value={dispatch}>
