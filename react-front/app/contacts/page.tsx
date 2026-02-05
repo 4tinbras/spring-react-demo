@@ -10,7 +10,7 @@ export default function Home() {
 
     return (
         <>
-            <ContactsProvider initialState={{contacts: [], status: FormStatus.Initial}} reducerFunc={contactsReducer}>
+            <ContactsProvider initialState={{contacts: [], status: FormStatus.Initial}} reducer={contactsReducer}>
                 <ContactsBlock></ContactsBlock>
             </ContactsProvider>
 
