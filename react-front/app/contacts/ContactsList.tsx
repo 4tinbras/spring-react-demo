@@ -67,7 +67,7 @@ export default function ContactsList({contacts, accessToken}:
     }
 
 // @ts-ignore
-    const listItems = contacts.map((contactvm: ContactViewModel) => {
+    const listItems = contacts?.map((contactvm: ContactViewModel) => {
         //if has uuid (retrieved from backend) use it, otherwise generate subsequent number (to avoid clashes on multiple additions)
         const key = getUuidWithFallback(contactvm);
 
@@ -80,7 +80,7 @@ export default function ContactsList({contacts, accessToken}:
         }
     );
 
-    const formsList = contacts.map((contactvm: ContactViewModel) => {
+    const formsList = contacts?.map((contactvm: ContactViewModel) => {
         const key = getUuidWithFallback(contactvm);
 
         return <RecordForm key={`form${key}`} uuid={key} contact={contactvm.contact}
@@ -88,25 +88,28 @@ export default function ContactsList({contacts, accessToken}:
     });
 
     return <div>
-        <div>
-            {formsList}
-        </div>
-        <Table className={"table-striped-columns"}>
-            <caption>
-                Known contacts
-            </caption>
-            <thead>
-            <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Phone no.</th>
-                <th scope="col">Email address</th>
-            </tr>
-            </thead>
-            <tbody>
-            {listItems}
-            </tbody>
-        </Table>
+        {Array.isArray(contacts) && contacts.length >= 0 && (
+            <div>
+                <div>
+                    {formsList}
+                </div>
+                <Table className={"table-striped-columns"}>
+                    <caption>
+                        Known contacts
+                    </caption>
+                    <thead>
+                    <tr>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Phone no.</th>
+                        <th scope="col">Email address</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {listItems}
+                    </tbody>
+                </Table>
+            </div>)}
         <AddNewRecordButton contacts={contacts}></AddNewRecordButton>
     </div>
 }

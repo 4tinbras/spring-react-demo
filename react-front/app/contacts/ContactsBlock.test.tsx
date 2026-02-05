@@ -12,6 +12,7 @@ import {
     contactsReducer,
     ContactsState
 } from "@/app/StateManagement";
+import {assertStandardContactListValues} from "@/app/contacts/ContactsList.test";
 
 
 const server = setupServer(
@@ -79,7 +80,9 @@ describe('ContactsBlock', () => {
                 </AuthZContext.Consumer>}</ContactsDispatchContext.Consumer>,
             {contactsProviderProps: initialContactsState, authZProviderProps: validTokenProps, renderOptions: []})
 
-        expect(screen.getByRole('paragraph')).toHaveTextContent('No contacts found so far.')
+
+        expect(screen.getByText('No contacts found so far.'));
+        expect(screen.getByText('Add new record'));
 
         // ACT
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
@@ -94,15 +97,7 @@ describe('ContactsBlock', () => {
         expect(screen.queryByRole('paragraph', {name: 'Loading...'})).not.toBeInTheDocument();
         expect(screen.queryByRole('paragraph', {name: 'No contacts found so far.'})).not.toBeInTheDocument();
 
-        expect(screen.getByText('First Name'))
-        expect(screen.getByText('Last Name'))
-        expect(screen.getByText('Phone no.'))
-        expect(screen.getByText('Email address'))
-
-        expect(screen.getByDisplayValue('Tom')).toHaveAttribute('form', 'form1');
-        expect(screen.getByDisplayValue('Smith')).toHaveAttribute('form', 'form1');
-        expect(screen.getByDisplayValue('test@test.com')).toHaveAttribute('form', 'form1');
-        expect(screen.getByDisplayValue('1234567890')).toHaveAttribute('form', 'form1');
+        assertStandardContactListValues();
 
         validateEditSaveButton()
         validateAddNewRecordButton()
@@ -130,7 +125,7 @@ describe('ContactsBlock', () => {
                 </AuthZContext.Consumer>}</ContactsDispatchContext.Consumer>,
             {contactsProviderProps: initialContactsState, authZProviderProps: validTokenProps, renderOptions: []})
 
-        expect(screen.getByRole('paragraph')).toHaveTextContent('No contacts found so far.')
+        expect(screen.findByText('No contacts found so far.'));
 
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
         fireEvent.click(contactsButton);
@@ -146,9 +141,11 @@ describe('ContactsBlock', () => {
 
         fireEvent.click(contactsButton);
 
+        await screen.findByText('Loading...');
+
         await screen.findByText('No contacts found so far.');
 
-        expect(screen.queryByRole('paragraph', {name: 'Loading...'})).not.toBeInTheDocument();
+        expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
         expect(screen.queryByText('First Name')).not.toBeInTheDocument();
     })
 });
@@ -172,6 +169,17 @@ function validateAddNewRecordButton() {
 
     fireEvent.click(newRecordButton);
     expect(screen.getAllByRole('form')).toHaveLength(2)
+
+    const forms: HTMLElement[] = screen.getAllByRole('form')
+
+    expect(forms.filter(element =>
+        element.getAttribute('id') === 'form1'))
+        .toHaveLength(1);
+
+    expect(forms.filter(element =>
+        element.getAttribute('id') === 'form2'))
+        .toHaveLength(1);
+
     expect(screen.getByDisplayValue('firstname_placeholder')).toHaveAttribute('form', 'form2');
     expect(screen.getByDisplayValue('surname_placeholder')).toHaveAttribute('form', 'form2');
     expect(screen.getByDisplayValue('phone_number_placeholder')).toHaveAttribute('form', 'form2');
