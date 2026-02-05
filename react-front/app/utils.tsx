@@ -143,7 +143,9 @@ export function onSubmitFetchData(fields: string[], fetchData: (formData: Map<st
     const result: Map<string, string> = new Map<string, string>();
 
     fields.forEach((field) =>
-        result.set(field, e.target[field].value));
+        //TODO: optional retrieval is suboptimal;
+        // it came off the back of the changes to new record form that somehow broke form for blank uuid
+        result.set(field, e.target[field]?.value));
 
     return fetchData(result);
 }

@@ -165,16 +165,18 @@ export function ContactsRecord({uuid, contactvm, handleClick}: {
                    defaultValue={contact.phoneNo} {...inputProps}></input></td>
         <td><input type="text" name="email" form={`form${uuid}`}
                    defaultValue={contact.email} {...inputProps}></input></td>
-        <td><EditContactButton contactvm={contactvm}
+        <td><EditContactButton uuid={uuid} contactvm={contactvm}
                                onClick={(event) => handleClick(event, contactvm)}></EditContactButton></td>
-        <td hidden><input hidden readOnly type="text" name="uuid" form={`form${uuid}`}
-                          defaultValue={uuid}></input></td>
+        {/*it should be empty if it's a new record so that backend assigned that value*/}
+        <td hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
+                          defaultValue={contact.uuid}></input></td>
     </>;
 }
 
-export function EditContactButton({contactvm, onClick}: { contactvm: ContactViewModel, onClick: MouseEventHandler }) {
-    return <button onClick={onClick} key={`Edit${contactvm.contact.uuid}`}
-                   form={`form${contactvm.contact.uuid}`}>{contactvm.contact.active ? `Save` : `Edit`}</button>;
+export function EditContactButton({uuid, contactvm, onClick}:
+                                  { uuid: string, contactvm: ContactViewModel, onClick: MouseEventHandler }) {
+    return <button onClick={onClick} key={`Edit${uuid}`}
+                   form={`form${uuid}`}>{contactvm.contact.active ? `Save` : `Edit`}</button>;
 }
 
 export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact: ContactState, accessToken: string }) {
