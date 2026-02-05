@@ -36,47 +36,8 @@ export default function ContactsBlock({}: {}) {
 
     const [state, dispatch] = useReducer(reducer, initialState)
 
-    const handleClick = (event: any, contactvm: ContactViewModel) => {
-        const contact: ContactState = contactvm.contact;
-
-        if (contact.active !== true) {
-            event.preventDefault()
-        }
-
-        const replacement: ContactViewModel = {
-            active: !contact.active,
-            contact: {
-                uuid: contact.uuid,
-                firstName: contact.firstName,
-                lastName: contact.lastName,
-                phoneNo: contact.phoneNo,
-                email: contact.email,
-                active: !contact.active
-            },
-            formStatus: contactvm.formStatus
-        }
-
-        const newArray = replaceContact(contactvm, replacement, state);
-        dispatch({type: ContactBlockActions.SetContacts, payload: {contacts: newArray}})
-    }
-
     const {authZToken, setAuthZToken} = useAuthZ();
     const accessToken = authZToken;
-
-    const replaceContact = (contactvm: ContactViewModel, replacement: ContactViewModel, state: any): any => {
-
-        const findContactByContactUuid = (item: ContactViewModel) => {
-            return item.contact.uuid === contactvm.contact.uuid;
-        }
-        const mapItemsFunc = (original: ContactViewModel) => original.contact.uuid === state.contacts?.at(indexToMutate).contact.uuid ? replacement : original
-
-
-        const indexToMutate = state.contacts?.findIndex(findContactByContactUuid);
-        if (indexToMutate === undefined) {
-            throw new Error('Couldn\'t find contact to handle.');
-        }
-        return state.contacts.map(mapItemsFunc);
-    }
 
 
     function handleGetContacts() {
@@ -125,8 +86,7 @@ export default function ContactsBlock({}: {}) {
                 || (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
                     // @ts-ignore
                     <ContactsDispatchContext value={dispatch}>
-                        <ContactsList contacts={state.contacts} handleClick={handleClick}
-                                      accessToken={accessToken}></ContactsList>
+                        <ContactsList contacts={state.contacts} accessToken={accessToken}></ContactsList>
                     </ContactsDispatchContext>
             ) : (
                 <p>No contacts found so far.</p>

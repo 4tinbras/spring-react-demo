@@ -1,22 +1,72 @@
 import {Table} from "reactstrap";
 import React, {MouseEventHandler, useContext, useState} from "react";
-import {ContactState, ContactViewModel, FieldsSubmissionType, genericSubmitForm} from '../utils';
+import {
+    ContactBlockActions,
+    ContactState,
+    ContactViewModel,
+    FieldsSubmissionType,
+    FormStatus,
+    genericSubmitForm
+} from '../utils';
 import {ContactsDispatchContext} from "@/app/StateManagement";
 
-export default function ContactsList({contacts, handleClick, accessToken}:
-                                     { contacts: ContactViewModel[], handleClick: any, accessToken: string }) {
+export default function ContactsList({contacts, accessToken}:
+                                     { contacts: ContactViewModel[], accessToken: string }) {
+
+    const dispatch: React.Dispatch<any> = useContext(ContactsDispatchContext)!;
+
+    const handleEditButtonClick = (event: any, contactvm: ContactViewModel) => {
+        const contact: ContactState = contactvm.contact;
+
+        if (contact.active !== true) {
+            event.preventDefault()
+        }
+
+        const replacement: ContactViewModel = {
+            active: !contact.active,
+            contact: {
+                uuid: contact.uuid,
+                firstName: contact.firstName,
+                lastName: contact.lastName,
+                phoneNo: contact.phoneNo,
+                email: contact.email,
+                active: !contact.active
+            },
+            formStatus: contactvm.formStatus
+        }
+
+        const newArray = replaceContact(contactvm, replacement, contacts);
+        dispatch({type: ContactBlockActions.SetContacts, payload: {contacts: newArray}})
+    }
+
+    const replaceContact = (contactvm: ContactViewModel, replacement: ContactViewModel, contacts: ContactViewModel[]): any => {
+
+        const findContactByContactUuid = (item: ContactViewModel) => {
+            return item.contact.uuid === contactvm.contact.uuid;
+        }
+
+        const indexToMutate = contacts.findIndex(findContactByContactUuid);
+
+        // @ts-ignore
+        const mapItemsFunc = (original: ContactViewModel) => original.contact.uuid === contacts.at(indexToMutate).contact.uuid ? replacement : original
+
+        if (indexToMutate === undefined) {
+            throw new Error('Couldn\'t find contact to handle.');
+        }
+        return contacts.map(mapItemsFunc);
+    }
 
 // @ts-ignore
     const listItems = contacts.map((contactvm: ContactViewModel) => {
 
-        return <tr key={`${contactvm.contact.uuid}`}>
-            <ContactsRecord key={`${contactvm.contact.uuid}records`} contactvm={contactvm}
-                            handleClick={handleClick}></ContactsRecord>
-          {/*needs to set status text based on cell state*/}
-          <th>Prompt</th>
-      </tr>;
-      }
-  );
+            return <tr key={`${contactvm.contact.uuid}`}>
+                <ContactsRecord key={`${contactvm.contact.uuid}records`} contactvm={contactvm}
+                                handleClick={handleEditButtonClick}></ContactsRecord>
+                {/*needs to set status text based on cell state*/}
+                <th>Prompt</th>
+            </tr>;
+        }
+    );
 
     const formsList = contacts.map((contactvm: ContactViewModel) => {
 
@@ -29,20 +79,20 @@ export default function ContactsList({contacts, handleClick, accessToken}:
             {formsList}
         </div>
         <Table className={"table-striped-columns"}>
-      <caption>
-          Known contacts
-      </caption>
-      <thead>
-      <tr>
-          <th scope="col">First Name</th>
-          <th scope="col">Last Name</th>
-          <th scope="col">Phone no.</th>
-          <th scope="col">Email address</th>
-      </tr>
-      </thead>
-      <tbody>
-        {listItems}
-      </tbody>
+            <caption>
+                Known contacts
+            </caption>
+            <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Phone no.</th>
+                <th scope="col">Email address</th>
+            </tr>
+            </thead>
+            <tbody>
+            {listItems}
+            </tbody>
         </Table>
     </div>
 }
