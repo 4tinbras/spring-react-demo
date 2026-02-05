@@ -2,13 +2,18 @@
 
 import ContactsBlock from "@/app/contacts/ContactsBlock";
 import React from "react";
+import {ContactsProvider, contactsReducer} from "@/app/StateManagement";
+import {FormStatus} from "@/app/utils";
 // import 'bootstrap/dist/css/bootstrap.min.css'; //not necessary if added CDN link
 
 export default function Home() {
 
     return (
         <>
-            <ContactsBlock></ContactsBlock>
+            <ContactsProvider initialState={{contacts: [], status: FormStatus.Initial}} reducerFunc={contactsReducer}>
+                <ContactsBlock></ContactsBlock>
+            </ContactsProvider>
+
         </>
     )
 

@@ -1,47 +1,19 @@
 'use client'
 
-import {useReducer} from "react";
 import ContactsList from "@/app/contacts/ContactsList";
-import {ContactBlockActions, ContactState, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
-import {ContactsDispatchContext, useAuthZ} from "@/app/StateManagement";
+import {ContactBlockActions, ContactState, ContactViewModel, FormStatus} from "@/app/utils";
+import {useAuthZ, useContacts} from "@/app/StateManagement";
 
 export default function ContactsBlock({}: {}) {
-    const initialState = {contacts: [], status: FormStatus.Initial}
 
-    const reducer = (state: any, action: ReducerAction) => {
-        // @ts-ignore
-        if (Object.values(FormStatus).includes(action.type)) {
-            return {...state}
-            // @ts-ignore
-        } else if (Object.values(ContactBlockActions).includes(action.type)) {
-            switch (action.type) {
-                case ContactBlockActions.SetContacts: {
-                    return {...state, contacts: action.payload.contacts};
-                }
-                case ContactBlockActions.SetLoading: {
-                    return {...state, status: action.payload.status};
-                }
-                case ContactBlockActions.SetAll: {
-                    return {...state, ...action.payload}
-                }
-                default: {
-                    console.log("hit default clause, which should not happen")
-                    return {...state}
-                }
-            }
-        }
-        console.log("hit default clause, which should not happen")
-        return {...state}
-    }
 
-    const [state, dispatch] = useReducer(reducer, initialState)
-
-    const {authZToken, setAuthZToken} = useAuthZ();
+    const {state, dispatchState} = useContacts();
+    const {authZToken} = useAuthZ();
     const accessToken = authZToken;
 
 
     function handleGetContacts() {
-        dispatch({type: ContactBlockActions.SetLoading, payload: {status: FormStatus.Pending}});
+        dispatchState({type: ContactBlockActions.SetLoading, payload: {status: FormStatus.Pending}});
 
         //TODO: add handling for exceptions
         fetch('http://localhost:8080/contacts', {
@@ -66,13 +38,13 @@ export default function ContactsBlock({}: {}) {
                 } else {
 
                 }
-                dispatch({
+                dispatchState({
                     type: ContactBlockActions.SetAll,
                     payload: {contacts: Array.isArray(body) ? cvmArray : null, status: FormStatus.Ok}
                 });
             })
         .catch(error => {
-            dispatch({type: ContactBlockActions.SetAll, payload: {contacts: null, status: FormStatus.Failed}});
+            dispatchState({type: ContactBlockActions.SetAll, payload: {contacts: null, status: FormStatus.Failed}});
         })
 
     }
@@ -85,9 +57,7 @@ export default function ContactsBlock({}: {}) {
                 state.status === FormStatus.Pending && (<p>Loading...</p>)
                 || (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
                     // @ts-ignore
-                    <ContactsDispatchContext value={dispatch}>
                         <ContactsList contacts={state.contacts} accessToken={accessToken}></ContactsList>
-                    </ContactsDispatchContext>
             ) : (
                 <p>No contacts found so far.</p>
                 ))
