@@ -13,7 +13,7 @@ import {ContactsDispatchContext} from "@/app/StateManagement";
 export default function ContactsList({contacts, accessToken}:
                                      { contacts: ContactViewModel[], accessToken: string }) {
 
-    const dispatch: React.Dispatch<any> = useContext(ContactsDispatchContext)!;
+    const {dispatchState} = useContext(ContactsDispatchContext)!;
 
     const handleEditButtonClick = (event: any, contactvm: ContactViewModel) => {
         const contact: ContactState = contactvm.contact;
@@ -36,7 +36,7 @@ export default function ContactsList({contacts, accessToken}:
         }
 
         const newArray = replaceContact(contactvm, replacement, contacts);
-        dispatch({type: ContactBlockActions.SetContacts, payload: {contacts: newArray}})
+        dispatchState({type: ContactBlockActions.SetContacts, payload: {contacts: newArray}})
     }
 
     const replaceContact = (contactvm: ContactViewModel, replacement: ContactViewModel, contacts: ContactViewModel[]): any => {
@@ -55,12 +55,24 @@ export default function ContactsList({contacts, accessToken}:
         }
         return contacts.map(mapItemsFunc);
     }
+    const getUuidWithFallback = (contactvm: ContactViewModel): string => {
+        return contactvm.contact.uuid !== "" ? contactvm.contact.uuid
+            : (Math.max(...contacts.values().map(
+                (item: ContactViewModel): number => {
+                    const uuid = parseInt(item.contact.uuid, 10);
+                    return !isNaN(uuid) ? uuid : 0;
+                })
+            ) + 1).toString();
+
+    }
 
 // @ts-ignore
     const listItems = contacts.map((contactvm: ContactViewModel) => {
+        //if has uuid (retrieved from backend) use it, otherwise generate subsequent number (to avoid clashes on multiple additions)
+        const key = getUuidWithFallback(contactvm);
 
-            return <tr key={`${contactvm.contact.uuid}`}>
-                <ContactsRecord key={`${contactvm.contact.uuid}records`} contactvm={contactvm}
+        return <tr key={`${key}`}>
+            <ContactsRecord key={`${key}records`} uuid={key} contactvm={contactvm}
                                 handleClick={handleEditButtonClick}></ContactsRecord>
                 {/*needs to set status text based on cell state*/}
                 <th>Prompt</th>
@@ -69,8 +81,9 @@ export default function ContactsList({contacts, accessToken}:
     );
 
     const formsList = contacts.map((contactvm: ContactViewModel) => {
+        const key = getUuidWithFallback(contactvm);
 
-        return <RecordForm key={`form${contactvm.contact.uuid}`} contact={contactvm.contact}
+        return <RecordForm key={`form${key}`} uuid={key} contact={contactvm.contact}
                            accessToken={accessToken}></RecordForm>
     });
 
@@ -94,10 +107,42 @@ export default function ContactsList({contacts, accessToken}:
             {listItems}
             </tbody>
         </Table>
+        <AddNewRecordButton contacts={contacts}></AddNewRecordButton>
     </div>
 }
 
-export function ContactsRecord({contactvm, handleClick}: { contactvm: ContactViewModel, handleClick: any }) {
+export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] }) {
+
+    const {dispatchState} = useContext(ContactsDispatchContext)!;
+
+    const addNewRecord = (event: any, contacts: ContactViewModel[]) => {
+        event.preventDefault()
+
+        contacts.push({
+            active: true,
+            contact: {
+                //empty to allow backend to assign it itself
+                uuid: "",
+                firstName: "firstname_placeholder",
+                lastName: "surname_placeholder",
+                phoneNo: "phone_number_placeholder",
+                email: "email_placeholder",
+                active: true,
+            },
+            formStatus: FormStatus.Editing
+        });
+
+        dispatchState({type: ContactBlockActions.SetContacts, payload: {contacts: contacts}})
+    }
+
+    return (<button onClick={(event) => addNewRecord(event, contacts)}>Add new record</button>)
+}
+
+export function ContactsRecord({uuid, contactvm, handleClick}: {
+    uuid: string,
+    contactvm: ContactViewModel,
+    handleClick: any
+}) {
     const contact: ContactState = contactvm.contact;
 
     const inputProps = {
@@ -110,20 +155,20 @@ export function ContactsRecord({contactvm, handleClick}: { contactvm: ContactVie
 
     //TODO: if readonly - change styling
     return <>
-        <td><input type="text" name="firstName" form={`form${contact.uuid}`}
+        <td><input type="text" name="firstName" form={`form${uuid}`}
                    defaultValue={contact.firstName} {...inputProps}></input>
         </td>
-        <td><input type="text" name="lastName" form={`form${contact.uuid}`}
+        <td><input type="text" name="lastName" form={`form${uuid}`}
                    defaultValue={contact.lastName} {...inputProps}></input>
         </td>
-        <td><input type="text" name="phoneNo" form={`form${contact.uuid}`}
+        <td><input type="text" name="phoneNo" form={`form${uuid}`}
                    defaultValue={contact.phoneNo} {...inputProps}></input></td>
-        <td><input type="text" name="email" form={`form${contact.uuid}`}
+        <td><input type="text" name="email" form={`form${uuid}`}
                    defaultValue={contact.email} {...inputProps}></input></td>
         <td><EditContactButton contactvm={contactvm}
                                onClick={(event) => handleClick(event, contactvm)}></EditContactButton></td>
-        <td hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
-                          defaultValue={contact.uuid}></input></td>
+        <td hidden><input hidden readOnly type="text" name="uuid" form={`form${uuid}`}
+                          defaultValue={uuid}></input></td>
     </>;
 }
 
@@ -132,12 +177,12 @@ export function EditContactButton({contactvm, onClick}: { contactvm: ContactView
                    form={`form${contactvm.contact.uuid}`}>{contactvm.contact.active ? `Save` : `Edit`}</button>;
 }
 
-export function RecordForm({contact, accessToken}: { contact: ContactState, accessToken: string }) {
+export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact: ContactState, accessToken: string }) {
     const fieldsArray = ['firstName', 'lastName', 'email', 'phoneNo', 'uuid'];
 
     const [responseData, setData] = useState<[]>([]);
     // @ts-ignore
-    const dispatch: React.Dispatch<any> = useContext(ContactsDispatchContext);
+    const {dispatchState} = useContext(ContactsDispatchContext);
 
     let additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
         [FieldsSubmissionType.HeaderParams, new Map([
@@ -150,11 +195,11 @@ export function RecordForm({contact, accessToken}: { contact: ContactState, acce
         fieldsArray,
         responseData,
         setData,
-        dispatch,
+        dispatchState,
         FieldsSubmissionType.JsonFormParams,
         additionalData,
         'POST'
     );
 
-    return <form id={`form${contact.uuid}`} name={`form${contact.uuid}`} onSubmit={onSubmit}></form>
+    return <form id={`form${uuid}`} name={`form${uuid}`} onSubmit={onSubmit}></form>
 }

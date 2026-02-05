@@ -89,10 +89,11 @@ describe('ContactsBlock', () => {
 
         await screen.findByRole('table')
 
+        // ASSERT
+
         expect(screen.queryByRole('paragraph', {name: 'Loading...'})).not.toBeInTheDocument();
         expect(screen.queryByRole('paragraph', {name: 'No contacts found so far.'})).not.toBeInTheDocument();
 
-        // ASSERT
         expect(screen.getByText('First Name'))
         expect(screen.getByText('Last Name'))
         expect(screen.getByText('Phone no.'))
@@ -102,6 +103,9 @@ describe('ContactsBlock', () => {
         expect(screen.getByDisplayValue('Smith')).toHaveAttribute('form', 'form1');
         expect(screen.getByDisplayValue('test@test.com')).toHaveAttribute('form', 'form1');
         expect(screen.getByDisplayValue('1234567890')).toHaveAttribute('form', 'form1');
+
+        validateEditSaveButton()
+        validateAddNewRecordButton()
     });
 
     it('renders with login request if no access token', async () => {
@@ -148,3 +152,28 @@ describe('ContactsBlock', () => {
         expect(screen.queryByText('First Name')).not.toBeInTheDocument();
     })
 });
+
+//________________________________
+//TODO: ideally all below would live in ContactsList, but they don't seem to play nicely with its context setup
+
+function validateEditSaveButton() {
+
+    expect(screen.getByRole('button', {name: 'Edit'}));
+    expect(screen.queryByRole('button', {name: 'Save'})).not.toBeInTheDocument();
+    const editButton = screen.getByRole('button', {name: 'Edit'})
+    fireEvent.click(editButton);
+
+    expect(screen.getByRole('button', {name: 'Save'}));
+    expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
+}
+
+function validateAddNewRecordButton() {
+    const newRecordButton = screen.getByText('Add new record');
+
+    fireEvent.click(newRecordButton);
+    expect(screen.getAllByRole('form')).toHaveLength(2)
+    expect(screen.getByDisplayValue('firstname_placeholder')).toHaveAttribute('form', 'form2');
+    expect(screen.getByDisplayValue('surname_placeholder')).toHaveAttribute('form', 'form2');
+    expect(screen.getByDisplayValue('phone_number_placeholder')).toHaveAttribute('form', 'form2');
+    expect(screen.getByDisplayValue('email_placeholder')).toHaveAttribute('form', 'form2');
+}
