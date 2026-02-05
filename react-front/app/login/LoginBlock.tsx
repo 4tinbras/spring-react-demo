@@ -87,8 +87,6 @@ export default function LoginBlock({}: {}) {
         <div>
             {//state === FormStatus.Ok &&
                 accessToken.length > 0 && (<>
-                    {/*TODO: if access token still valid - notify
-                    */}
                     <h2>You have already logged in!</h2>
                     <LoginForm onSubmitHandler={onSubmitHandler}></LoginForm>
                 </>)

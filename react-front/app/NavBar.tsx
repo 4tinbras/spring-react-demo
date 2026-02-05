@@ -11,6 +11,8 @@ export default function NavBar() {
 
     const {authZToken, setAuthZToken, activeTab, setActiveTab} = useAuthZ();
 
+    //TODO: add check if state was pushed to backend before navigating away
+
     return (
         <Navbar color="dark" dark expand="md">
             <NavbarBrand href="/" className="me-auto">

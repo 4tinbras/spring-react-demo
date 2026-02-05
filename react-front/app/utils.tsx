@@ -63,7 +63,8 @@ export const enum FormStatus {
     Editing = "EDITING",
     Pending = "PENDING",
     Ok = "OK",
-    Failed = "FAILED"
+    Failed = "FAILED",
+    Initial = "INITIAL",
 }
 
 export const enum ContactBlockActions {
@@ -142,7 +143,9 @@ export function onSubmitFetchData(fields: string[], fetchData: (formData: Map<st
     const result: Map<string, string> = new Map<string, string>();
 
     fields.forEach((field) =>
-        result.set(field, e.target[field].value));
+        //TODO: optional retrieval is suboptimal;
+        // it came off the back of the changes to new record form that somehow broke form for blank uuid
+        result.set(field, e.target[field]?.value));
 
     return fetchData(result);
 }
@@ -153,12 +156,16 @@ export async function genericFetch(
     method: string = 'GET',
 ): Promise<Response> {
 
-    let requestConfs: RequestInit = {
+
+    const optionalHeaderParams = additionalData.get(FieldsSubmissionType.HeaderParams);
+
+    const requestConfs: RequestInit = {
         method: method,
         headers: {
             Accept: "*",
             "Access-Control-Allow-Origin": "*",
             credentials: 'include',
+            ...optionalHeaderParams !== undefined && Object.fromEntries(optionalHeaderParams)
         },
         body: additionalData.has(FieldsSubmissionType.UrlFormParams) ?
             new URLSearchParams([...additionalData.get(FieldsSubmissionType.UrlFormParams) as Map<string, string>])
@@ -166,13 +173,6 @@ export async function genericFetch(
                 JSON.stringify(Object.fromEntries(additionalData.get(FieldsSubmissionType.JsonFormParams) as Map<string, string>))
                 : undefined
     }
-
-
-    // TODO: refactor to a list that gets expanded with spread operator in original definition
-    additionalData.get(FieldsSubmissionType.HeaderParams)?.entries().forEach(([key, value]) => {
-        // @ts-ignore
-        requestConfs.headers[key] = value;
-    });
 
     if (additionalData.has(FieldsSubmissionType.QueryParams)) {
         const queryParams = additionalData.get(FieldsSubmissionType.QueryParams) as Map<string, string>;
