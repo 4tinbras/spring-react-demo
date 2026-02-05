@@ -22,7 +22,13 @@ export default function ContactsBlock({}: {}) {
                 'Authorization': `Bearer ${accessToken}`
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error response received", {cause: response});
+                } else {
+                    return response.json();
+                }
+            })
             .then(body => {
                 const cvmArray: ContactViewModel[] = [];
 
@@ -54,12 +60,16 @@ export default function ContactsBlock({}: {}) {
             <button onClick={() => handleGetContacts()}>Get Contacts</button>
 
             {accessToken !== "" && accessToken !== undefined && (
-                state.status === FormStatus.Pending && (<p>Loading...</p>)
-                || (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
+                state.status === FormStatus.Pending && (<p>Loading...</p>) ||
+                (Array.isArray(state.contacts) && state.contacts.length > 0 ? (
                     // @ts-ignore
+                    <ContactsList contacts={state.contacts} accessToken={accessToken}></ContactsList>
+                ) : (
+                    <>
+                        <p>No contacts found so far.</p>
+                        <p>Consider adding a new one.</p>
                         <ContactsList contacts={state.contacts} accessToken={accessToken}></ContactsList>
-            ) : (
-                <p>No contacts found so far.</p>
+                    </>
                 ))
             ) || (<p>Please authenticate yourself in login tab.</p>)
             }

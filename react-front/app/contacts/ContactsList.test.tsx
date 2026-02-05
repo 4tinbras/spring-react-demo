@@ -58,7 +58,7 @@ describe('ContactsList ', () => {
         // ASSERT
         expect(screen.getByDisplayValue('Tom')).toHaveAttribute('readonly', '');
 
-        assertStandardValues();
+        assertStandardContactListValues();
     })
 
     it('with a valid contact and active state renders list and does not set readOnly attribute and creates related form', async () => {
@@ -83,22 +83,24 @@ describe('ContactsList ', () => {
         // ASSERT
         expect(screen.getByDisplayValue('Tom')).not.toHaveAttribute('readonly');
 
-        assertStandardValues();
+        assertStandardContactListValues();
     })
 
-it('with an empty contacts prop list renders fallback info', async () => {
+    it('with an empty contacts prop list does not show table and shows new record button', async () => {
 
     customRender(<ContactsDispatchContext.Consumer>
         {value => <ContactsList contacts={[]} accessToken={""}></ContactsList>}
     </ContactsDispatchContext.Consumer>, {providerProps: validStateProps, renderOptions: []})
 
     // ASSERT
-    expect(screen.getByText('First Name'));
-    expect(screen.getByText('Last Name'));
-    expect(screen.getByText('Phone no.'));
-    expect(screen.getByText('Email address'));
+        expect(screen.queryByDisplayValue('First Name')).not.toBeInTheDocument();
+        expect(screen.queryByDisplayValue('Last Name')).not.toBeInTheDocument();
+        expect(screen.queryByDisplayValue('Phone no.')).not.toBeInTheDocument();
+        expect(screen.queryByDisplayValue('Email address')).not.toBeInTheDocument();
 
-    expect(screen.queryByRole('input', {name: 'Tom Smith'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('form')).not.toBeInTheDocument();
+
+        expect(screen.getByText('Add new record'))
 })
 });
 
@@ -125,7 +127,7 @@ describe('EditContactButton ', () => {
     });
 });
 
-function assertStandardValues() {
+export function assertStandardContactListValues() {
     expect(screen.getByText('First Name'));
     expect(screen.getByText('Last Name'));
     expect(screen.getByText('Phone no.'));
