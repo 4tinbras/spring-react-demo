@@ -12,7 +12,6 @@ import {
     contactsReducer,
     ContactsState
 } from "@/app/StateManagement";
-import {userEvent} from "@testing-library/user-event/dist/cjs/setup/index.js";
 
 
 const server = setupServer(
@@ -45,16 +44,13 @@ const customRender = (ui: React.ReactElement,
                           [x: string]: any,
                           authZProviderProps: AuthZContextProps
                       }) => {
-    return {
-        dispatchState: userEvent.setup(),
-        ...render(
-            <ContactsProvider initialState={contactsProviderProps} reducer={contactsReducer}>
-                <AuthZContext.Provider {...authZProviderProps} value={authZProviderProps}>{ui}
-                </AuthZContext.Provider>
-            </ContactsProvider>,
-            renderOptions,
-        )
-    }
+    return render(
+        <ContactsProvider initialState={contactsProviderProps} reducer={contactsReducer}>
+            <AuthZContext.Provider {...authZProviderProps} value={authZProviderProps}>{ui}
+            </AuthZContext.Provider>
+        </ContactsProvider>,
+        renderOptions,
+    )
 }
 
 const validTokenProps: AuthZContextProps = {
