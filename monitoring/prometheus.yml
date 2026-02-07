@@ -14,12 +14,21 @@ rule_files:
  - "rules.yml"
 
 scrape_configs:
-  - job_name: "spring-backend"
-
+  #  - add a config for frontend; conundrum as to what system to chose
+  - job_name: "contacts"
     metrics_path: /actuator/prometheus
     # scheme defaults to 'http'
     static_configs:
       # if run outside of the container - use localhost:8071 instead
       - targets: ["host.docker.internal:8071"]
         labels:
-          app: "spring"
+          app: "contacts"
+  # should use mTLS
+  - job_name: "keycloak"
+    metrics_path: /metrics
+    # scheme defaults to 'http'
+    static_configs:
+      # if run outside of the container - use localhost:9010 instead
+      - targets: [ "host.docker.internal:9010" ]
+        labels:
+          app: "keycloak"
