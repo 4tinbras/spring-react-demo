@@ -1,5 +1,4 @@
-#FROM eclipse-temurin:21-jdk-jammy as deps
-FROM openjdk:21
+FROM eclipse-temurin:21
 
 #RUN TODO: add user group not to run as root
 
