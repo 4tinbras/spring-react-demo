@@ -28,6 +28,7 @@ services:
       - ./monitoring/grafana-config/grafana.ini:/etc/grafana/grafana.ini
       - ./monitoring/grafana-config/provisioning:/etc/grafana/provisioning
       - grafana-storage:/var/lib/grafana
+
   backend:
     #    image: local/contacts-service
     build: ./spring-backend/.
@@ -38,12 +39,14 @@ services:
     ports:
       - "8080:8080"
       - "8071:8071"
+
   envoy:
     image: envoyproxy/envoy:v1.31.0
     ports:
       - "10000:10000"
     volumes:
       - ./proxy/envoy_config.yml:/etc/envoy/envoy.yaml
+
   frontend:
     #    image: local/frontend-service
     build: ./react-front/.

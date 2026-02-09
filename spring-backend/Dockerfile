@@ -10,4 +10,4 @@ COPY build/libs/spring-backend-1.0-SNAPSHOT.jar app.jar
 
 EXPOSE 8080:8080
 EXPOSE 8071:8071
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=dev"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=$SPRING_PROFILES_ACTIVE"]
