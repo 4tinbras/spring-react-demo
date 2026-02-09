@@ -19,8 +19,8 @@ scrape_configs:
     metrics_path: /actuator/prometheus
     # scheme defaults to 'http'
     static_configs:
-      # if run outside of the container - use localhost:8071 instead
-      - targets: ["host.docker.internal:8071"]
+      # by default - go to host gateway; if run outside of the container - use localhost:8071 instead
+      - targets: [ "172.17.0.1:8071" ]
         labels:
           app: "contacts"
   # should use mTLS
@@ -28,7 +28,7 @@ scrape_configs:
     metrics_path: /metrics
     # scheme defaults to 'http'
     static_configs:
-      # if run outside of the container - use localhost:9010 instead
-      - targets: [ "host.docker.internal:9010" ]
+      # by default - go to host gateway; if run outside of the container - use localhost:9100 instead
+      - targets: [ "172.17.0.1:9000" ]
         labels:
           app: "keycloak"
