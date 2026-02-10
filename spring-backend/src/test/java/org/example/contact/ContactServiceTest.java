@@ -1,5 +1,6 @@
 package org.example.contact;
 
+import org.example.messaging.MessagingService;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.junit.jupiter.api.BeforeEach;
