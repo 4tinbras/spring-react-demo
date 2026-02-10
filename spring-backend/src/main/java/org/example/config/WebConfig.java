@@ -1,6 +1,6 @@
 package org.example.config;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,10 +15,15 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 
 
-@RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 public class WebConfig {
+
+    private final String authZServerHost;
+
+    public WebConfig(@Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}") String authZServerHost) {
+        this.authZServerHost = authZServerHost;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -50,6 +55,6 @@ public class WebConfig {
     @Profile("!test")
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri("http://localhost:8020/realms/spreact/protocol/openid-connect/certs").build();
+        return NimbusJwtDecoder.withJwkSetUri(authZServerHost + "/protocol/openid-connect/certs").build();
     }
 }
