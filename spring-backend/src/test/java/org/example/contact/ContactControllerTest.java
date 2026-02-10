@@ -106,6 +106,8 @@ class ContactControllerTest {
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                         .withBody(jwkResponse)));
 
+        when(contactService.validateRecordToSave(any(), any())).thenCallRealMethod();
+
     }
 
     @Test

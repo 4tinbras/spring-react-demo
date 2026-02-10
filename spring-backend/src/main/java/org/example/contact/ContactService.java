@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ContactService {
 
@@ -29,6 +30,15 @@ public class ContactService {
 
     public ContactDetails findByEmail(String email) {
         return contactRepository.findByEmail(email);
+    }
+
+    public boolean validateRecordToSave(final ContactDetails contactDetails, final ContactDetails foundDetails) {
+        if (contactDetails.getUuid() != null && !foundDetails.getUuid().equals(contactDetails.getUuid())) {
+            log.error("Provided email is already associated with another account.");
+            return false;
+        }
+
+        return true;
     }
 
 }
