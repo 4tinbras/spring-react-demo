@@ -1,5 +1,6 @@
 package org.example.contact;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.springframework.stereotype.Service;
@@ -10,18 +11,26 @@ import java.util.List;
 @Service
 public class ContactService {
 
+    public static final String MESSAGE_PREFIX = "Inserting new contact with id ";
+
+    private final MessagingService messagingService;
     private final ContactRepository contactRepository;
 
-    public ContactService(ContactRepository contactRepository) {
+    public ContactService(final ContactRepository contactRepository,
+                          final MessagingService messagingService) {
         this.contactRepository = contactRepository;
+        this.messagingService = messagingService;
     }
 
     public List<ContactDetails> findAll() {
         return contactRepository.findAll();
     }
 
-    public ContactDetails save(ContactDetails toBeSaved) {
-        return contactRepository.save(toBeSaved);
+    public ContactDetails save(final ContactDetails toBeSaved) {
+        messagingService.publishMessage(MESSAGE_PREFIX + toBeSaved.getUuid());
+
+        final ContactDetails returnedRecord = contactRepository.save(toBeSaved);
+        return returnedRecord;
     }
 
     public void deleteById(String id) {
