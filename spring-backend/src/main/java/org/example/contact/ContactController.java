@@ -29,25 +29,23 @@ public class ContactController {
     }
 
     @PostMapping(path="/contact")
-    public ResponseEntity<ContactDetails> updateContact(@Valid @RequestBody ContactDetails contactDetails)
+    public ResponseEntity<ContactDetails> updateContact(@Valid @RequestBody final ContactDetails contactDetails)
             throws URISyntaxException {
-        ContactDetails foundDetails = contactService.findByEmail(contactDetails.getEmail());
-        ContactDetails savedContact;
+        final ContactDetails foundDetails = contactService.findByEmail(contactDetails.getEmail());
         if (foundDetails != null) {
-            if (contactDetails.getUuid() != null && !foundDetails.getUuid().equals(contactDetails.getUuid())) {
-                log.error("Provided email is already associated with another account.");
+            if (!contactService.validateRecordToSave(contactDetails, foundDetails)) {
                 return new ResponseEntity<>(HttpStatusCode.valueOf(422));
             }
             contactDetails.setUuid(foundDetails.getUuid());
         }
 
-        savedContact = contactService.save(contactDetails);
+        final ContactDetails savedContact = contactService.save(contactDetails);
         log.debug("Updated contact with id: {}", savedContact.getUuid());
         return ResponseEntity.created(new URI("/contacts/" + savedContact.getUuid())).body(savedContact);
     }
 
     @DeleteMapping(path="/contact/{id}")
-    public ResponseEntity<ContactDetails> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") String id) {
+    public ResponseEntity<ContactDetails> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
         contactService.deleteById(id);
         return new ResponseEntity<>(HttpStatusCode.valueOf(204));
     }
