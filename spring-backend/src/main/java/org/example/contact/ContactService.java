@@ -1,6 +1,7 @@
 package org.example.contact;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.messaging.MessagingService;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.springframework.stereotype.Service;

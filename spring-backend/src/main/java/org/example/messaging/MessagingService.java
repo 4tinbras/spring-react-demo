@@ -1,4 +1,4 @@
-package org.example.contact;
+package org.example.messaging;
 
 public interface MessagingService {
 
