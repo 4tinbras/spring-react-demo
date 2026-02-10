@@ -29,6 +29,6 @@ scrape_configs:
     # scheme defaults to 'http'
     static_configs:
       # by default - go to host gateway; if run outside of the container - use localhost:9100 instead
-      - targets: [ "172.17.0.1:9000" ]
+      - targets: [ "172.17.0.1:9100" ]
         labels:
           app: "keycloak"

@@ -72,6 +72,7 @@ services:
     ports:
       - "8030:8030"
       - "8020:8020"
+      - "9100:9100"
 
 networks:
   demo:
