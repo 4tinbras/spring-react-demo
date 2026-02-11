@@ -32,6 +32,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: springBootVer
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: springBootVer
     //security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-oauth2-resource-server', version: springBootVer
@@ -56,6 +57,7 @@ dependencies {
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-restclient-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator-test', version: springBootVer
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka-test', version: springBootVer
 
     testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }
