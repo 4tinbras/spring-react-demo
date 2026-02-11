@@ -24,7 +24,7 @@ public class ContactController {
 
     @GetMapping(path="/contacts")
     public ResponseEntity<List<ContactDetails>> getContacts() {
-        List<ContactDetails> contacts = contactService.findAll();
+        final List<ContactDetails> contacts = contactService.findAll();
         return new ResponseEntity<>(contacts, HttpStatusCode.valueOf(200));
     }
 
