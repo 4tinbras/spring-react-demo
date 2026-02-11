@@ -1,0 +1,107 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version '4.0.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+apply plugin: 'java'
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21) //TODO: increment to 25
+    }
+}
+
+dependencies {
+    def springBootVer = '4.0.0'
+    def jakartaVer = '3.0.0'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+
+    //core
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webservices', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: springBootVer
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVer
+//    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: springBootVer
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: springBootVer
+    //security
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-oauth2-resource-server', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-oauth2-client', version: springBootVer
+    //aux
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-micrometer-metrics', version: springBootVer
+
+//    implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: jakartaVer
+//    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: jakartaVer
+//    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0'
+
+    //swagger generated based on code
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0")
+
+    implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.14.6'
+
+    //TODO: run db in separate container with a persistent volume
+    implementation 'com.h2database:h2:2.1.214'
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-test', version: springBootVer
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test', version: springBootVer
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-restclient-test', version: springBootVer
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator-test', version: springBootVer
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka-test', version: springBootVer
+
+    testImplementation("org.wiremock:wiremock-standalone:3.13.1")
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn test
+
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.70
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+
+jar {
+    //TODO: trips over the fact that JPA repo is created by Spring boot, hence bootJar step in dockerfile
+    //i.e. same happens for other fat-jar plugins bundling jars
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes(
+                'Main-Class': 'org.example.Main',
+                'Class-Path': configurations.runtimeClasspath.files.collect { "lib/$it.name" }.join(' '),
+                'Implementation-Version': project.version
+
+        )
+    }
+    from(configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }) {}
+}

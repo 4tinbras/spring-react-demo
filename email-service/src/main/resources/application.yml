@@ -1,0 +1,35 @@
+management:
+  defaults:
+    metrics:
+      export:
+        enabled: true
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: [ "health", "info", "metrics", "prometheus" ]
+  server:
+    port: 8041
+
+  #    TODO: reconfigure when they return specific values as per k8s guide
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+server:
+  port: 8040
+
+spring:
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      group-id: spreact
+  threads:
+    virtual:
+      enabled: true
