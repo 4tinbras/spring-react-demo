@@ -27,6 +27,9 @@ docker-compose.yml.
 
 ## TODOs
 * non-root container executions
-* add missing monitoring
+* add missing monitoring (alerts and alertmanager left)
 * add proper backend model hierarchy and sample microservices
 * add terraform script for simple AWS deployment
+* replace h2 db with something more reasonable
+* add missing resources for k8s deployments
+* update proxy to work as direct gateway to backend via mTLS protected connection
