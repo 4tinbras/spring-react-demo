@@ -20,6 +20,10 @@ java {
     }
 }
 
+configurations.testImplementation {
+    exclude group: 'org.postgresql', module: 'postgresql'
+}
+
 dependencies {
     //TODO: incrementing to 4.1 breaks kafka context
     def springBootVer = '4.1.0'
@@ -54,11 +58,14 @@ dependencies {
 
     implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.17.0'
 
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka-test', version: springBootVer
+
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-restclient-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator-test', version: springBootVer
-    implementation group: 'org.springframework.kafka', name: 'spring-kafka-test', version: springBootVer
+    //TODO: run db in separate container with a persistent volume
+    testImplementation 'com.h2database:h2:2.4.240'
 
     testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }
