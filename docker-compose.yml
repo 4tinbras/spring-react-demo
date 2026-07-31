@@ -97,6 +97,28 @@ services:
       - "8020:8020"
       - "9100:9100"
 
+  db:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    ports:
+      - "5432:5432"
+    volumes:
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: spreact
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8025:8080"
+
 networks:
   demo:
     driver: bridge
