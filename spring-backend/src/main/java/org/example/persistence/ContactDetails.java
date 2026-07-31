@@ -14,7 +14,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "contacts")
+@Table(name = "contact_details")
 public class ContactDetails {
 
     //TODO: change to a proper UUID

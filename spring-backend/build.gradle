@@ -43,6 +43,7 @@ dependencies {
     //aux
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-micrometer-metrics', version: springBootVer
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.13'
 
     implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: jakartaVer
     implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: jakartaVer
@@ -52,9 +53,6 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0")
 
     implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.17.0'
-
-    //TODO: run db in separate container with a persistent volume
-    implementation 'com.h2database:h2:2.4.240'
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test', version: springBootVer
