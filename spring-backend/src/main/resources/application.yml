@@ -23,6 +23,16 @@ management:
       enabled: true
 
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spreact
+    #    TODO: ideally injected by CD pipeline like any other secret
+    username: demo
+    password: demo
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate.ddl-auto: update
+    show-sql: true
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
   kafka:
     consumer:
       auto-offset-reset: earliest
@@ -41,3 +51,13 @@ spring:
 #url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1
 #username: admin
 #password: admin1
+
+
+#  spring.datasource.url=jdbc:postgresql://localhost:5432/mydatabase
+#  spring.datasource.username=myuser
+#  spring.datasource.password=mypassword
+#  spring.datasource.driver-class-name=org.postgresql.Driver # Spring Boot can infer this from the URL
+#
+#  spring.jpa.hibernate.ddl-auto=update
+#  spring.jpa.show-sql=true
+#  spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect

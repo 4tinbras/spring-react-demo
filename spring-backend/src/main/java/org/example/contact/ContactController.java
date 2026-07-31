@@ -28,6 +28,7 @@ public class ContactController {
         return new ResponseEntity<>(contacts, HttpStatusCode.valueOf(200));
     }
 
+    // TODO: there is a bug around inserting first new record when identical one is already present
     @PostMapping(path="/contact")
     public ResponseEntity<ContactDetails> updateContact(@Valid @RequestBody final ContactDetails contactDetails)
             throws URISyntaxException {
