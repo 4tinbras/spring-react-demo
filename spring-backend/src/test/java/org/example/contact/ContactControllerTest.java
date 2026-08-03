@@ -1,5 +1,6 @@
 package org.example.contact;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
@@ -13,6 +14,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import org.assertj.core.api.Assertions;
 import org.example.Main;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
@@ -38,8 +40,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -76,7 +78,7 @@ class ContactControllerTest {
 
     private ObjectMapper objectMapper;
 
-    private final ContactDetails validRecord = new ContactDetails(0L, "Tom", "Smith", "ts@example.com", "079678234");
+    private static final ContactDetails VALID_RECORD = new ContactDetails(0L, "Tom", "Smith", "ts@example.com", "079678234");
     private static RSAKey validRsaKey;
 
     @DynamicPropertySource
@@ -112,8 +114,9 @@ class ContactControllerTest {
 
     @Test
     void whenGetContacts_thenReturnValidSetOfRecords_andReturn200() throws Exception {
+        objectMapper = new ObjectMapper();
         //given
-        when(contactRepository.findAll()).thenReturn(Collections.EMPTY_LIST);
+        when(contactService.findAll()).thenReturn(List.of(), List.of(VALID_RECORD));
 
 //        when
         mockMvc.perform(
@@ -123,13 +126,27 @@ class ContactControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("[]")));
+
+        MvcResult result = mockMvc.perform(
+                        get("/contacts")
+                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        TypeReference<List<ContactDetails>> typeRef = new TypeReference<List<ContactDetails>>() {
+        };
+        List<ContactDetails> responseBody = objectMapper.readValue(result.getResponse().getContentAsString(), typeRef);
+
+        Assertions.assertThat(VALID_RECORD).usingRecursiveComparison().isEqualTo(responseBody.getFirst());
     }
 
     @Test
     void whenPostValidContact_thenReturnValidSetOfRecords_andReturn200() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = validRecord;
+        ContactDetails requestBody = VALID_RECORD;
 
         when(contactService.save(any())).thenReturn(requestBody);
 
@@ -196,9 +213,9 @@ class ContactControllerTest {
     void whenPostSameMailTwiceForSameClient_thenReturn201() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = validRecord;
+        ContactDetails requestBody = VALID_RECORD;
 
-        when(contactService.findByEmail(any())).thenReturn(null, validRecord);
+        when(contactService.findByEmail(any())).thenReturn(null, VALID_RECORD);
         when(contactService.save(any())).thenReturn(requestBody);
 
         MvcResult result = mockMvc.perform(post("/contact")
@@ -227,10 +244,10 @@ class ContactControllerTest {
     void whenPostSameMailTwiceForDifferentClient_thenReturn422() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = validRecord;
+        ContactDetails requestBody = VALID_RECORD;
         ContactDetails secondAccBody = new ContactDetails(99L, "Different", "Usern", "ts@example.com", "074978234");
 
-        when(contactService.findByEmail(any())).thenReturn(null, validRecord);
+        when(contactService.findByEmail(any())).thenReturn(null, VALID_RECORD);
         when(contactService.save(any())).thenReturn(requestBody);
 
         MvcResult result = mockMvc.perform(post("/contact")
