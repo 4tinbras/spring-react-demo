@@ -129,10 +129,12 @@ export async function fetchDataWrapper(
 
         let data;
 
-        response.then(result => data = result.json());
+        response.then(async result => {
+            data = await result.json();
 
-        setStateData(data);
-        dispatch({type: FormStatus.Ok.toString(), payload: null});
+            setStateData(data);
+            dispatch({type: FormStatus.Ok.toString(), payload: null});
+        });
     } catch (err: any) {
         setStateData(err);
         dispatch({type: FormStatus.Failed.toString(), payload: []});
