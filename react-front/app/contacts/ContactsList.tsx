@@ -121,6 +121,11 @@ export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] })
     const addNewRecord = (event: any, contacts: ContactViewModel[]) => {
         event.preventDefault()
 
+        // if one non-saved record is already present - do not create another one
+        if (contacts?.map(contactvm => contactvm.contact.uuid).values().some(uuid => isNaN(parseInt(uuid, 10)))) {
+            return;
+        }
+
         contacts.push({
             active: true,
             contact: {
