@@ -1,0 +1,28 @@
+li.nav-item {
+
+    margin-left: 1rem;
+    margin-right: 1rem;
+
+    a {
+        text-decoration: none;
+    }
+
+    a.active {
+        background-color: #ffffff;
+        color: #171717;
+    }
+
+    a:active {
+        background-color: #ffffff;
+        color: #171717;
+    }
+
+    a:hover {
+
+    }
+
+    a:visited {
+
+    }
+}
+

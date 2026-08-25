@@ -40,3 +40,28 @@ a {
     color-scheme: dark;
   }
 }
+
+button .button-primary {
+  color: var(--foreground);
+}
+
+.top-container {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content-container {
+  align-content: center;
+  align-items: center;
+}
+
+.display-flex {
+  display: flex;
+  flex-wrap: nowrap;
+  /*flex-basis: content;*/
+}
+
+.navbar-brand {
+  margin-right: 1rem;
+}
