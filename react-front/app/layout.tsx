@@ -1,6 +1,6 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
-import "./globals.css";
+import "./src/styles/globals.css";
 import NavBar from "@/app/NavBar";
 import {AuthZProvider} from "@/app/StateManagement";
 import React, {Suspense} from "react";
@@ -37,7 +37,7 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
              */}
             <AuthZProvider>
                 <NavBar></NavBar>
-                <div className={'container justify-content-center my-5'}>
+                <div className={'top-container content-container container justify-content-center my-5'}>
                     <Suspense fallback={<div>Loading...</div>}>
                         {children}
                     </Suspense>
