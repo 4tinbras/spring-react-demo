@@ -122,6 +122,7 @@ export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] })
         event.preventDefault()
 
         // if one non-saved record is already present - do not create another one
+        // due to mixed up state acress the form possible to do only once per refresh of the page
         if (contacts?.map(contactvm => contactvm.contact.uuid).values().some(uuid => isNaN(parseInt(uuid, 10)))) {
             return;
         }
