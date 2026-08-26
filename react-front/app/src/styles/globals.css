@@ -41,8 +41,9 @@ a {
   }
 }
 
-button .button-primary {
+button.button-primary {
   color: var(--foreground);
+  background: var(--background);
 }
 
 .top-container {
@@ -59,9 +60,12 @@ button .button-primary {
 .display-flex {
   display: flex;
   flex-wrap: nowrap;
-  /*flex-basis: content;*/
 }
 
 .navbar-brand {
   margin-right: 1rem;
+}
+
+.full-height {
+  height: 100%;
 }

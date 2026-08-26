@@ -115,7 +115,7 @@ export function LoginForm({onSubmitHandler}: { onSubmitHandler: any }) {
         <form action={"/login"} id={'login-form'} onSubmit={onSubmitHandler}>
             {/*<label htmlFor={'scope'}>scope</label>*/}
             {/*<input type={'text'} name={'scope'}/>*/}
-            <button type='submit'>Log in</button>
+            <button type='submit' className={'button-primary'}>Log in</button>
         </form>
     </>)
 }

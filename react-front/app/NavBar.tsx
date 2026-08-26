@@ -24,7 +24,7 @@ export default function NavBar() {
                     setIsOpen(!isOpen)
                 }}/>
                 <Collapse isOpen={isOpen} navbar>
-                    <Nav className="justify-content-start" style={{width: "100%"}} navbar pills>
+                    <Nav className="justify-content-start full-height" style={{width: "100%"}} navbar pills>
                         <NavItem>
                             {/*TODO logic deciding whether class is needed requires new solution*/}
                             {activeTab === 'HOME' && (

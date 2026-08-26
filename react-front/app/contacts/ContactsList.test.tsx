@@ -108,7 +108,7 @@ describe('EditContactButton ', () => {
     it('displays edit when inactive', async () => {
 
         const inactiveStateButton = render(
-            <EditContactButton contactvm={inactiveContact} onClick={(event) => {
+            <EditContactButton uuid={inactiveContact.contact.uuid} contactvm={inactiveContact} onClick={(event) => {
                 return null
             }}></EditContactButton>
         );
@@ -119,7 +119,7 @@ describe('EditContactButton ', () => {
 
     it('displays save when active', async () => {
         const activeStateButton = render(
-            <EditContactButton contactvm={activeContact} onClick={(event) => {
+            <EditContactButton uuid={activeContact.contact.uuid} contactvm={activeContact} onClick={(event) => {
                 return null
             }}></EditContactButton>
         );

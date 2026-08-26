@@ -1,10 +1,17 @@
 li.nav-item {
+    height: 100%;
 
-    margin-left: 1rem;
-    margin-right: 1rem;
+
+    align-content: center;
+    display: block;
 
     a {
         text-decoration: none;
+
+        padding-left: 1rem;
+        padding-right: 1rem;
+        color: #ffffff;
+
     }
 
     a.active {
