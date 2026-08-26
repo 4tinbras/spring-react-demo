@@ -57,7 +57,7 @@ export default function ContactsBlock({}: {}) {
 
     return (
         <div style={{width: '100%'}}>
-            <button onClick={() => handleGetContacts()}>Get Contacts</button>
+            <button onClick={() => handleGetContacts()} className={'button-primary'}>Get Contacts</button>
 
             {accessToken !== "" && accessToken !== undefined && (
                 state.status === FormStatus.Pending && (<p>Loading...</p>) ||

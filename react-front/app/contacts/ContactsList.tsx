@@ -144,7 +144,8 @@ export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] })
         dispatchState({type: ContactBlockActions.SetContacts, payload: {contacts: contacts}})
     }
 
-    return (<button onClick={(event) => addNewRecord(event, contacts)}>Add new record</button>)
+    return (
+        <button onClick={(event) => addNewRecord(event, contacts)} className={'button-primary'}>Add new record</button>)
 }
 
 export function ContactsRecord({uuid, contactvm, handleClick}: {
