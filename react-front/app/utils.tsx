@@ -90,13 +90,12 @@ export const enum FieldsSubmissionType {
 export const genericSubmitForm = (
     url: string,
     fields: string[],
-    responseData: any,
     setStateData: React.Dispatch<SetStateAction<any>>,
     dispatch: React.Dispatch<ReducerAction>,
     fieldsSubmissionType: FieldsSubmissionType,
     additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
     method: string = 'GET',
-): [FormEventHandler, []] => {
+): FormEventHandler => {
 
     const fetchData = async (formData: Map<string, string>): Promise<void> => {
         await fetchDataWrapper(url, formData, setStateData, dispatch, fieldsSubmissionType, additionalData, method);
@@ -108,7 +107,7 @@ export const genericSubmitForm = (
         onSubmitFetchData(fields, fetchData, e);
     }
 
-    return [onSubmit, responseData];
+    return onSubmit;
 };
 
 export async function fetchDataWrapper(
