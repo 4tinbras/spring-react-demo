@@ -7,6 +7,7 @@ import org.example.persistence.ContactRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -40,6 +41,10 @@ public class ContactService {
 
     public ContactDetails findByEmail(String email) {
         return contactRepository.findByEmail(email);
+    }
+
+    public Optional<ContactDetails> findByUuid(String uuid) {
+        return contactRepository.findById(uuid);
     }
 
     public boolean validateRecordToSave(final ContactDetails contactDetails, final ContactDetails foundDetails) {
