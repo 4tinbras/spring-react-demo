@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,6 +27,12 @@ public class ContactController {
     public ResponseEntity<List<ContactDetails>> getContacts() {
         final List<ContactDetails> contacts = contactService.findAll();
         return new ResponseEntity<>(contacts, HttpStatusCode.valueOf(200));
+    }
+
+    @GetMapping(path = "/contact/{id}")
+    public ResponseEntity<ContactDetails> getContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
+        final Optional<ContactDetails> contact = contactService.findByUuid(id);
+        return new ResponseEntity<>(contact.get(), HttpStatusCode.valueOf(200));
     }
 
     // TODO: there is a bug around inserting first new record when identical one is already present
@@ -46,7 +53,7 @@ public class ContactController {
     }
 
     @DeleteMapping(path="/contact/{id}")
-    public ResponseEntity<ContactDetails> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
+    public ResponseEntity<Void> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
         contactService.deleteById(id);
         return new ResponseEntity<>(HttpStatusCode.valueOf(204));
     }

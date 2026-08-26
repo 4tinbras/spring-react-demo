@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -123,6 +124,21 @@ class ContactControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("[]")));
+    }
+
+    @Test
+    void whenGetContact_thenReturnValidSetOfRecords_andReturn200() throws Exception {
+        //given
+        when(contactService.findByUuid(any())).thenReturn(Optional.of(validRecord));
+
+//        when
+        mockMvc.perform(
+                        get("/contact/0")
+                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Tom")));
     }
 
     @Test
