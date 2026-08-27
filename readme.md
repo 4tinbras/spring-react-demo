@@ -17,12 +17,12 @@ In order to run the project manually startup each project:
 Alternatively you can use docker-compose to run containers bundled in root directory:
 ``docker-compose up .``
 
-[//]: # (TODO: Ideally that would become part of a setup script.)
-In order to use OAuth2 authorization it is necessary to start the container with predefined realm as in
-docker-compose.yml.
+In order to use OAuth2 authorization it is necessary to start Keycloak service or container with predefined realm as in
+./authz-store/docker-compose.yml.
 
 ## Current status
-* Spring project uses JPA to connect to H2 (in embedded mode) in memory DB
+
+* Spring project uses JPA to connect to postgresql database
 * Frontend allows only to look up records in DB via backend service (login needed; see below).
 * To call any backend endpoints an Access Token is needed, That can be obtained from keycloak service:
   * by using user-agent to obtain access token and make direct requests to backend
@@ -31,7 +31,6 @@ docker-compose.yml.
 * Monitoring currently includes only a simple error rate rule
 
 ## Known backend issues
-
 * first insertion intermittently causes issues if it overlaps with already existing UUID
 * healthcheck test stopped working since update to spring boot 4
 
