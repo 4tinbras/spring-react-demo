@@ -8,6 +8,11 @@ In order to run the project manually startup each project:
 * React ``npm install`` followed by ``npm run dev``
 * Prometheus as per ``https://github.com/prometheus/prometheus``
 * Keycloak instance as per ``https://www.keycloak.org/getting-started/getting-started-zip``
+  * suggested command for running keycloak is:
+    ``[keycloak-root-directory]/bin/kc.sh start-dev --http-port 8020 --metrics-enabled=true --event-metrics-user-enabled=true --event-metrics-user-tags=realm,idp,clientId``
+* required DB (default configured as postgresql) run either as provided container or service as per its own instructions
+  * expected table is called ``contact_details`` and needs to match ContactDetails schema
+* in order to enable kafka messaging in services profile ``kafka-msg`` needs to be active
 
 Alternatively you can use docker-compose to run containers bundled in root directory:
 ``docker-compose up .``
@@ -24,6 +29,11 @@ docker-compose.yml.
   * using frontend as-is with compulsory containers
 * Repository includes postman collection which guides through login process and backend interactions.
 * Monitoring currently includes only a simple error rate rule
+
+## Known backend issues
+
+* first insertion intermittently causes issues if it overlaps with already existing UUID
+* healthcheck test stopped working since update to spring boot 4
 
 ## TODOs
 * non-root container executions
