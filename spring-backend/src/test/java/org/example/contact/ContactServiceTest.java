@@ -1,6 +1,7 @@
 package org.example.contact;
 
 import org.example.messaging.MessagingService;
+import org.example.persistence.Account;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,8 @@ import static org.mockito.Mockito.*;
 
 class ContactServiceTest {
 
-    private final ContactDetails validRecord = new ContactDetails(1L, "Tom", "Smith", "ts1@example.com", "1234567890");
+    private final Account stubAccount = new Account();
+    private final ContactDetails validRecord = new ContactDetails(1L, stubAccount, "Tom", "Smith", "ts1@example.com", "1234567890");
     private MessagingService messagingService;
     private ContactRepository contactRepository;
     private ContactService subject;

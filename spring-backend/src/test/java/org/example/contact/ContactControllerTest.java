@@ -14,6 +14,7 @@ import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.example.Main;
+import org.example.persistence.Account;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -77,7 +78,8 @@ class ContactControllerTest {
 
     private ObjectMapper objectMapper;
 
-    private final ContactDetails validRecord = new ContactDetails(0L, "Tom", "Smith", "ts@example.com", "079678234");
+    private final Account stubAccount = new Account();
+    private final ContactDetails validRecord = new ContactDetails(0L, stubAccount, "Tom", "Smith", "ts@example.com", "079678234");
     private static RSAKey validRsaKey;
 
     @DynamicPropertySource
@@ -167,7 +169,7 @@ class ContactControllerTest {
     void whenPostEmptyName_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, null, "Smith", "ts@example.com", "079678234");
+        ContactDetails requestBody = new ContactDetails(0L, stubAccount, null, "Smith", "ts@example.com", "079678234");
 
         MvcResult result = mockMvc.perform(post("/contact")
                         .header("Authorization", format("Bearer %s", getSignedJwt()))
@@ -182,7 +184,7 @@ class ContactControllerTest {
     void whenPostInvalidEmail_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, "Tom", "Smith", "tsexample.com", "079678234");
+        ContactDetails requestBody = new ContactDetails(0L, stubAccount, "Tom", "Smith", "tsexample.com", "079678234");
 
         MvcResult result = mockMvc.perform(post("/contact")
                         .header("Authorization", format("Bearer %s", getSignedJwt()))
@@ -197,7 +199,7 @@ class ContactControllerTest {
     void whenPostInvalidPhoneNo_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, "Tom", "Smith", "tsexample.com", "NaN");
+        ContactDetails requestBody = new ContactDetails(0L, stubAccount, "Tom", "Smith", "tsexample.com", "NaN");
 
         MvcResult result = mockMvc.perform(post("/contact")
                         .header("Authorization", format("Bearer %s", getSignedJwt()))
@@ -244,7 +246,7 @@ class ContactControllerTest {
         //given
         objectMapper = new ObjectMapper();
         ContactDetails requestBody = validRecord;
-        ContactDetails secondAccBody = new ContactDetails(99L, "Different", "Usern", "ts@example.com", "074978234");
+        ContactDetails secondAccBody = new ContactDetails(99L, stubAccount, "Different", "Usern", "ts@example.com", "074978234");
 
         when(contactService.findByEmail(any())).thenReturn(null, validRecord);
         when(contactService.save(any())).thenReturn(requestBody);
