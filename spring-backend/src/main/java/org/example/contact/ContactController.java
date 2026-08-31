@@ -52,8 +52,13 @@ public class ContactController {
         return ResponseEntity.created(new URI("/contacts/" + savedContact.getUuid())).body(savedContact);
     }
 
+    //on a purpose there is no PUT, it could break things way too easily
+
+    // TODO: add patch; mind that link to account needs special handling
+
     @DeleteMapping(path="/contact/{id}")
     public ResponseEntity<Void> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
+        //TODO: validate that it is NOT the last contact associated with account else reject removal
         contactService.deleteById(id);
         return new ResponseEntity<>(HttpStatusCode.valueOf(204));
     }

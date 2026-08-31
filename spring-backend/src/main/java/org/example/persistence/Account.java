@@ -2,6 +2,7 @@ package org.example.persistence;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class Account {
     private String ownersFirstName;
     private String ownersSurname;
 
-
+    @NotNull
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactDetails> contactDetails = new ArrayList<>();
 
