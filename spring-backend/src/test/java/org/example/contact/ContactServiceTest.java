@@ -2,7 +2,6 @@ package org.example.contact;
 
 import org.example.messaging.MessagingService;
 import org.example.persistence.Account;
-import org.example.persistence.AccountRepository;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,18 +26,16 @@ class ContactServiceTest {
     private final ContactDetails validRecord = new ContactDetails(1L, stubAccount, "Tom", "Smith", "ts1@example.com", "1234567890");
     private MessagingService messagingService;
     private ContactRepository contactRepository;
-    private AccountRepository accountRepository;
     private ContactService subject;
 
     @BeforeEach
     void setup() {
         messagingService = Mockito.mock(MessagingService.class);
         contactRepository = Mockito.mock(ContactRepository.class);
-        accountRepository = Mockito.mock(AccountRepository.class);
 
         when(contactRepository.save(eq(validRecord))).thenReturn(validRecord);
 
-        subject = new ContactService(messagingService, contactRepository, accountRepository);
+        subject = new ContactService(messagingService, contactRepository);
     }
 
     @Test
@@ -51,13 +48,9 @@ class ContactServiceTest {
 
     @Test
     void whenDeleteOneOfManyDetails_thenReturnTrue() {
-        final Account multipleDetailsAccount = new Account(1L, "John", "DOe", List.of(
-                new ContactDetails(1L, null, "Tom", "Smith", "ts1@example.com", "1234567890"),
-                new ContactDetails(2L, null, "Tom", "Smith", "ts2@example.com", "1234507890")
-        ), Account.AccountType.END_USER, Account.AccountState.OK);
 
         when(contactRepository.findById(eq("1"))).thenReturn(Optional.of(validRecord));
-        when(accountRepository.findById(eq("1"))).thenReturn(Optional.of(multipleDetailsAccount));
+        when(contactRepository.findByAccount(1L)).thenReturn(List.of(validRecord, validRecord));
 
         assertTrue(subject.canRemoveContactDetails("1"));
     }
@@ -86,7 +79,7 @@ class ContactServiceTest {
     @Test
     void whenRemoveLastContacts_thenReturnFalse() {
         when(contactRepository.findById(eq("1"))).thenReturn(Optional.of(validRecord));
-        when(accountRepository.findById(eq("1"))).thenReturn(Optional.of(stubAccount));
+        when(contactRepository.findByAccount(1L)).thenReturn(List.of(validRecord));
 
         assertFalse(subject.canRemoveContactDetails("1"));
     }
