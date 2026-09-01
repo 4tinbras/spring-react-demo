@@ -67,11 +67,7 @@ public class ContactService {
         ContactDetails affectedContact = findByUuid(id).get();
         List<ContactDetails> affectedDetails = contactRepository.findByAccount(affectedContact.getAccount().getUuid());
 
-        if (affectedDetails.size() <= 1) {
-            return false;
-        }
-
-        return true;
+        return affectedDetails.size() > 1;
     }
 
 }
