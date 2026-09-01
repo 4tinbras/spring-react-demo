@@ -1,7 +1,10 @@
 package org.example.contact;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.messaging.MessagingService;
+import org.example.persistence.Account;
+import org.example.persistence.AccountRepository;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class ContactService {
 
@@ -17,12 +21,7 @@ public class ContactService {
 
     private final MessagingService messagingService;
     private final ContactRepository contactRepository;
-
-    public ContactService(final ContactRepository contactRepository,
-                          final MessagingService messagingService) {
-        this.contactRepository = contactRepository;
-        this.messagingService = messagingService;
-    }
+    private final AccountRepository accountRepository;
 
     public List<ContactDetails> findAll() {
         return contactRepository.findAll();
@@ -61,6 +60,17 @@ public class ContactService {
 
         if (contactDetails.getUuid() != null && !foundDetails.getUuid().equals(contactDetails.getUuid())) {
             log.error("Provided email is already associated with another account.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean canRemoveContactDetails(String id) {
+        ContactDetails affectedContact = findByUuid(id).get();
+        Optional<Account> affectedAccount = accountRepository.findById(affectedContact.getAccount().getUuid().toString());
+
+        if (affectedAccount.isEmpty() || affectedAccount.get().getContactDetails().size() == 1) {
             return false;
         }
 

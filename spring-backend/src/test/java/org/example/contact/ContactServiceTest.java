@@ -2,6 +2,7 @@ package org.example.contact;
 
 import org.example.messaging.MessagingService;
 import org.example.persistence.Account;
+import org.example.persistence.AccountRepository;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,28 +13,32 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.example.contact.ContactService.MESSAGE_PREFIX;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 
 class ContactServiceTest {
 
-    private final Account stubAccount = new Account(1L, "John", "DOe", List.of(), Account.AccountType.END_USER, Account.AccountState.OK);
+    //JPA makes those classes awfully circularly referenced
+    private final Account stubAccount = new Account(1L, "John", "DOe", List.of(
+            new ContactDetails(1L, null, "Tom", "Smith", "ts1@example.com", "1234567890")
+    ), Account.AccountType.END_USER, Account.AccountState.OK);
     private final ContactDetails validRecord = new ContactDetails(1L, stubAccount, "Tom", "Smith", "ts1@example.com", "1234567890");
     private MessagingService messagingService;
     private ContactRepository contactRepository;
+    private AccountRepository accountRepository;
     private ContactService subject;
 
     @BeforeEach
     void setup() {
         messagingService = Mockito.mock(MessagingService.class);
         contactRepository = Mockito.mock(ContactRepository.class);
+        accountRepository = Mockito.mock(AccountRepository.class);
 
         when(contactRepository.save(eq(validRecord))).thenReturn(validRecord);
 
-        subject = new ContactService(contactRepository, messagingService);
+        subject = new ContactService(messagingService, contactRepository, accountRepository);
     }
 
     @Test
@@ -42,6 +47,19 @@ class ContactServiceTest {
         assertEquals(validRecord, outcome);
 
         verify(messagingService, times(1)).publishMessage(eq(MESSAGE_PREFIX + validRecord.getUuid()));
+    }
+
+    @Test
+    void whenDeleteOneOfManyDetails_thenReturnTrue() {
+        final Account multipleDetailsAccount = new Account(1L, "John", "DOe", List.of(
+                new ContactDetails(1L, null, "Tom", "Smith", "ts1@example.com", "1234567890"),
+                new ContactDetails(2L, null, "Tom", "Smith", "ts2@example.com", "1234507890")
+        ), Account.AccountType.END_USER, Account.AccountState.OK);
+
+        when(contactRepository.findById(eq("1"))).thenReturn(Optional.of(validRecord));
+        when(accountRepository.findById(eq("1"))).thenReturn(Optional.of(multipleDetailsAccount));
+
+        assertTrue(subject.canRemoveContactDetails("1"));
     }
 
     @Test
@@ -63,6 +81,14 @@ class ContactServiceTest {
 
         ContactDetails invalidAccountRecord = new ContactDetails(1L, stubAccount, "Tom", "Smith", "ts1@example.com", "1234567890");
         assertFalse(subject.validateRecordToSave(invalidAccountRecord, validRecord));
+    }
+
+    @Test
+    void whenRemoveLastContacts_thenReturnFalse() {
+        when(contactRepository.findById(eq("1"))).thenReturn(Optional.of(validRecord));
+        when(accountRepository.findById(eq("1"))).thenReturn(Optional.of(stubAccount));
+
+        assertFalse(subject.canRemoveContactDetails("1"));
     }
 
 }
