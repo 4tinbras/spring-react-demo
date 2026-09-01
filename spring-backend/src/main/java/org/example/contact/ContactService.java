@@ -3,8 +3,6 @@ package org.example.contact;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.messaging.MessagingService;
-import org.example.persistence.Account;
-import org.example.persistence.AccountRepository;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ public class ContactService {
 
     private final MessagingService messagingService;
     private final ContactRepository contactRepository;
-    private final AccountRepository accountRepository;
 
     public List<ContactDetails> findAll() {
         return contactRepository.findAll();
@@ -68,9 +65,9 @@ public class ContactService {
 
     public boolean canRemoveContactDetails(String id) {
         ContactDetails affectedContact = findByUuid(id).get();
-        Optional<Account> affectedAccount = accountRepository.findById(affectedContact.getAccount().getUuid().toString());
+        List<ContactDetails> affectedDetails = contactRepository.findByAccount(affectedContact.getAccount().getUuid());
 
-        if (affectedAccount.isEmpty() || affectedAccount.get().getContactDetails().size() == 1) {
+        if (affectedDetails.size() <= 1) {
             return false;
         }
 
