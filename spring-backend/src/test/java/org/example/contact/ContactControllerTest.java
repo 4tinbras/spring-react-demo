@@ -41,6 +41,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -78,7 +79,7 @@ class ContactControllerTest {
 
     private ObjectMapper objectMapper;
 
-    private final Account stubAccount = new Account();
+    private final Account stubAccount = new Account(1L, "John", "DOe", List.of(), Account.AccountType.END_USER, Account.AccountState.OK);
     private final ContactDetails validRecord = new ContactDetails(0L, stubAccount, "Tom", "Smith", "ts@example.com", "079678234");
     private static RSAKey validRsaKey;
 
@@ -216,6 +217,7 @@ class ContactControllerTest {
         objectMapper = new ObjectMapper();
         ContactDetails requestBody = validRecord;
 
+        when(contactService.findByUuid(any())).thenReturn(Optional.of(validRecord));
         when(contactService.findByEmail(any())).thenReturn(null, validRecord);
         when(contactService.save(any())).thenReturn(requestBody);
 

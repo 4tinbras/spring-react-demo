@@ -48,6 +48,17 @@ public class ContactService {
     }
 
     public boolean validateRecordToSave(final ContactDetails contactDetails, final ContactDetails foundDetails) {
+        // check if there is a linked account or the record would be an orphan
+        if (contactDetails.getAccount() == null) {
+            log.error("Details are not linked to a valid account");
+            return false;
+        }
+
+        if (findByUuid(contactDetails.getAccount().getUuid().toString()).equals(Optional.empty())) {
+            log.error("Details are not linked to a valid account");
+            return false;
+        }
+
         if (contactDetails.getUuid() != null && !foundDetails.getUuid().equals(contactDetails.getUuid())) {
             log.error("Provided email is already associated with another account.");
             return false;
