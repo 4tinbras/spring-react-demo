@@ -75,7 +75,6 @@ class ContactControllerTest extends ControllerSuiteUtil {
 
     private final Account stubAccount = new Account(1L, "John", "DOe", List.of(), Account.AccountType.END_USER, Account.AccountState.OK);
     private final ContactDetails validRecord = new ContactDetails(0L, stubAccount, "Tom", "Smith", "ts@example.com", "079678234");
-    private static RSAKey validRsaKey;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {

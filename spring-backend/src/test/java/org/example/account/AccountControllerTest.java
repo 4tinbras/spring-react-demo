@@ -60,7 +60,6 @@ class AccountControllerTest extends ControllerSuiteUtil {
             .options(wireMockConfig().dynamicPort())
             .build();
     private static final String KEY_ID = "12345678901234567890";
-    private static RSAKey validRsaKey;
     private final Account validAccount = new Account(0L, "Tom", "Smith",
             List.of(new ContactDetails(0L, null, "Tom", "Smith", "ts@example.com", "079678234")),
             Account.AccountType.END_USER, Account.AccountState.OK);
