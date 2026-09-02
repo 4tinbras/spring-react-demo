@@ -5,14 +5,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.nimbusds.jose.Algorithm;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import org.example.ControllerSuiteUtil;
 import org.example.Main;
 import org.example.persistence.Account;
 import org.example.persistence.AccountRepository;
@@ -37,9 +33,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = Main.class)
 @AutoConfigureMockMvc
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-class AccountControllerTest {
+class AccountControllerTest extends ControllerSuiteUtil {
 
     @RegisterExtension
     final static WireMockExtension wireMockServer = WireMockExtension.newInstance()
@@ -113,7 +107,7 @@ class AccountControllerTest {
 //        when
         mockMvc.perform(
                         get("/accounts")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -128,7 +122,7 @@ class AccountControllerTest {
 //        when
         mockMvc.perform(
                         get("/account/0")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -145,7 +139,7 @@ class AccountControllerTest {
 //        when
         mockMvc.perform(
                         post("/account")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                                 .content(objectMapper.writeValueAsBytes(validAccount))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -161,28 +155,12 @@ class AccountControllerTest {
 //        when
         mockMvc.perform(
                         delete("/account/0")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
         verify(accountService, times(1)).deleteById(eq("0"));
-    }
-
-    private String getSignedJwt() throws Exception {
-        final RSASSASigner validSigner = new RSASSASigner(validRsaKey);
-
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .issueTime(Date.from(Instant.now()))
-                .expirationTime(new Date(new Date().getTime() + 60 * 1000))
-                .claim("scope", "email")
-                .claim("aud", "resourceServer")
-                .issuer(wireMockServer.baseUrl())
-                .build();
-        SignedJWT signedJWT = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256)
-                .keyID(validRsaKey.getKeyID()).build(), claimsSet);
-        signedJWT.sign(validSigner);
-        return signedJWT.serialize();
     }
 
     @Configuration
