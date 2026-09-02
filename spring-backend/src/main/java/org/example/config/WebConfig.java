@@ -28,10 +28,14 @@ public class WebConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 //        TODO: specific role-creds for monitoring
-//        TODO: Default - require creds
         return httpSecurity
                 .authorizeHttpRequests((auth) -> auth
                                 .requestMatchers("/actuator/**").anonymous()
+                        //allow swagger documentation endpoints
+                        //TODO: swagger page is broken, source json file is available though
+                        .requestMatchers("/swagger-ui.html").anonymous()
+                        .requestMatchers("/swagger-ui/index.html").anonymous()
+                        .requestMatchers("/v3/api-docs").anonymous()
                                 .anyRequest()
                                 .authenticated()
                 )
