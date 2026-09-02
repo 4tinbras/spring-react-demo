@@ -1,7 +1,6 @@
 package org.example.persistence;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -17,11 +16,14 @@ public class Relationship {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long uuid;
-    // TODO: replace with proper JPA link
-    @NotBlank
-    private String firstContactId;
-    @NotBlank
-    private String secondContactId;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "first_contact_id")
+    private ContactDetails firstContactId;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "second_contact_id")
+    private ContactDetails secondContactId;
     @NotNull
     private RelationshipType relationshipType;
 

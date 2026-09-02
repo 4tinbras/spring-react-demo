@@ -45,7 +45,7 @@ public class RelationshipService {
     }
 
     public boolean isRelationshipValid(Relationship relationship) {
-        return contactService.findByUuid(relationship.getFirstContactId()).isPresent()
-                && contactService.findByUuid(relationship.getSecondContactId()).isPresent();
+        return contactService.findByUuid(relationship.getFirstContactId().getUuid().toString()).isPresent()
+                && contactService.findByUuid(relationship.getSecondContactId().getUuid().toString()).isPresent();
     }
 }

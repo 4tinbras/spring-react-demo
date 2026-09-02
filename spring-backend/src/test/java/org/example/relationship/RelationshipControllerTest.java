@@ -14,6 +14,7 @@ import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.example.Main;
+import org.example.persistence.ContactDetails;
 import org.example.persistence.Relationship;
 import org.example.persistence.RelationshipRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -67,7 +68,10 @@ class RelationshipControllerTest {
             .build();
     private static final String KEY_ID = "12345678901234567890";
     private static RSAKey validRsaKey;
-    private final Relationship validRelationship = new Relationship(1L, "1", "2", Relationship.RelationshipType.FRIENDS);
+
+    private final ContactDetails firstValidContact = new ContactDetails(1L, null, "Different", "Usern", "ts@example.com", "074978234");
+    private final ContactDetails secondValidContact = new ContactDetails(2L, null, "Different", "Usern", "ts@example.com", "074978234");
+    private final Relationship validRelationship = new Relationship(1L, firstValidContact, secondValidContact, Relationship.RelationshipType.FRIENDS);
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
@@ -102,8 +106,6 @@ class RelationshipControllerTest {
                 aResponse()
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                         .withBody(jwkResponse)));
-
-//        when(relationshipService.validateRecordToSave(any(), any())).thenCallRealMethod();
 
     }
 
