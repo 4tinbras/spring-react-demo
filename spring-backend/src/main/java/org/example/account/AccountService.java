@@ -1,5 +1,6 @@
 package org.example.account;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.persistence.Account;
 import org.example.persistence.AccountRepository;
@@ -9,10 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class AccountService {
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     public List<Account> findAll() {
         return accountRepository.findAll();
