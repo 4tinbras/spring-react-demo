@@ -54,7 +54,7 @@ dependencies {
     compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0'
 
     //swagger generated based on code
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
 
     implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.17.0'
 
@@ -64,7 +64,6 @@ dependencies {
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-restclient-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator-test', version: springBootVer
-    //TODO: run db in separate container with a persistent volume
     testImplementation 'com.h2database:h2:2.4.240'
 
     testImplementation("org.wiremock:wiremock-standalone:3.13.1")
