@@ -271,7 +271,7 @@ class ContactControllerTest extends ControllerSuiteUtil {
     @Test
     void whenDelete_thenObjectDeleted_andReturn204() throws Exception {
         //when
-        objectMapper = new ObjectMapper();
+        when(contactService.canRemoveContactDetails("0")).thenReturn(true);
         doNothing().when(contactService).deleteById("0");
 
         MvcResult result = mockMvc.perform(delete("/contact/0")
@@ -287,7 +287,6 @@ class ContactControllerTest extends ControllerSuiteUtil {
     @Test
     void whenDeleteByInvalidId_thenReturn400() throws Exception {
         //when
-        objectMapper = new ObjectMapper();
         doNothing().when(contactService).deleteById("0");
 
         MvcResult result = mockMvc.perform(delete("/contact/ ")
