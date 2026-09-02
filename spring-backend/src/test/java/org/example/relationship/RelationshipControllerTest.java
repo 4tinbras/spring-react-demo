@@ -5,14 +5,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.nimbusds.jose.Algorithm;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import org.example.ControllerSuiteUtil;
 import org.example.Main;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.Relationship;
@@ -37,9 +33,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -60,14 +54,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = Main.class)
 @AutoConfigureMockMvc
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-class RelationshipControllerTest {
+class RelationshipControllerTest extends ControllerSuiteUtil {
 
     @RegisterExtension
     final static WireMockExtension wireMockServer = WireMockExtension.newInstance()
             .options(wireMockConfig().dynamicPort())
             .build();
     private static final String KEY_ID = "12345678901234567890";
-    private static RSAKey validRsaKey;
 
     private final ContactDetails firstValidContact = new ContactDetails(1L, null, "Different", "Usern", "ts@example.com", "074978234");
     private final ContactDetails secondValidContact = new ContactDetails(2L, null, "Different", "Usern", "ts@example.com", "074978234");
@@ -117,7 +110,7 @@ class RelationshipControllerTest {
 //        when
         mockMvc.perform(
                         get("/relationships")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -132,7 +125,7 @@ class RelationshipControllerTest {
 //        when
         mockMvc.perform(
                         get("/relationships?id=1")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -148,7 +141,7 @@ class RelationshipControllerTest {
 //        when
         mockMvc.perform(
                         get("/relationships?id=1&secondId=2")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -163,7 +156,7 @@ class RelationshipControllerTest {
 //        when
         mockMvc.perform(
                         get("/relationship/1")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -179,7 +172,7 @@ class RelationshipControllerTest {
 //        when
         mockMvc.perform(
                         post("/relationship")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                                 .content(objectMapper.writeValueAsString(validRelationship))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -193,29 +186,12 @@ class RelationshipControllerTest {
     void whenDeleteRelationship_thenDelete_andReturn204() throws Exception {
         mockMvc.perform(
                         delete("/relationship/1")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
         verify(relationshipService).deleteById("1");
-    }
-
-
-    private String getSignedJwt() throws Exception {
-        final RSASSASigner validSigner = new RSASSASigner(validRsaKey);
-
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .issueTime(Date.from(Instant.now()))
-                .expirationTime(new Date(new Date().getTime() + 60 * 1000))
-                .claim("scope", "email")
-                .claim("aud", "resourceServer")
-                .issuer(wireMockServer.baseUrl())
-                .build();
-        SignedJWT signedJWT = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256)
-                .keyID(validRsaKey.getKeyID()).build(), claimsSet);
-        signedJWT.sign(validSigner);
-        return signedJWT.serialize();
     }
 
     @Configuration
