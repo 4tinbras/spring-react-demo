@@ -61,7 +61,7 @@ class AccountControllerTest extends ControllerSuiteUtil {
             .build();
     private static final String KEY_ID = "12345678901234567890";
     private final Account validAccount = new Account(0L, "Tom", "Smith",
-            List.of(new ContactDetails(0L, null, "Tom", "Smith", "ts@example.com", "079678234")),
+            List.of(new ContactDetails(0L, 0L, "Tom", "Smith", "ts@example.com", "079678234")),
             Account.AccountType.END_USER, Account.AccountState.OK);
     @Autowired
     private MockMvc mockMvc;

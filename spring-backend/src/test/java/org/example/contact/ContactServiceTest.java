@@ -21,9 +21,9 @@ class ContactServiceTest {
 
     //JPA makes those classes awfully circularly referenced
     private final Account stubAccount = new Account(1L, "John", "DOe", List.of(
-            new ContactDetails(1L, null, "Tom", "Smith", "ts1@example.com", "1234567890")
+            new ContactDetails(1L, 1L, "Tom", "Smith", "ts1@example.com", "1234567890")
     ), Account.AccountType.END_USER, Account.AccountState.OK);
-    private final ContactDetails validRecord = new ContactDetails(1L, stubAccount, "Tom", "Smith", "ts1@example.com", "1234567890");
+    private final ContactDetails validRecord = new ContactDetails(1L, 1L, "Tom", "Smith", "ts1@example.com", "1234567890");
     private MessagingService messagingService;
     private ContactRepository contactRepository;
     private ContactService subject;
@@ -57,7 +57,7 @@ class ContactServiceTest {
 
     @Test
     void whenSaveWithDuplicateEmail_thenReturnValidIsFalse() {
-        ContactDetails duplicateEmailRecord = new ContactDetails(99L, stubAccount, "Tom", "Smith", "ts1@example.com", "1234567890");
+        ContactDetails duplicateEmailRecord = new ContactDetails(99L, 1L, "Tom", "Smith", "ts1@example.com", "1234567890");
 
         assertFalse(subject.validateRecordToSave(duplicateEmailRecord, validRecord));
     }
@@ -72,7 +72,7 @@ class ContactServiceTest {
     void whenSaveWithInvalidAccountRef_thenReturnValidIsFalse() {
         when(contactRepository.findById(eq("1"))).thenReturn(Optional.empty());
 
-        ContactDetails invalidAccountRecord = new ContactDetails(1L, stubAccount, "Tom", "Smith", "ts1@example.com", "1234567890");
+        ContactDetails invalidAccountRecord = new ContactDetails(1L, 1L, "Tom", "Smith", "ts1@example.com", "1234567890");
         assertFalse(subject.validateRecordToSave(invalidAccountRecord, validRecord));
     }
 

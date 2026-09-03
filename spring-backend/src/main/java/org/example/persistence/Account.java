@@ -2,7 +2,6 @@ package org.example.persistence;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -13,8 +12,8 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Account")
-@Table(name = "accounts")
+@Entity(name = "Accounts")
+@Table(name = "account")
 public class Account {
 
     @Id
@@ -24,8 +23,10 @@ public class Account {
     private String ownersFirstName;
     private String ownersSurname;
 
-    @NotNull
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    //    @NotNull
+//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "account", referencedColumnName = "uuid")
     private List<ContactDetails> contactDetails = new ArrayList<>();
 
     private AccountType accountType;

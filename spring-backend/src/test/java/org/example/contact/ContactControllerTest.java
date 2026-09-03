@@ -74,7 +74,7 @@ class ContactControllerTest extends ControllerSuiteUtil {
     private ObjectMapper objectMapper;
 
     private final Account stubAccount = new Account(1L, "John", "DOe", List.of(), Account.AccountType.END_USER, Account.AccountState.OK);
-    private final ContactDetails validRecord = new ContactDetails(0L, stubAccount, "Tom", "Smith", "ts@example.com", "079678234");
+    private final ContactDetails validRecord = new ContactDetails(0L, 1L, "Tom", "Smith", "ts@example.com", "079678234");
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -163,7 +163,7 @@ class ContactControllerTest extends ControllerSuiteUtil {
     void whenPostEmptyName_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, stubAccount, null, "Smith", "ts@example.com", "079678234");
+        ContactDetails requestBody = new ContactDetails(0L, 1L, null, "Smith", "ts@example.com", "079678234");
 
         MvcResult result = mockMvc.perform(post("/contact")
                         .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
@@ -178,7 +178,7 @@ class ContactControllerTest extends ControllerSuiteUtil {
     void whenPostInvalidEmail_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, stubAccount, "Tom", "Smith", "tsexample.com", "079678234");
+        ContactDetails requestBody = new ContactDetails(0L, 1L, "Tom", "Smith", "tsexample.com", "079678234");
 
         MvcResult result = mockMvc.perform(post("/contact")
                         .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
@@ -193,7 +193,7 @@ class ContactControllerTest extends ControllerSuiteUtil {
     void whenPostInvalidPhoneNo_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, stubAccount, "Tom", "Smith", "tsexample.com", "NaN");
+        ContactDetails requestBody = new ContactDetails(0L, 1L, "Tom", "Smith", "tsexample.com", "NaN");
 
         MvcResult result = mockMvc.perform(post("/contact")
                         .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
@@ -241,7 +241,7 @@ class ContactControllerTest extends ControllerSuiteUtil {
         //given
         objectMapper = new ObjectMapper();
         ContactDetails requestBody = validRecord;
-        ContactDetails secondAccBody = new ContactDetails(99L, stubAccount, "Different", "Usern", "ts@example.com", "074978234");
+        ContactDetails secondAccBody = new ContactDetails(99L, 1L, "Different", "Usern", "ts@example.com", "074978234");
 
         when(contactService.findByEmail(any())).thenReturn(null, validRecord);
         when(contactService.save(any())).thenReturn(requestBody);

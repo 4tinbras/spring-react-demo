@@ -30,11 +30,6 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findByUuid(id).get());
     }
 
-//    @GetMapping(path="/account/{email}")
-//    public ResponseEntity<Account> getAccountByEmail() {
-//        return null;
-//    }
-
     @PostMapping(path = "/account")
     public ResponseEntity<Account> createAccount(@Valid @RequestBody final Account account) {
         Account result = accountService.save(account);
