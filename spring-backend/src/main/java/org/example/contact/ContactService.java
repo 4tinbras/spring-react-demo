@@ -50,7 +50,7 @@ public class ContactService {
             return false;
         }
 
-        if (findByUuid(contactDetails.getAccount().getUuid().toString()).equals(Optional.empty())) {
+        if (findByUuid(contactDetails.getAccount().toString()).equals(Optional.empty())) {
             log.error("Details are not linked to a valid account");
             return false;
         }
@@ -65,7 +65,7 @@ public class ContactService {
 
     public boolean canRemoveContactDetails(String id) {
         ContactDetails affectedContact = findByUuid(id).get();
-        List<ContactDetails> affectedDetails = contactRepository.findByAccount(affectedContact.getAccount().getUuid());
+        List<ContactDetails> affectedDetails = contactRepository.findByAccount(affectedContact.getAccount());
 
         return affectedDetails.size() > 1;
     }

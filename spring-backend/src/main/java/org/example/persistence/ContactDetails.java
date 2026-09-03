@@ -11,15 +11,18 @@ import lombok.*;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "ContactDetails")
-@Table(name = "contact_details")
+@Entity(name = "Contacts")
+@Table(name = "contact")
 public class ContactDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long uuid;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Account account;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Account account;
+
+    @Column(name = "account")
+    private Long account;
 
     @NotBlank
     private String firstName;

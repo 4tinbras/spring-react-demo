@@ -58,9 +58,9 @@ public class ContactController {
 
     @DeleteMapping(path="/contact/{id}")
     public ResponseEntity<Void> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
-        if (!contactService.canRemoveContactDetails(id)) {
-            return new ResponseEntity<>(HttpStatusCode.valueOf(400));
-        }
+//        if (!contactService.canRemoveContactDetails(id)) {
+//            return new ResponseEntity<>(HttpStatusCode.valueOf(400));
+//        }
 
         contactService.deleteById(id);
         return new ResponseEntity<>(HttpStatusCode.valueOf(204));
