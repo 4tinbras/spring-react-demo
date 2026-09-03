@@ -1,7 +1,6 @@
 package org.example;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,19 +25,17 @@ public class ContextTest {
     @Autowired
     private MockMvc mockMvc;
 
-    //TODO: Stopped working with the spring update
-    @Disabled
     @Test
-    void getHealthWithoutAuthZ_Returns200() throws Exception {
+    void getHealthWithoutAuthZ_Returns200() {
         ResponseEntity<Map> entity = this.testRestTemplate.getForEntity(
                 "http://localhost:" + this.mgt + "/actuator/health", Map.class);
         Assertions.assertEquals(HttpStatus.OK, entity.getStatusCode());
     }
 
-    //TODO: Add content; might mean hurdles like above
-    @Disabled
     @Test
-    void getOpenApiUrl_returns200() throws Exception {
-
+    void getOpenApiDescription_Returns200() {
+        ResponseEntity<Map> entity = this.testRestTemplate.getForEntity(
+                "http://localhost:8080/v3/api-docs", Map.class);
+        Assertions.assertEquals(HttpStatus.OK, entity.getStatusCode());
     }
 }

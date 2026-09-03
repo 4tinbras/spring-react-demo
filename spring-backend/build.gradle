@@ -20,6 +20,10 @@ java {
     }
 }
 
+configurations.testImplementation {
+    exclude group: 'org.postgresql', module: 'postgresql'
+}
+
 dependencies {
     //TODO: incrementing to 4.1 breaks kafka context
     def springBootVer = '4.1.0'
@@ -43,24 +47,24 @@ dependencies {
     //aux
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-micrometer-metrics', version: springBootVer
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.13'
 
     implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: jakartaVer
     implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: jakartaVer
     compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0'
 
     //swagger generated based on code
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
 
     implementation group: 'io.micrometer', name: 'micrometer-registry-prometheus', version: '1.17.0'
 
-    //TODO: run db in separate container with a persistent volume
-    implementation 'com.h2database:h2:2.4.240'
+    implementation group: 'org.springframework.kafka', name: 'spring-kafka-test', version: springBootVer
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-security-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-restclient-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator-test', version: springBootVer
-    implementation group: 'org.springframework.kafka', name: 'spring-kafka-test', version: springBootVer
+    testImplementation 'com.h2database:h2:2.4.240'
 
     testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }

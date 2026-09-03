@@ -17,8 +17,6 @@ import java.util.Map;
 @Configuration
 public class ServiceConfig {
 
-    //TODO: open h2 connection explicitly
-
     @Profile("kafka-msg")
     @Bean(name = "kafkaProducerFactory")
     public ProducerFactory<String, String> kafkaProducerFactory() {

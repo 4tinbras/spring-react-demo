@@ -1,0 +1,35 @@
+li.nav-item {
+    height: 100%;
+
+
+    align-content: center;
+    display: block;
+
+    a {
+        text-decoration: none;
+
+        padding-left: 1rem;
+        padding-right: 1rem;
+        color: #ffffff;
+
+    }
+
+    a.active {
+        background-color: #ffffff;
+        color: #171717;
+    }
+
+    a:active {
+        background-color: #ffffff;
+        color: #171717;
+    }
+
+    a:hover {
+
+    }
+
+    a:visited {
+
+    }
+}
+

@@ -4,23 +4,25 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@Entity
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "contacts")
+@Entity(name = "Contacts")
+@Table(name = "contact")
 public class ContactDetails {
 
-    //TODO: change to a proper UUID
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long uuid;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Account account;
+
+    @Column(name = "account")
+    private Long account;
 
     @NotBlank
     private String firstName;

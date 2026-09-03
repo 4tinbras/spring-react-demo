@@ -1,5 +1,6 @@
 package org.example.contact;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.messaging.MessagingService;
 import org.example.persistence.ContactDetails;
@@ -7,8 +8,10 @@ import org.example.persistence.ContactRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class ContactService {
 
@@ -16,12 +19,6 @@ public class ContactService {
 
     private final MessagingService messagingService;
     private final ContactRepository contactRepository;
-
-    public ContactService(final ContactRepository contactRepository,
-                          final MessagingService messagingService) {
-        this.contactRepository = contactRepository;
-        this.messagingService = messagingService;
-    }
 
     public List<ContactDetails> findAll() {
         return contactRepository.findAll();
@@ -42,13 +39,35 @@ public class ContactService {
         return contactRepository.findByEmail(email);
     }
 
+    public Optional<ContactDetails> findByUuid(String uuid) {
+        return contactRepository.findById(uuid);
+    }
+
     public boolean validateRecordToSave(final ContactDetails contactDetails, final ContactDetails foundDetails) {
+        // check if there is a linked account or the record would be an orphan
+        if (contactDetails.getAccount() == null) {
+            log.error("Details are not linked to a valid account");
+            return false;
+        }
+
+        if (findByUuid(contactDetails.getAccount().toString()).equals(Optional.empty())) {
+            log.error("Details are not linked to a valid account");
+            return false;
+        }
+
         if (contactDetails.getUuid() != null && !foundDetails.getUuid().equals(contactDetails.getUuid())) {
             log.error("Provided email is already associated with another account.");
             return false;
         }
 
         return true;
+    }
+
+    public boolean canRemoveContactDetails(String id) {
+        ContactDetails affectedContact = findByUuid(id).get();
+        List<ContactDetails> affectedDetails = contactRepository.findByAccount(affectedContact.getAccount());
+
+        return affectedDetails.size() > 1;
     }
 
 }

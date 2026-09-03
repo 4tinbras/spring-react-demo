@@ -5,15 +5,12 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.nimbusds.jose.Algorithm;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import org.example.ControllerSuiteUtil;
 import org.example.Main;
+import org.example.persistence.Account;
 import org.example.persistence.ContactDetails;
 import org.example.persistence.ContactRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,9 +34,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -57,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = Main.class)
 @AutoConfigureMockMvc
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-class ContactControllerTest {
+class ContactControllerTest extends ControllerSuiteUtil {
 
     @RegisterExtension
     final static WireMockExtension wireMockServer = WireMockExtension.newInstance()
@@ -76,8 +73,8 @@ class ContactControllerTest {
 
     private ObjectMapper objectMapper;
 
-    private final ContactDetails validRecord = new ContactDetails(0L, "Tom", "Smith", "ts@example.com", "079678234");
-    private static RSAKey validRsaKey;
+    private final Account stubAccount = new Account(1L, "John", "DOe", List.of(), Account.AccountType.END_USER, Account.AccountState.OK);
+    private final ContactDetails validRecord = new ContactDetails(0L, 1L, "Tom", "Smith", "ts@example.com", "079678234");
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -118,11 +115,26 @@ class ContactControllerTest {
 //        when
         mockMvc.perform(
                         get("/contacts")
-                                .header("Authorization", format("Bearer %s", getSignedJwt()))
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("[]")));
+    }
+
+    @Test
+    void whenGetContact_thenReturnValidSetOfRecords_andReturn200() throws Exception {
+        //given
+        when(contactService.findByUuid(any())).thenReturn(Optional.of(validRecord));
+
+//        when
+        mockMvc.perform(
+                        get("/contact/0")
+                                .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Tom")));
     }
 
     @Test
@@ -134,7 +146,7 @@ class ContactControllerTest {
         when(contactService.save(any())).thenReturn(requestBody);
 
         MvcResult result = mockMvc.perform(post("/contact")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -151,10 +163,10 @@ class ContactControllerTest {
     void whenPostEmptyName_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, null, "Smith", "ts@example.com", "079678234");
+        ContactDetails requestBody = new ContactDetails(0L, 1L, null, "Smith", "ts@example.com", "079678234");
 
         MvcResult result = mockMvc.perform(post("/contact")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -166,10 +178,10 @@ class ContactControllerTest {
     void whenPostInvalidEmail_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, "Tom", "Smith", "tsexample.com", "079678234");
+        ContactDetails requestBody = new ContactDetails(0L, 1L, "Tom", "Smith", "tsexample.com", "079678234");
 
         MvcResult result = mockMvc.perform(post("/contact")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -181,10 +193,10 @@ class ContactControllerTest {
     void whenPostInvalidPhoneNo_thenReturn400() throws Exception {
         //given
         objectMapper = new ObjectMapper();
-        ContactDetails requestBody = new ContactDetails(0L, "Tom", "Smith", "tsexample.com", "NaN");
+        ContactDetails requestBody = new ContactDetails(0L, 1L, "Tom", "Smith", "tsexample.com", "NaN");
 
         MvcResult result = mockMvc.perform(post("/contact")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -198,11 +210,12 @@ class ContactControllerTest {
         objectMapper = new ObjectMapper();
         ContactDetails requestBody = validRecord;
 
+        when(contactService.findByUuid(any())).thenReturn(Optional.of(validRecord));
         when(contactService.findByEmail(any())).thenReturn(null, validRecord);
         when(contactService.save(any())).thenReturn(requestBody);
 
         MvcResult result = mockMvc.perform(post("/contact")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -215,7 +228,7 @@ class ContactControllerTest {
         assertThat(requestBody).usingRecursiveComparison().ignoringFields("uuid").isEqualTo(responseBody);
 
         MvcResult resultDuplicate = mockMvc.perform(post("/contact")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -228,13 +241,13 @@ class ContactControllerTest {
         //given
         objectMapper = new ObjectMapper();
         ContactDetails requestBody = validRecord;
-        ContactDetails secondAccBody = new ContactDetails(99L, "Different", "Usern", "ts@example.com", "074978234");
+        ContactDetails secondAccBody = new ContactDetails(99L, 1L, "Different", "Usern", "ts@example.com", "074978234");
 
         when(contactService.findByEmail(any())).thenReturn(null, validRecord);
         when(contactService.save(any())).thenReturn(requestBody);
 
         MvcResult result = mockMvc.perform(post("/contact")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -247,7 +260,7 @@ class ContactControllerTest {
         assertThat(requestBody).usingRecursiveComparison().ignoringFields("uuid").isEqualTo(responseBody);
 
         MvcResult resultDuplicate = mockMvc.perform(post("/contact")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .content(objectMapper.writeValueAsBytes(secondAccBody))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -258,11 +271,11 @@ class ContactControllerTest {
     @Test
     void whenDelete_thenObjectDeleted_andReturn204() throws Exception {
         //when
-        objectMapper = new ObjectMapper();
+        when(contactService.canRemoveContactDetails("0")).thenReturn(true);
         doNothing().when(contactService).deleteById("0");
 
         MvcResult result = mockMvc.perform(delete("/contact/0")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isNoContent())
@@ -274,32 +287,15 @@ class ContactControllerTest {
     @Test
     void whenDeleteByInvalidId_thenReturn400() throws Exception {
         //when
-        objectMapper = new ObjectMapper();
         doNothing().when(contactService).deleteById("0");
 
         MvcResult result = mockMvc.perform(delete("/contact/ ")
-                        .header("Authorization", format("Bearer %s", getSignedJwt()))
+                        .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
         verify(contactService, never()).deleteById("0");
-    }
-
-    private String getSignedJwt() throws Exception {
-        final RSASSASigner validSigner = new RSASSASigner(validRsaKey);
-
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .issueTime(Date.from(Instant.now()))
-                .expirationTime(new Date(new Date().getTime() + 60 * 1000))
-                .claim("scope", "email")
-                .claim("aud", "resourceServer")
-                .issuer(wireMockServer.baseUrl())
-                .build();
-        SignedJWT signedJWT = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256)
-                .keyID(validRsaKey.getKeyID()).build(), claimsSet);
-        signedJWT.sign(validSigner);
-        return signedJWT.serialize();
     }
 
     @Configuration

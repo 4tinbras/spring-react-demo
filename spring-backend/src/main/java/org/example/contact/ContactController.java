@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +29,13 @@ public class ContactController {
         return new ResponseEntity<>(contacts, HttpStatusCode.valueOf(200));
     }
 
+    @GetMapping(path = "/contact/{id}")
+    public ResponseEntity<ContactDetails> getContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
+        final Optional<ContactDetails> contact = contactService.findByUuid(id);
+        return new ResponseEntity<>(contact.get(), HttpStatusCode.valueOf(200));
+    }
+
+    // TODO: there is a bug around inserting first new record when identical one is already present
     @PostMapping(path="/contact")
     public ResponseEntity<ContactDetails> updateContact(@Valid @RequestBody final ContactDetails contactDetails)
             throws URISyntaxException {
@@ -44,8 +52,16 @@ public class ContactController {
         return ResponseEntity.created(new URI("/contacts/" + savedContact.getUuid())).body(savedContact);
     }
 
+    //on a purpose there is no PUT, it could break things way too easily
+
+    // TODO: add patch; mind that link to account needs special handling
+
     @DeleteMapping(path="/contact/{id}")
-    public ResponseEntity<ContactDetails> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
+    public ResponseEntity<Void> deleteContact(@NotBlank @Digits(integer = 19, fraction = 0) @PathVariable("id") final String id) {
+//        if (!contactService.canRemoveContactDetails(id)) {
+//            return new ResponseEntity<>(HttpStatusCode.valueOf(400));
+//        }
+
         contactService.deleteById(id);
         return new ResponseEntity<>(HttpStatusCode.valueOf(204));
     }

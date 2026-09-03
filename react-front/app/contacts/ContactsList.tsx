@@ -121,6 +121,12 @@ export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] })
     const addNewRecord = (event: any, contacts: ContactViewModel[]) => {
         event.preventDefault()
 
+        // if one non-saved record is already present - do not create another one
+        // due to mixed up state acress the form possible to do only once per refresh of the page
+        if (contacts?.map(contactvm => contactvm.contact.uuid).values().some(uuid => isNaN(parseInt(uuid, 10)))) {
+            return;
+        }
+
         contacts.push({
             active: true,
             contact: {
@@ -138,7 +144,8 @@ export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] })
         dispatchState({type: ContactBlockActions.SetContacts, payload: {contacts: contacts}})
     }
 
-    return (<button onClick={(event) => addNewRecord(event, contacts)}>Add new record</button>)
+    return (
+        <button onClick={(event) => addNewRecord(event, contacts)} className={'button-primary'}>Add new record</button>)
 }
 
 export function ContactsRecord({uuid, contactvm, handleClick}: {
@@ -196,9 +203,8 @@ export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact
         ])]
     ])
 
-    const [onSubmit, data] = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
+    const onSubmit = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
         fieldsArray,
-        responseData,
         setData,
         dispatchState,
         FieldsSubmissionType.JsonFormParams,

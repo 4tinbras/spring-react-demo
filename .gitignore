@@ -43,3 +43,5 @@ build/
 ### React ###
 .env
 
+### Generated ###
+./data
