@@ -23,8 +23,6 @@ public class Account {
     private String ownersFirstName;
     private String ownersSurname;
 
-    //    @NotNull
-//    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "account", referencedColumnName = "uuid")
     private List<ContactDetails> contactDetails = new ArrayList<>();
