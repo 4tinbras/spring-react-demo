@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -33,4 +36,10 @@ public class ContactDetails {
     @Digits(integer = 15, fraction = 0)
     private String phoneNo;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "first_contact_id", referencedColumnName = "uuid")
+    private List<ContactDetails> firstContactDetails = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "second_contact_id", referencedColumnName = "uuid")
+    private List<ContactDetails> secondContactDetails = new ArrayList<>();
 }
