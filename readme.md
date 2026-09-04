@@ -10,6 +10,7 @@ In order to run the project manually startup each project:
 * Keycloak instance as per ``https://www.keycloak.org/getting-started/getting-started-zip``
   * suggested command for running keycloak is:
     ``[keycloak-root-directory]/bin/kc.sh start-dev --http-port 8020 --metrics-enabled=true --event-metrics-user-enabled=true --event-metrics-user-tags=realm,idp,clientId``
+  * in order to login use credentials: ``spreact-vanilla`` and ``vanilla-pass``
 * required DB (default configured as postgresql) run either as provided container or service as per its own instructions
   * expected table is called ``contact_details`` and needs to match ContactDetails schema
 * in order to enable kafka messaging in services profile ``kafka-msg`` needs to be active
