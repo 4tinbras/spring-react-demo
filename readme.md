@@ -33,6 +33,7 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 ## Known backend issues
 * first insertion intermittently causes issues if it overlaps with already existing UUID
 * healthcheck test stopped working since update to spring boot 4
+* relationship management is broken, needs further attention
 
 ## TODOs
 * non-root container executions

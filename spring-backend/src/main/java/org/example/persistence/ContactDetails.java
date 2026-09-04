@@ -18,8 +18,6 @@ public class ContactDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long uuid;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Account account;
 
     @Column(name = "account")
     private Long account;
