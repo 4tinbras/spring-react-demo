@@ -12,7 +12,7 @@ export default function ContactsBlock({}: {}) {
     const accessToken = authZToken;
 
 
-    function handleGetContacts() {
+    function handleGetContacts(): void {
         dispatchState({type: ContactBlockActions.SetLoading, payload: {status: FormStatus.Pending}});
 
         //TODO: add handling for exceptions
