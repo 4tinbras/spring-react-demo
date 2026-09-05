@@ -6,6 +6,7 @@ This project is a sample bundling together react frontend module, spring backend
 In order to run the project manually startup each project:
 * Spring ``./gradlew spring-backend:clean:build:bootRun``
 * React ``npm install`` followed by ``npm run dev``
+  * application is wired to expect authorization service on localhost:8020 and backend localhost:8080, any alteration needs to be commited to its env vars
 * Prometheus as per ``https://github.com/prometheus/prometheus``
 * Keycloak instance as per ``https://www.keycloak.org/getting-started/getting-started-zip``
   * suggested command for running keycloak is:
@@ -33,6 +34,7 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 ## Known backend issues
 * first insertion intermittently causes issues if it overlaps with already existing UUID
 * healthcheck test stopped working since update to spring boot 4
+* relationship management is broken as it is not propagated to relevant entities in contact details/persona entity
 
 ## TODOs
 * non-root container executions
