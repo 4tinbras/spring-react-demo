@@ -7,7 +7,8 @@ export const enum Discriminator {
     ReducerAction = 'ReducerAction',
     ErrorResp = 'ErrorResp',
     FormState = 'FormState',
-    TokenResponseDto = 'TokenResponseDto'
+    TokenResponseDto = 'TokenResponseDto',
+    Account = 'Account'
 }
 
 export interface ContactState {
@@ -53,6 +54,14 @@ export interface ContactViewModel {
     formStatus: FormStatus;
 }
 
+export interface Account {
+    readonly discriminator?: Discriminator.Account;
+    uuid: string;
+    ownersFirstName: string;
+    ownersSurname: string;
+    contactDetails: ContactDto[];
+}
+
 export interface FormState {
     readonly discriminator?: Discriminator.FormState;
     state: FormStatus;
@@ -71,6 +80,12 @@ export const enum ContactBlockActions {
     SetContacts = 'SET_CONTACTS',
     SetLoading = 'SET_LOADING',
     SetAll = 'SET_ALL',
+}
+
+export const enum AccountBlockActions {
+    SetInspectedAccount = 'SET_INSPECTED_ACCOUNT',
+    SetLoading = 'SET_LOADING',
+    SetAccounts = 'SET_ACCOUNTS',
 }
 
 export interface ReducerAction {
