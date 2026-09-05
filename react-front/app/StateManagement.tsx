@@ -1,6 +1,6 @@
 'use client';
 import React, {createContext, Dispatch, SetStateAction, useContext, useReducer, useState} from 'react';
-import {ContactBlockActions, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
+import {Account, ContactBlockActions, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
 
 export type ContactsState = {
     status: FormStatus,
@@ -61,6 +61,55 @@ export const useContacts = () => {
 
     if (!consumer) {
         throw new Error("This function is valid only within scope of ContactsDispatchContextProvider");
+    }
+
+    return consumer;
+}
+
+// ______________________________________________________________________
+
+export type AccountsState = {
+    status: FormStatus,
+    accounts: Account[],
+    inspectedAccount?: Account
+}
+
+export type AccountsContextProps = {
+    state: AccountsState,
+    dispatchState: Dispatch<ReducerAction>
+}
+
+export const AccountsDispatchContext = createContext<AccountsContextProps | undefined>(undefined);
+
+export const accountsReducer = (state: AccountsState, action: ReducerAction) => {
+// @ts-ignore
+    if (Object.values(FormStatus).includes(action.type)) {
+        switch (action.type) {
+            case FormStatus.Ok: {
+            }
+        }
+    }
+}
+
+export const AccountsProvider =
+    ({children, reducer, initialState}:
+     { children: any, reducer: (state: AccountsState, action: ReducerAction) => any, initialState: AccountsState }) => {
+
+        const [state, dispatchState] = useReducer(reducer, initialState)
+
+        return (
+            // @ts-ignore
+            <AccountsDispatchContext.Provider value={{state, dispatchState}}>
+                {children}
+            </AccountsDispatchContext.Provider>
+        );
+    };
+
+export const useAccounts = () => {
+    const consumer = useContext(AccountsDispatchContext);
+
+    if (!consumer) {
+        throw new Error("This function is valid only within scope of AccountsDispatchContextProvider");
     }
 
     return consumer;
