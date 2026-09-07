@@ -10,7 +10,9 @@ In order to run the project manually startup each project:
 * Keycloak instance as per ``https://www.keycloak.org/getting-started/getting-started-zip``
   * suggested command for running keycloak is:
     ``[keycloak-root-directory]/bin/kc.sh start-dev --http-port 8020 --metrics-enabled=true --event-metrics-user-enabled=true --event-metrics-user-tags=realm,idp,clientId``
-  * in order to login use credentials: ``spreact-vanilla`` and ``vanilla-pass``
+  * in order to login as an end user use credentials: ``spreact-vanilla`` and ``vanilla-pass``
+  * in order to operate dockerfile expects connection to postgres with ``keycloak`` database and similarly named user
+    with same password
 * required DB (default configured as postgresql) run either as provided container or service as per its own instructions
   * expected table is called ``contact_details`` and needs to match ContactDetails schema
 * in order to enable kafka messaging in services profile ``kafka-msg`` needs to be active
@@ -35,6 +37,7 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 * first insertion intermittently causes issues if it overlaps with already existing UUID
 * healthcheck test stopped working since update to spring boot 4
 * relationship management is broken as it is not propagated to relevant entities
+* docker compose postgres needs changing to support keycloak saving to db
 
 ## TODOs
 * non-root container executions
