@@ -1,34 +1,42 @@
 'use client'
 
 import {useAccounts, useAuthZ} from "@/app/StateManagement";
-import {createRemoteJWKSet, JWTPayload, jwtVerify, JWTVerifyResult} from 'jose';
+import {createRemoteJWKSet, JWTPayload, jwtVerify} from 'jose';
 import {AccountBlockActions, FormStatus} from "@/app/utils";
+import {useState} from "react";
 
 
-export default async function AccountsBlock({}: {}) {
+export default function AccountsBlock({}: {}) {
 
     const getAccountsEndpoint = `${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/accounts";
     const getAccountEndpoint = `${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/account";
     const {authZToken} = useAuthZ();
     const accessToken = authZToken;
-    const decryptedAccessToken: JWTPayload = await getValidatedJWT(accessToken);
+    // const decryptedAccessToken: JWTPayload = getValidatedJWT(accessToken);
 
     const {state, dispatchState} = useAccounts();
+    const [decryptedAccessToken, setDecryptedAccessToken] = useState<JWTPayload>();
 
     const jwksUri = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}` + `${process.env.NEXT_PUBLIC_JWKS_ENDPOINT}`;
+    console.log("Checking jwks endpoint at: " + jwksUri);
+
     const jwks = createRemoteJWKSet(new URL(jwksUri));
 
     console.log("validating jwt...");
 
-    async function getValidatedJWT(accessToken: string): Promise<JWTPayload> {
+    getValidatedJWT(accessToken);
+
+    function getValidatedJWT(accessToken: string): void {
         const options = {
             algorithms: ['RS256'],
-            issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
-            // audience: 'myaudience'
+            issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`
         };
-        const result: JWTVerifyResult<JWTPayload> = await jwtVerify(accessToken, jwks, options);
-        console.log("jwt payload:" + result.payload);
-        return result.payload;
+        let outcome = jwtVerify(accessToken, jwks, options)
+            .then(result => {
+                console.log("jwt payload:" + result);
+                setDecryptedAccessToken(result.payload)
+                return result.payload;
+            });
     }
 
     function handleGetAccounts(isFetchAll: boolean) {
@@ -61,7 +69,7 @@ export default async function AccountsBlock({}: {}) {
 
     return (
         <>
-            {(decryptedAccessToken.scope as string).includes("admin") &&
+            {(decryptedAccessToken?.scope as string).includes("admin") &&
                 (<>
                     {/*    retrieve all accounts*/}
                     <button onClick={() => handleGetAccounts(false)} className={'button-primary'}>Get your Account
