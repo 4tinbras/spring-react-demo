@@ -59,6 +59,8 @@ const validTokenProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     activeTab: "",
     setActiveTab: jest.fn(),
+    tokenPayload: {"jti": "11"},
+    setTokenPayload: jest.fn(),
 }
 
 const invalidTokenProps: AuthZContextProps = {
@@ -66,8 +68,9 @@ const invalidTokenProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     activeTab: "",
     setActiveTab: jest.fn(),
+    tokenPayload: {"jti": "11"},
+    setTokenPayload: jest.fn(),
 }
-
 describe('ContactsBlock', () => {
 
 
