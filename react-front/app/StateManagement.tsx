@@ -124,7 +124,7 @@ export type AuthZContextProps = {
     setAuthZToken: Dispatch<SetStateAction<string>>;
     activeTab: string;
     setActiveTab: Dispatch<SetStateAction<string>>;
-    tokenPayload: JWTPayload;
+    tokenPayload: JWTPayload | undefined;
     setTokenPayload: Dispatch<SetStateAction<JWTPayload>>;
 }
 
