@@ -1,6 +1,7 @@
 'use client';
 import React, {createContext, Dispatch, SetStateAction, useContext, useReducer, useState} from 'react';
 import {Account, ContactBlockActions, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
+import {JWTPayload} from "jose";
 
 export type ContactsState = {
     status: FormStatus,
@@ -123,6 +124,8 @@ export type AuthZContextProps = {
     setAuthZToken: Dispatch<SetStateAction<string>>;
     activeTab: string;
     setActiveTab: Dispatch<SetStateAction<string>>;
+    tokenPayload: JWTPayload;
+    setTokenPayload: Dispatch<SetStateAction<JWTPayload>>;
 }
 
 export const AuthZContext = createContext<AuthZContextProps | undefined>(undefined);
@@ -131,10 +134,11 @@ export const AuthZContext = createContext<AuthZContextProps | undefined>(undefin
 export const AuthZProvider = ({children}: { children: any }) => {
     const [authZToken, setAuthZToken] = useState<string>('');
     const [activeTab, setActiveTab] = useState<string>('HOME');
+    const [tokenPayload, setTokenPayload] = useState<JWTPayload>();
 
     return (
         // @ts-ignore
-        <AuthZContext.Provider value={{authZToken, setAuthZToken}}>
+        <AuthZContext.Provider value={{authZToken, setAuthZToken, tokenPayload, setTokenPayload}}>
             {children}
         </AuthZContext.Provider>
     );
