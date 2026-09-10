@@ -1,6 +1,13 @@
 'use client';
 import React, {createContext, Dispatch, SetStateAction, useContext, useReducer, useState} from 'react';
-import {Account, ContactBlockActions, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
+import {
+    Account,
+    AccountBlockActions,
+    ContactBlockActions,
+    ContactViewModel,
+    FormStatus,
+    ReducerAction
+} from "@/app/utils";
 import {JWTPayload} from "jose";
 
 export type ContactsState = {
@@ -85,8 +92,19 @@ export const AccountsDispatchContext = createContext<AccountsContextProps | unde
 export const accountsReducer = (state: AccountsState, action: ReducerAction) => {
 // @ts-ignore
     if (Object.values(FormStatus).includes(action.type)) {
-        switch (action.type) {
-            case FormStatus.Ok: {
+        return {...state}
+    } else { // @ts-ignore
+        if (Object.values(AccountBlockActions).includes(action.type)) {
+            switch (action.type) {
+                case AccountBlockActions.SetAccounts: {
+                    return {...state, accounts: action.payload.accounts}
+                }
+                case AccountBlockActions.SetLoading: {
+                    return {...state, status: action.payload.status}
+                }
+                case AccountBlockActions.SetInspectedAccount: {
+                    return {...state, inspectedAccount: action.payload.inspectedAccount}
+                }
             }
         }
     }

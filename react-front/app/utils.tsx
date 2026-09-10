@@ -59,7 +59,7 @@ export interface Account {
     uuid: string;
     ownersFirstName: string;
     ownersSurname: string;
-    contactDetails: ContactDto[];
+    contactDetails: number[];
 }
 
 export interface FormState {
