@@ -8,7 +8,7 @@ import {
     AuthZContext,
     AuthZContextProps
 } from "@/app/StateManagement";
-import {AccountBlockActions} from "@/app/utils";
+import {AccountBlockActions, FormStatus} from "@/app/utils";
 
 const customRender = (ui: React.ReactElement,
                       {contactsProviderProps, authZProviderProps, ...renderOptions}: {
@@ -27,7 +27,9 @@ const customRender = (ui: React.ReactElement,
 const inspectedAccount = {uuid: "1", ownersFirstName: "Tom", ownersSurname: "Smith", contactDetails: []};
 
 const validStatePropsWithAccounts = {
-    type: AccountBlockActions.SetInspectedAccount, payload: {inspectedAccount: inspectedAccount}
+    type: AccountBlockActions.SetInspectedAccount,
+    payload: {inspectedAccount: inspectedAccount, status: FormStatus.Ok},
+    inspectedAccount: inspectedAccount,
 }
 
 const endUserTokenPresentProps: AuthZContextProps = {

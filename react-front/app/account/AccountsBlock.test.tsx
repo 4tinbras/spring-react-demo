@@ -82,7 +82,9 @@ const customRender = (ui: React.ReactElement,
 }
 
 const validStateProps = {
-    type: AccountBlockActions.SetAccounts, payload: {accounts: []}
+    type: AccountBlockActions.SetAccounts,
+    payload: {accounts: []},
+    accounts: []
 }
 
 const tokenMissingProps: AuthZContextProps = {

@@ -40,11 +40,15 @@ const secondValidAccount: Account = {
 }
 
 const validStatePropsWithAccounts = {
-    type: AccountBlockActions.SetAccounts, payload: {accounts: [firstValidAccount, secondValidAccount]}
+    type: AccountBlockActions.SetAccounts,
+    payload: {accounts: [firstValidAccount, secondValidAccount]},
+    accounts: [firstValidAccount, secondValidAccount]
 }
 
 const validStatePropsWithoutAccounts = {
-    type: AccountBlockActions.SetAccounts, payload: {accounts: []}
+    type: AccountBlockActions.SetAccounts,
+    payload: {accounts: []},
+    accounts: []
 }
 
 const endUserTokenPresentProps: AuthZContextProps = {

@@ -13,10 +13,8 @@ export default function AccountInspection({inspectorIsAdmin}: {
         <div id={'personal-details-inspection-block'}>
             {}
             <h2>Personal details</h2>
-            {/*@ts-ignore*/}
-            <span>{state.payload.inspectedAccount.ownersFirstName}</span>
-            {/*@ts-ignore*/}
-            <span>{state.payload.inspectedAccount.ownersSurname}</span>
+            <span>{state.inspectedAccount.ownersFirstName}</span>
+            <span>{state.inspectedAccount.ownersSurname}</span>
             <br/>
             {/*query for contact details*/}
             <span>No Contact Details found</span>

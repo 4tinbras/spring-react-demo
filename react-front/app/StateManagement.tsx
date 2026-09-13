@@ -79,7 +79,7 @@ export const useContacts = () => {
 export type AccountsState = {
     status: FormStatus,
     accounts: Account[],
-    inspectedAccount?: Account
+    inspectedAccount: Account
 }
 
 export type AccountsContextProps = {
