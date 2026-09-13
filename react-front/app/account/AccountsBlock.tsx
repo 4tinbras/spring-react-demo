@@ -61,8 +61,7 @@ export default function AccountsBlock({}: {}) {
 
                     {/*    hidden inspection element*/}
                     {(state.inspectedAccount !== undefined && isLastFetchInspection) && (
-                        <AccountInspection inspectedAccount={state.inspectedAccount}
-                                           inspectorIsAdmin={true}></AccountInspection>
+                        <AccountInspection inspectorIsAdmin={true}></AccountInspection>
                     )}
                     {/*    hidden list element*/}
                     {(state.accounts !== undefined && !isLastFetchInspection) && (
@@ -74,8 +73,7 @@ export default function AccountsBlock({}: {}) {
                     <button onClick={() => handleGetAccounts(false)} className={'button-primary'}>Get your Account
 
                         {state.inspectedAccount !== undefined && (
-                            <AccountInspection inspectedAccount={state.inspectedAccount}
-                                               inspectorIsAdmin={false}></AccountInspection>
+                            <AccountInspection inspectorIsAdmin={false}></AccountInspection>
                         )}
                     </button>
                 </>)) || (

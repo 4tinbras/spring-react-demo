@@ -1,29 +1,31 @@
 'use client'
 
-import {Account} from "@/app/utils";
+import {useAccounts} from "@/app/StateManagement";
 
 
-export default function AccountInspection({inspectedAccount, inspectorIsAdmin}: {
-    inspectedAccount: Account,
+export default function AccountInspection({inspectorIsAdmin}: {
     inspectorIsAdmin: boolean
 }) {
-
+    const {state, dispatchState} = useAccounts();
 
     return (<>
         <h1>Account</h1>
         <div id={'personal-details-inspection-block'}>
+            {}
             <h2>Personal details</h2>
-            <span>{inspectedAccount.ownersFirstName}</span>
-            <span>{inspectedAccount.ownersSurname}</span>
+            {/*@ts-ignore*/}
+            <span>{state.payload.inspectedAccount.ownersFirstName}</span>
+            {/*@ts-ignore*/}
+            <span>{state.payload.inspectedAccount.ownersSurname}</span>
             <br/>
             {/*query for contact details*/}
             <span>No Contact Details found</span>
-            {/*<span>{inspectedAccount.contactDetails}</span>*/}
+            {/*<span>{state.payload.inspectedAccount.contactDetails}</span>*/}
         </div>
         {inspectorIsAdmin && (
             <div id={'admin-details-inspection-block'}>
                 <h2>Account configuration</h2>
-                {/*    form to edit account
+                {/* TODO:   form to edit account
                 dropdown to change account state
                 dropdown to change account type
             */}
