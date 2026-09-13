@@ -8,9 +8,6 @@ export default function AccountInspection({inspectedAccount, inspectorIsAdmin}: 
     inspectorIsAdmin: boolean
 }) {
 
-    console.log('returning: ' + inspectedAccount.ownersFirstName);
-    console.log('returning: ' + inspectedAccount.ownersSurname);
-    console.log('returning: ' + inspectedAccount.contactDetails);
 
     return (<>
         <h1>Account</h1>

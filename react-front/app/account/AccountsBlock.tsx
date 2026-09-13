@@ -33,9 +33,7 @@ export default function AccountsBlock({}: {}) {
             }
         }).then(body => {
             if (isFetchAll) {
-                console.log("hit expected path");
                 setIsLastFetchInspection(false);
-                console.log("expected value is: " + isLastFetchInspection);
                 dispatchState({
                     type: AccountBlockActions.SetAccounts,
                     payload: {accounts: Array.isArray(body) ? body : null, status: FormStatus.Ok}
@@ -50,8 +48,6 @@ export default function AccountsBlock({}: {}) {
             }
         })
     }
-
-    console.log(isLastFetchInspection);
 
     return (
         <>
