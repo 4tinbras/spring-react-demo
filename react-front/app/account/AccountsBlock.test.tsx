@@ -63,18 +63,9 @@ const correctValidatedJWTPayload: JWTVerifyResult<JWTPayload> = {
 jest.mock('jose', () => {
     return {
         createRemoteJWKSet: jest.fn(),
-        jwtVerify: jest.fn().mockResolvedValue(
-            {
-                payload: {
-                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
-                    jti: '11',
-                },
-                protectedHeader: {alg: "RS256"}
-            }
-        )
+        jwtVerify: jest.fn().mockResolvedValue(correctValidatedJWTPayload)
     }
 });
-
 
 const customRender = (ui: React.ReactElement,
                       {contactsProviderProps, authZProviderProps, ...renderOptions}: {
@@ -149,7 +140,7 @@ describe('AccountsBlock ', () => {
 
     })
 
-    it('for an administrative view shows all accounts retrieval button', async () => {
+    it('for an administrative view shows all accounts retrieval button and correctly shows and hides the inspection', async () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
@@ -161,10 +152,44 @@ describe('AccountsBlock ', () => {
         expect(screen.getByText('Get your Account'));
         expect(screen.getByText('Get All Accounts'));
 
-        const contactsButton = screen.getByRole('button', {name: 'Get your Account'})
+        const contactsButton = screen.getByRole('button', {name: 'Get All Accounts'})
+        const contactButton = screen.getByRole('button', {name: 'Get your Account'})
+
+        await act(async () => {
+            fireEvent.click(contactButton)
+        });
+        //had to be separated because of race condition
+        await act(async () => {
+            fireEvent.click(contactsButton)
+        });
+
+        await screen.findByText('Tom');
+        expect(screen.queryByText('Smith'));
+        expect(screen.queryByText('No Contact Details found')).not.toBeInTheDocument();
+        expect(screen.queryByText('Personal details'));
+        expect(screen.queryByText('Account configuration')).not.toBeInTheDocument();
+        //list has been hidden and shown
+        expect(screen.queryByText('Linked contact details')).toBeInTheDocument();
+    })
+
+    it('for an administrative view shows all accounts retrieval button and correctly shows and hides the list', async () => {
+
+        customRender(<AccountsDispatchContext.Consumer>
+                {value => <AuthZContext.Consumer>
+                    {value => <AccountsBlock/>}
+
+                </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
+            {contactsProviderProps: validStateProps, authZProviderProps: adminTokenPresentProps, renderOptions: []})
+
+        expect(screen.getByText('Get your Account'));
+        expect(screen.getByText('Get All Accounts'));
+
+        const contactsButton = screen.getByRole('button', {name: 'Get All Accounts'})
+        const contactButton = screen.getByRole('button', {name: 'Get your Account'})
 
         act(() => {
             fireEvent.click(contactsButton)
+            fireEvent.click(contactButton)
         });
 
         await screen.findByText('Tom');
@@ -172,6 +197,8 @@ describe('AccountsBlock ', () => {
         expect(screen.queryByText('No Contact Details found'));
         expect(screen.queryByText('Personal details'));
         expect(screen.queryByText('Account configuration')).toBeInTheDocument();
+        //list has been shown and hidden
+        expect(screen.queryByText('Linked contact details')).not.toBeInTheDocument();
     })
 
     it('for missing token shows info header', async () => {

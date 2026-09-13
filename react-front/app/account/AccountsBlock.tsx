@@ -4,6 +4,7 @@ import {useAccounts, useAuthZ} from "@/app/StateManagement";
 import {AccountBlockActions, FormStatus} from "@/app/utils";
 import AccountInspection from "@/app/account/AccountInspection";
 import AccountsList from "@/app/account/AccountsList";
+import {useState} from "react";
 
 
 export default function AccountsBlock({}: {}) {
@@ -15,6 +16,7 @@ export default function AccountsBlock({}: {}) {
     // const decryptedAccessToken: JWTPayload = getValidatedJWT(accessToken);
 
     const {state, dispatchState} = useAccounts();
+    const [isLastFetchInspection, setIsLastFetchInspection] = useState(false);
 
     function handleGetAccounts(isFetchAll: boolean) {
         const endpoint = isFetchAll ? getAccountsEndpoint : getAccountEndpoint;
@@ -31,11 +33,16 @@ export default function AccountsBlock({}: {}) {
             }
         }).then(body => {
             if (isFetchAll) {
+                console.log("hit expected path");
+                setIsLastFetchInspection(false);
+                console.log("expected value is: " + isLastFetchInspection);
                 dispatchState({
                     type: AccountBlockActions.SetAccounts,
                     payload: {accounts: Array.isArray(body) ? body : null, status: FormStatus.Ok}
                 });
             } else {
+                console.log("hit the other path");
+                setIsLastFetchInspection(true);
                 dispatchState({
                     type: AccountBlockActions.SetInspectedAccount,
                     payload: {inspectedAccount: !Array.isArray(body) ? body : null, status: FormStatus.Ok}
@@ -43,6 +50,8 @@ export default function AccountsBlock({}: {}) {
             }
         })
     }
+
+    console.log(isLastFetchInspection);
 
     return (
         <>
@@ -55,13 +64,13 @@ export default function AccountsBlock({}: {}) {
                     </button>
 
                     {/*    hidden inspection element*/}
-                    {state.inspectedAccount !== undefined && (
+                    {(state.inspectedAccount !== undefined && isLastFetchInspection) && (
                         <AccountInspection inspectedAccount={state.inspectedAccount}
                                            inspectorIsAdmin={true}></AccountInspection>
                     )}
                     {/*    hidden list element*/}
-                    {state.accounts !== undefined && (
-                        <AccountsList accounts={state.accounts}></AccountsList>
+                    {(state.accounts !== undefined && !isLastFetchInspection) && (
+                        <AccountsList></AccountsList>
                     )}
                 </>)
                 || (<>
