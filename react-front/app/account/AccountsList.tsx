@@ -46,6 +46,9 @@ export default function AccountsList() {
     );
 
     return (<>
+        {state.inspectedAccount !== undefined && (
+            <button disabled={true}>Return to the inspection</button>
+        )}
         <Table className={"table-striped-columns"}>
             <caption>
                 Registered accounts

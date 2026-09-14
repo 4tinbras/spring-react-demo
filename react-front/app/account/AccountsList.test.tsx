@@ -45,6 +45,13 @@ const validStatePropsWithAccounts = {
     accounts: [firstValidAccount, secondValidAccount]
 }
 
+const validStatePropsWithAccountsAndInspection = {
+    type: AccountBlockActions.SetAccounts,
+    payload: {accounts: [firstValidAccount, secondValidAccount]},
+    accounts: [firstValidAccount, secondValidAccount],
+    inspectedAccount: firstValidAccount
+}
+
 const validStatePropsWithoutAccounts = {
     type: AccountBlockActions.SetAccounts,
     payload: {accounts: []},
@@ -78,6 +85,7 @@ describe('AccountsList ', () => {
         expect(screen.queryByText('Linked contact details'));
         expect(screen.queryByText('Tom'));
         expect(screen.queryByText('Doe'));
+        expect(screen.queryByText('Return to the inspection')).not.toBeInTheDocument();
     })
 
     it('given previous inspection it renders list with edit button and with back to inspection button', async () => {
@@ -88,7 +96,7 @@ describe('AccountsList ', () => {
 
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {
-                contactsProviderProps: validStatePropsWithAccounts,
+                contactsProviderProps: validStatePropsWithAccountsAndInspection,
                 authZProviderProps: endUserTokenPresentProps,
                 renderOptions: []
             })
@@ -98,6 +106,7 @@ describe('AccountsList ', () => {
         expect(screen.queryByText('Linked contact details'));
         expect(screen.queryByText('Tom'));
         expect(screen.queryByText('Doe'));
+        expect(screen.queryByText('Return to the inspection'));
     })
 
     it('given no items render empty list and suggests repeated fetch', async () => {
