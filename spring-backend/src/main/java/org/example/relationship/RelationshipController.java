@@ -21,8 +21,8 @@ public class RelationshipController {
 
     @GetMapping(path = "/relationships")
     public ResponseEntity<List<Relationship>> getAllRelationships(
-            @Digits(integer = 19, fraction = 0) @RequestParam(value = "id", required = false) final String id,
-            @Digits(integer = 19, fraction = 0) @RequestParam(value = "id", required = false) final String secondId) {
+            @Digits(integer = 19, fraction = 0) @RequestParam(value = "id", required = false) final Long id,
+            @Digits(integer = 19, fraction = 0) @RequestParam(value = "id", required = false) final Long secondId) {
         final List<Relationship> result;
         if (id == null) {
             result = relationshipService.findAll();
