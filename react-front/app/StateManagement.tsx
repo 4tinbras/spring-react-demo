@@ -1,6 +1,14 @@
 'use client';
 import React, {createContext, Dispatch, SetStateAction, useContext, useReducer, useState} from 'react';
-import {ContactBlockActions, ContactViewModel, FormStatus, ReducerAction} from "@/app/utils";
+import {
+    Account,
+    AccountBlockActions,
+    ContactBlockActions,
+    ContactViewModel,
+    FormStatus,
+    ReducerAction
+} from "@/app/utils";
+import {JWTPayload} from "jose";
 
 export type ContactsState = {
     status: FormStatus,
@@ -68,12 +76,74 @@ export const useContacts = () => {
 
 // ______________________________________________________________________
 
+export type AccountsState = {
+    status: FormStatus,
+    accounts: Account[],
+    inspectedAccount: Account
+}
+
+export type AccountsContextProps = {
+    state: AccountsState,
+    dispatchState: Dispatch<ReducerAction>
+}
+
+export const AccountsDispatchContext = createContext<AccountsContextProps | undefined>(undefined);
+
+export const accountsReducer = (state: AccountsState, action: ReducerAction) => {
+// @ts-ignore
+    if (Object.values(FormStatus).includes(action.type)) {
+        return {...state}
+    } else { // @ts-ignore
+        if (Object.values(AccountBlockActions).includes(action.type)) {
+            switch (action.type) {
+                case AccountBlockActions.SetAccounts: {
+                    return {...state, accounts: action.payload.accounts}
+                }
+                case AccountBlockActions.SetLoading: {
+                    return {...state, status: action.payload.status}
+                }
+                case AccountBlockActions.SetInspectedAccount: {
+                    return {...state, inspectedAccount: action.payload.inspectedAccount}
+                }
+            }
+        }
+    }
+}
+
+export const AccountsProvider =
+    ({children, reducer, initialState}:
+     { children: any, reducer: (state: AccountsState, action: ReducerAction) => any, initialState: AccountsState }) => {
+
+        const [state, dispatchState] = useReducer(reducer, initialState)
+
+        return (
+            // @ts-ignore
+            <AccountsDispatchContext.Provider value={{state, dispatchState}}>
+                {children}
+            </AccountsDispatchContext.Provider>
+        );
+    };
+
+export const useAccounts = () => {
+    const consumer = useContext(AccountsDispatchContext);
+
+    if (!consumer) {
+        throw new Error("This function is valid only within scope of AccountsDispatchContextProvider");
+    }
+
+    return consumer;
+}
+
+// ______________________________________________________________________
+
 
 export type AuthZContextProps = {
     authZToken: string;
     setAuthZToken: Dispatch<SetStateAction<string>>;
     activeTab: string;
     setActiveTab: Dispatch<SetStateAction<string>>;
+    tokenPayload: JWTPayload | undefined;
+    setTokenPayload: Dispatch<SetStateAction<JWTPayload>>;
 }
 
 export const AuthZContext = createContext<AuthZContextProps | undefined>(undefined);
@@ -82,10 +152,11 @@ export const AuthZContext = createContext<AuthZContextProps | undefined>(undefin
 export const AuthZProvider = ({children}: { children: any }) => {
     const [authZToken, setAuthZToken] = useState<string>('');
     const [activeTab, setActiveTab] = useState<string>('HOME');
+    const [tokenPayload, setTokenPayload] = useState<JWTPayload>();
 
     return (
         // @ts-ignore
-        <AuthZContext.Provider value={{authZToken, setAuthZToken}}>
+        <AuthZContext.Provider value={{authZToken, setAuthZToken, tokenPayload, setTokenPayload}}>
             {children}
         </AuthZContext.Provider>
     );

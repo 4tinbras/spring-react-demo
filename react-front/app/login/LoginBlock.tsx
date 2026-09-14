@@ -2,6 +2,7 @@ import {FieldsSubmissionType, FormStatus, genericFetch, ReducerAction, TokenResp
 import React, {useReducer} from "react";
 import {useSearchParams} from 'next/navigation'
 import {useAuthZ} from "@/app/StateManagement";
+import {createRemoteJWKSet, jwtVerify} from "jose";
 
 export default function LoginBlock({}: {}) {
     const AUTHORIZATION_SERVER_URL = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}`;
@@ -52,8 +53,16 @@ export default function LoginBlock({}: {}) {
     const searchParams = useSearchParams();
     const authzCodeValue = searchParams.get("code");
 
-    const {authZToken, setAuthZToken} = useAuthZ();
+    const {authZToken, setAuthZToken, tokenPayload, setTokenPayload} = useAuthZ();
     const accessToken = authZToken;
+
+    const options = {
+        algorithms: ['RS256'],
+        issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`
+    };
+
+    const jwksUri = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}` + `${process.env.NEXT_PUBLIC_JWKS_ENDPOINT}`;
+    const jwks = createRemoteJWKSet(new URL(jwksUri));
 
     const onSubmitHandler = (e: any) => {
         e.preventDefault();
@@ -74,6 +83,15 @@ export default function LoginBlock({}: {}) {
                     const data: TokenResponseDto = await result.json();
 
                     setAuthZToken(data.access_token);
+
+                    //decode token and validate
+                    let outcome = jwtVerify(data.access_token, jwks, options);
+                    console.log("outcome: " + outcome);
+                    outcome.then(result => {
+                        return result.payload;
+                    }).then(payload => {
+                        setTokenPayload(payload)
+                    });
                 });
 
             } catch (err: any) {

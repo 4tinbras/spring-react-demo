@@ -28,6 +28,22 @@ const server = setupServer(
     },),
 )
 
+jest.mock('jose', () => {
+    return {
+        createRemoteJWKSet: jest.fn(),
+        jwtVerify: jest.fn().mockResolvedValue(
+            {
+                payload: {
+                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+                    jti: '11',
+                },
+                protectedHeader: {alg: "RS256"}
+            }
+        )
+
+    }
+});
+
 beforeAll(() => server.listen())
 // reset any request handlers that are declared as a part of the tests
 afterEach(() => server.resetHandlers())
@@ -48,6 +64,8 @@ const initialStateProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     activeTab: "",
     setActiveTab: jest.fn(),
+    tokenPayload: {"jti": "11"},
+    setTokenPayload: jest.fn(),
 }
 
 
@@ -56,12 +74,14 @@ const validTokenProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     activeTab: "",
     setActiveTab: jest.fn(),
+    tokenPayload: {"jti": "11"},
+    setTokenPayload: jest.fn(),
 }
 
 jest.mock('next/navigation');
 
 
-describe('MyComponent', () => {
+describe('LoginBlock', () => {
     it('renders button with initial instruction', async () => {
 
         const getMock: jest.Mock = jest.fn(paramName => undefined);

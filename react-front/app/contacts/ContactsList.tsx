@@ -203,7 +203,7 @@ export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact
         ])]
     ])
 
-    const onSubmit = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
+    const onSubmit = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/contact",
         fieldsArray,
         setData,
         dispatchState,

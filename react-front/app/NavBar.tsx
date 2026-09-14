@@ -38,6 +38,12 @@ export default function NavBar() {
                                           onClick={() => setActiveTab('LOGIN')}>Login</Link>)
                                 || (<Link href="/login">Login</Link>)}
                         </NavItem>
+                        <NavItem>
+                            {activeTab === 'ACCOUNT' && (
+                                    <Link href="/account" className={'active'}
+                                          onClick={() => setActiveTab('ACCOUNT')}>Login</Link>)
+                                || (<Link href="/account">Account</Link>)}
+                        </NavItem>
                     </Nav>
                 </Collapse>
             </div>
