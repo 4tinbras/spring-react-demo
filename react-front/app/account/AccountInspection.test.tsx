@@ -26,10 +26,17 @@ const customRender = (ui: React.ReactElement,
 
 const inspectedAccount = {uuid: "1", ownersFirstName: "Tom", ownersSurname: "Smith", contactDetails: []};
 
-const validStatePropsWithAccounts = {
+const validStatePropsWithInspection = {
     type: AccountBlockActions.SetInspectedAccount,
     payload: {inspectedAccount: inspectedAccount, status: FormStatus.Ok},
     inspectedAccount: inspectedAccount,
+}
+
+const validStatePropsWithInspectionAndAccounts = {
+    type: AccountBlockActions.SetInspectedAccount,
+    payload: {inspectedAccount: inspectedAccount, status: FormStatus.Ok},
+    inspectedAccount: inspectedAccount,
+    accounts: [inspectedAccount]
 }
 
 const endUserTokenPresentProps: AuthZContextProps = {
@@ -50,7 +57,7 @@ describe('AccountInspection ', () => {
 
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {
-                contactsProviderProps: validStatePropsWithAccounts,
+                contactsProviderProps: validStatePropsWithInspection,
                 authZProviderProps: endUserTokenPresentProps,
                 renderOptions: []
             })
@@ -62,7 +69,7 @@ describe('AccountInspection ', () => {
         expect(screen.queryByText('Account configuration')).not.toBeInTheDocument();
     })
 
-    it('for an admin view shows his own details as well as admin options', async () => {
+    it('given an admin view shows his own details as well as admin options and no return to list button', async () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
@@ -70,7 +77,7 @@ describe('AccountInspection ', () => {
 
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {
-                contactsProviderProps: validStatePropsWithAccounts,
+                contactsProviderProps: validStatePropsWithInspection,
                 authZProviderProps: endUserTokenPresentProps,
                 renderOptions: []
             })
@@ -79,6 +86,28 @@ describe('AccountInspection ', () => {
         expect(screen.queryByText('Smith'));
         expect(screen.queryByText('No Contact Details found'));
         expect(screen.queryByText('Personal details'));
-        expect(screen.queryByText('Account configuration')).toBeInTheDocument();
+        expect(screen.queryByText('Account configuration'));
+        expect(screen.queryByText('Return to the list')).not.toBeInTheDocument();
+    })
+
+    it('given an admin view and list fetched it shows back to list button', async () => {
+
+        customRender(<AccountsDispatchContext.Consumer>
+                {value => <AuthZContext.Consumer>
+                    {value => <AccountInspection inspectorIsAdmin={true}/>}
+
+                </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
+            {
+                contactsProviderProps: validStatePropsWithInspectionAndAccounts,
+                authZProviderProps: endUserTokenPresentProps,
+                renderOptions: []
+            })
+
+        expect(screen.queryByText('Tom'));
+        expect(screen.queryByText('Smith'));
+        expect(screen.queryByText('No Contact Details found'));
+        expect(screen.queryByText('Personal details'));
+        expect(screen.queryByText('Account configuration'));
+        expect(screen.queryByText('Return to the list'));
     })
 })

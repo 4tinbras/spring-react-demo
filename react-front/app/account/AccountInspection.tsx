@@ -11,7 +11,9 @@ export default function AccountInspection({inspectorIsAdmin}: {
     return (<>
         <h1>Account</h1>
         <div id={'personal-details-inspection-block'}>
-            {}
+            {inspectorIsAdmin && state.accounts !== undefined && state.accounts.length > 0 && (
+                <button disabled={true}>Return to the list</button>
+            )}
             <h2>Personal details</h2>
             <span>{state.inspectedAccount.ownersFirstName}</span>
             <span>{state.inspectedAccount.ownersSurname}</span>
