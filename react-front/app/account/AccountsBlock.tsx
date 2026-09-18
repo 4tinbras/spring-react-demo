@@ -71,11 +71,11 @@ export default function AccountsBlock({}: {}) {
                 || (<>
                     {/*    retrieve only relevant account*/}
                     <button onClick={() => handleGetAccounts(false)} className={'button-primary'}>Get your Account
-
-                        {state.inspectedAccount !== undefined && (
-                            <AccountInspection inspectorIsAdmin={false}></AccountInspection>
-                        )}
                     </button>
+
+                    {state.inspectedAccount !== undefined && (
+                        <AccountInspection inspectorIsAdmin={false}></AccountInspection>
+                    )}
                 </>)) || (
                 <><h1>You need to login in first</h1></>)
             }
