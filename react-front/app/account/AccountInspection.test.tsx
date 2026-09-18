@@ -1,4 +1,4 @@
-import {render, screen} from "@testing-library/react";
+import {act, fireEvent, render, screen} from "@testing-library/react";
 import AccountInspection from "@/app/account/AccountInspection";
 import React from "react";
 import {
@@ -109,5 +109,33 @@ describe('AccountInspection ', () => {
         expect(screen.queryByText('Personal details'));
         expect(screen.queryByText('Account configuration'));
         expect(screen.queryByText('Return to the list'));
+    })
+
+    it('for an end-user view shows his own details and when edition clicked view is replaced with interactive form', async () => {
+
+        customRender(<AccountsDispatchContext.Consumer>
+                {value => <AuthZContext.Consumer>
+                    {value => <AccountInspection inspectorIsAdmin={false}/>}
+
+                </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
+            {
+                contactsProviderProps: validStatePropsWithInspection,
+                authZProviderProps: endUserTokenPresentProps,
+                renderOptions: []
+            })
+
+        expect(screen.queryByText('Personal details'));
+        expect(screen.queryByText('Account configuration')).not.toBeInTheDocument();
+        expect(screen.queryByText('Account holder\'s first name')).not.toBeInTheDocument();
+        expect(screen.queryByText('Account holder\'s surname')).not.toBeInTheDocument();
+
+        const editAccountButton = screen.getByRole('button', {name: 'Edit'})
+
+        act(() => {
+            fireEvent.click(editAccountButton)
+        });
+
+        expect(screen.queryByText('Account holder\'s first name'));
+        expect(screen.queryByText('Account holder\'s surname'));
     })
 })
