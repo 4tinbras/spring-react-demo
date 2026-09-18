@@ -39,7 +39,6 @@ export default function AccountsBlock({}: {}) {
                     payload: {accounts: Array.isArray(body) ? body : null, status: FormStatus.Ok}
                 });
             } else {
-                console.log("hit the other path");
                 setIsLastFetchInspection(true);
                 dispatchState({
                     type: AccountBlockActions.SetInspectedAccount,
