@@ -200,3 +200,18 @@ export async function genericFetch(
 
     return await fetch(url, requestConfs);
 }
+
+export function fetchThenHandleBody(endpoint: string, method: string, accessToken: string, handleBody: (formData: any) => void) {
+    fetch(endpoint, {
+        method: method,
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error("Error response received", {cause: response});
+        } else {
+            return response.json();
+        }
+    }).then(body => handleBody(body))
+}

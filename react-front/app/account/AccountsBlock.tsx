@@ -1,7 +1,7 @@
 'use client'
 
 import {useAccounts, useAuthZ} from "@/app/StateManagement";
-import {AccountBlockActions, FormStatus} from "@/app/utils";
+import {AccountBlockActions, fetchThenHandleBody, FormStatus} from "@/app/utils";
 import AccountInspection from "@/app/account/AccountInspection";
 import AccountsList from "@/app/account/AccountsList";
 import {useState} from "react";
@@ -20,18 +20,8 @@ export default function AccountsBlock({}: {}) {
 
     function handleGetAccounts(isFetchAll: boolean) {
         const endpoint = isFetchAll ? getAccountsEndpoint : getAccountEndpoint;
-        fetch(endpoint, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error("Error response received", {cause: response});
-            } else {
-                return response.json();
-            }
-        }).then(body => {
+
+        const handleAccountBody = (body: any) => {
             if (isFetchAll) {
                 setIsLastFetchInspection(false);
                 dispatchState({
@@ -45,7 +35,9 @@ export default function AccountsBlock({}: {}) {
                     payload: {inspectedAccount: !Array.isArray(body) ? body : null, status: FormStatus.Ok}
                 });
             }
-        })
+        }
+
+        fetchThenHandleBody(endpoint, 'GET', accessToken, handleAccountBody)
     }
 
     return (
