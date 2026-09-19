@@ -79,18 +79,6 @@ function Form({inspectorIsAdmin, accessToken}: { inspectorIsAdmin: boolean, acce
         fetchThenHandleBody(postAccountEndpoint, 'POST', accessToken, handleBody);
         console.log("SUCCESS");
     }
-    // const foundErrors = Object.values(errors).map((errorItem: FieldError) => {
-    //     console.log("ref: " + errorItem.ref);
-    //     console.log("root: " + errorItem.root);
-    //     console.log("types: " + errorItem.types);
-    //     console.log("message: " + errorItem.message);
-    //     // const errorDescriptor: ErrorDescriptor = {
-    //     //     // @ts-ignore
-    //     //     message: errorItem.message,
-    //     //     relatedField: errorItem.ref?.toString()
-    //     // }
-    //     return undefined;
-    // });
 
     Object.entries(errors).map(([key, value]) => {
         console.log("ref: " + (value as FieldError).ref)
