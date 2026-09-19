@@ -2,13 +2,16 @@
 
 import {useAccounts} from "@/app/StateManagement";
 import {useState} from "react";
-import {Account} from "@/app/utils";
-import {useForm} from "react-hook-form";
+import {fetchThenHandleBody} from "@/app/utils";
+import {FieldError, useForm} from "react-hook-form";
+import {accountsValidation} from "@/app/validation/validationUtils";
+import {zodResolver} from "@hookform/resolvers/zod";
+import * as zod from "zod";
+import {ErrorDescriptor, ErrorLevel} from "@/app/error/ErrorBlock";
 
 
-export default function AccountInspection({inspectorIsAdmin}: {
-    inspectorIsAdmin: boolean
-}) {
+export default function AccountInspection({inspectorIsAdmin, accessToken}:
+                                          { inspectorIsAdmin: boolean, accessToken: string }) {
     const {state, dispatchState} = useAccounts();
     const [editionMode, setEditionMode] = useState(false);
 
@@ -27,7 +30,7 @@ export default function AccountInspection({inspectorIsAdmin}: {
             {inspectorIsAdmin && state.accounts !== undefined && state.accounts.length > 0 && (
                 <button disabled={true}>Return to the list</button>
             )}
-            {!editionMode && (<button onSubmit={onSubmitEdit}>Edit</button>)}
+            <button onClick={(event) => onSubmitEdit(event)}>Edit</button>
 
             <h2>Personal details</h2>
 
@@ -51,31 +54,60 @@ export default function AccountInspection({inspectorIsAdmin}: {
             </div>
         )}
         </>) || (
-            <Form inspectorIsAdmin={inspectorIsAdmin}></Form>
+            <Form inspectorIsAdmin={inspectorIsAdmin} accessToken={accessToken}></Form>
         )}
     </>)
 }
 
 
-function Form({inspectorIsAdmin}: { inspectorIsAdmin: boolean }) {
+function Form({inspectorIsAdmin, accessToken}: { inspectorIsAdmin: boolean, accessToken: string }) {
     const {
         register,
         handleSubmit,
         formState: {errors},
         setError,
-    } = useForm<Account>();
+    } = useForm<zod.infer<typeof accountsValidation>>({resolver: zodResolver(accountsValidation)});
 
-    const onSubmit = async (data: Account) => {
-        console.log("SUCCESS", data);
+    const postAccountEndpoint = `${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/account/1";
+
+    const handleBody = (body: any) => {
     }
 
+    const onSubmit = async (event: any) => {
+        event.preventDefault();
+
+        fetchThenHandleBody(postAccountEndpoint, 'POST', accessToken, handleBody);
+        console.log("SUCCESS");
+    }
     // const foundErrors = Object.values(errors).map((errorItem: FieldError) => {
-    //     errorItem.
+    //     console.log("ref: " + errorItem.ref);
+    //     console.log("root: " + errorItem.root);
+    //     console.log("types: " + errorItem.types);
+    //     console.log("message: " + errorItem.message);
+    //     // const errorDescriptor: ErrorDescriptor = {
+    //     //     // @ts-ignore
+    //     //     message: errorItem.message,
+    //     //     relatedField: errorItem.ref?.toString()
+    //     // }
     //     return undefined;
     // });
 
+    Object.entries(errors).map(([key, value]) => {
+        console.log("ref: " + (value as FieldError).ref)
+
+        const temp: ErrorDescriptor = {
+            id: key,
+            // @ts-ignore
+            message: (value as FieldError).message,
+            errorLevel: ErrorLevel.HardException,
+            relatedField: key
+        }
+
+        return temp;
+    })
+
     return (
-        <form id={"edit-block"}>
+        <form id={"edit-block"} onSubmit={handleSubmit(onSubmit)}>
             {inspectorIsAdmin && (
                 <fieldset>
                     <label htmlFor={"ownersFirstNameField"}>Account holder's first name</label>
@@ -86,14 +118,14 @@ function Form({inspectorIsAdmin}: { inspectorIsAdmin: boolean }) {
                     dropdown to change account state
                     dropdown to change account type
                     */}
-                    <button onSubmit={handleSubmit(onSubmit)}>Save</button>
+                    <button>Save</button>
                 </fieldset>) || (
                 <fieldset>
                     <label htmlFor={"ownersFirstNameField"}>Account holder's first name</label>
                     <input id={"ownersFirstNameField"} type={"text"} {...register("ownersFirstName")}/>
                     <label htmlFor={"ownersSurnameField"}>Account holder's surname</label>
                     <input id={"ownersSurnameField"} type={"text"} {...register("ownersSurname")}/>
-                    <button onSubmit={handleSubmit(onSubmit)}>Save</button>
+                    <button>Save</button>
                 </fieldset>
             )}
             {/*<ErrorBlock errors={}></ErrorBlock>*/}
