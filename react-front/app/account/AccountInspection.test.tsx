@@ -111,7 +111,9 @@ describe('AccountInspection ', () => {
         expect(screen.queryByText('Return to the list'));
     })
 
-    it('for an end-user view shows his own details and when edition clicked view is replaced with interactive form', async () => {
+    it('for an end-user view shows his own details ' +
+        'and when edition clicked view is replaced with interactive form ' +
+        'and when saved it shows error message due to lack of input', async () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
@@ -137,5 +139,11 @@ describe('AccountInspection ', () => {
 
         expect(screen.queryByText('Account holder\'s first name'));
         expect(screen.queryByText('Account holder\'s surname'));
+
+        const saveAccountButton = screen.getByRole('button', {name: 'Save'})
+        act(() => {
+            fireEvent.click(saveAccountButton)
+        });
+        expect(screen.queryByText('Too small: expected string to have >=1 characters'));
     })
 })
