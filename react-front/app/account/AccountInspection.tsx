@@ -7,7 +7,7 @@ import {FieldError, useForm} from "react-hook-form";
 import {accountsValidation} from "@/app/validation/validationUtils";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as zod from "zod";
-import {ErrorDescriptor, ErrorLevel} from "@/app/error/ErrorBlock";
+import ErrorBlock, {ErrorDescriptor, ErrorLevel} from "@/app/error/ErrorBlock";
 
 
 export default function AccountInspection({inspectorIsAdmin, accessToken}:
@@ -80,17 +80,18 @@ function Form({inspectorIsAdmin, accessToken}: { inspectorIsAdmin: boolean, acce
         console.log("SUCCESS");
     }
 
-    Object.entries(errors).map(([key, value]) => {
+    let errorIndex = 0
+    const errorList: ErrorDescriptor[] = Object.entries(errors).map(([key, value]) => {
         console.log("ref: " + (value as FieldError).ref)
 
         const temp: ErrorDescriptor = {
-            id: key,
+            id: errorIndex.toString(),
             // @ts-ignore
             message: (value as FieldError).message,
             errorLevel: ErrorLevel.HardException,
             relatedField: key
         }
-
+        errorIndex++;
         return temp;
     })
 
@@ -116,7 +117,7 @@ function Form({inspectorIsAdmin, accessToken}: { inspectorIsAdmin: boolean, acce
                     <button>Save</button>
                 </fieldset>
             )}
-            {/*<ErrorBlock errors={}></ErrorBlock>*/}
+            <ErrorBlock errors={errorList}></ErrorBlock>
         </form>
     )
 }
