@@ -1,11 +1,11 @@
 import React from "react";
 import {render, screen} from '@testing-library/react'
 import ContactsList, {EditContactButton} from "@/app/contacts/ContactsList";
-import {ContactBlockActions, FormStatus} from "@/app/utils";
+import {ContactBlockActions, ContactViewModel, FormStatus} from "@/app/utils";
 import {ContactsDispatchContext, ContactsProvider, contactsReducer} from "@/app/StateManagement";
 
 
-const inactiveContact = {
+const inactiveContact: ContactViewModel = {
     active: false,
     contact: {
         uuid: "1",
@@ -13,12 +13,13 @@ const inactiveContact = {
         lastName: "Smith",
         email: "test@test.com",
         phoneNo: "1234567890",
-        active: false
+        active: false,
+        account: "1"
     },
     formStatus: FormStatus.Editing
 }
 
-const activeContact = {
+const activeContact: ContactViewModel = {
     active: true,
     contact: {
         uuid: "1",
@@ -26,7 +27,8 @@ const activeContact = {
         lastName: "Smith",
         email: "test@test.com",
         phoneNo: "1234567890",
-        active: true
+        active: true,
+        account: "1"
     },
     formStatus: FormStatus.Editing
 }
@@ -72,7 +74,8 @@ describe('ContactsList ', () => {
                     lastName: "Smith",
                     email: "test@test.com",
                     phoneNo: "1234567890",
-                    active: true
+                    active: true,
+                    account: "1"
                 },
                 formStatus: FormStatus.Editing
             }]} accessToken={""}></ContactsList>}

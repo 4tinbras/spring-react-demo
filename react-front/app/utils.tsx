@@ -19,6 +19,7 @@ export interface ContactState {
     phoneNo: string;
     email: string;
     active: boolean;
+    account: string;
 }
 
 export interface ContactDto {
