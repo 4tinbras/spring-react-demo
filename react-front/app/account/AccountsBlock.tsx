@@ -13,7 +13,6 @@ export default function AccountsBlock({}: {}) {
     const getAccountEndpoint = `${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/account/1";
     const {authZToken, tokenPayload} = useAuthZ();
     const accessToken = authZToken;
-    // const decryptedAccessToken: JWTPayload = getValidatedJWT(accessToken);
 
     const {state, dispatchState} = useAccounts();
     const [isLastFetchInspection, setIsLastFetchInspection] = useState(false);
