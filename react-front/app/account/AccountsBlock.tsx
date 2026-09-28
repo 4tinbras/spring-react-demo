@@ -52,7 +52,7 @@ export default function AccountsBlock({}: {}) {
 
                     {/*    hidden inspection element*/}
                     {(state.inspectedAccount !== undefined && isLastFetchInspection) && (
-                        <AccountInspection inspectorIsAdmin={true}></AccountInspection>
+                        <AccountInspection inspectorIsAdmin={true} accessToken={accessToken}></AccountInspection>
                     )}
                     {/*    hidden list element*/}
                     {(state.accounts !== undefined && !isLastFetchInspection) && (
@@ -65,7 +65,7 @@ export default function AccountsBlock({}: {}) {
                     </button>
 
                     {state.inspectedAccount !== undefined && (
-                        <AccountInspection inspectorIsAdmin={false}></AccountInspection>
+                        <AccountInspection inspectorIsAdmin={false} accessToken={accessToken}></AccountInspection>
                     )}
                 </>)) || (
                 <><h1>You need to login in first</h1></>)
