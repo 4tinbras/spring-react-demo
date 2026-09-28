@@ -11,18 +11,10 @@ export const ContactsValidation = zod.object({
 
 //strong typing it to ZodType<Account> causes divergence in useForm
 export const accountsValidation = zod.object({
-    uuid: zod.string(),
+    id: zod.string(),
     ownersFirstName: zod.string().nonempty(),
     ownersSurname: zod.string().nonempty(),
-    contactDetails: zod.array(number())
+    contactDetails: zod.array(number()).or(zod.string()),
+    accountType: zod.string(),
+    accountState: zod.string()
 })
-
-//export interface ContactState {
-//     readonly discriminator?: Discriminator.ContactState;
-//     uuid: string;
-//     firstName: string;
-//     lastName: string;
-//     phoneNo: string;
-//     email: string;
-//     active: boolean;
-// }

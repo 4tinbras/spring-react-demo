@@ -1,4 +1,4 @@
-import React, {FormEventHandler, SetStateAction} from "react";
+import React, {FormEventHandler} from "react";
 
 export const enum Discriminator {
     ContactDto = 'ContactDto',
@@ -60,7 +60,9 @@ export interface Account {
     uuid: string;
     ownersFirstName: string;
     ownersSurname: string;
-    contactDetails: number[];
+    contactDetails: string[];
+    accountType: string,
+    accountState: string
 }
 
 export interface FormState {

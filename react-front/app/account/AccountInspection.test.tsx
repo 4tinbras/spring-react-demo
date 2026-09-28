@@ -53,7 +53,8 @@ describe('AccountInspection ', () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
-                    {value => <AccountInspection inspectorIsAdmin={false}/>}
+                    {value =>
+                        <AccountInspection inspectorIsAdmin={false} accessToken={"accessToken"}/>}
 
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {
@@ -73,7 +74,8 @@ describe('AccountInspection ', () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
-                    {value => <AccountInspection inspectorIsAdmin={true}/>}
+                    {value =>
+                        <AccountInspection inspectorIsAdmin={true} accessToken={"accessToken"}/>}
 
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {
@@ -94,7 +96,8 @@ describe('AccountInspection ', () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
-                    {value => <AccountInspection inspectorIsAdmin={true}/>}
+                    {value =>
+                        <AccountInspection inspectorIsAdmin={true} accessToken={"accessToken"}/>}
 
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {
@@ -117,7 +120,8 @@ describe('AccountInspection ', () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
-                    {value => <AccountInspection inspectorIsAdmin={false}/>}
+                    {value =>
+                        <AccountInspection inspectorIsAdmin={false} accessToken={"accessToken"}/>}
 
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {
