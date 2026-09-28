@@ -125,8 +125,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
             {inspectorIsAdmin && (
                 <fieldset>
                     //TODO: remove hardcoded fallback
-                    <input hidden id={"id"} type={"text"}
-                           value={originalAccount.uuid !== undefined ? originalAccount.uuid : "1"}
+                    <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"}>Account holder's first name</label>
                     <input id={"ownersFirstName"} type={"text"} defaultValue={originalAccount.ownersFirstName}
@@ -147,7 +146,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     <button>Save</button>
                 </fieldset>) || (
                 <fieldset>
-                    <input hidden id={"id"} type={"text"} value={originalAccount.uuid}
+                    <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"}>Account holder's first name</label>
                     <input id={"ownersFirstName"} type={"text"} defaultValue={originalAccount.ownersFirstName}
