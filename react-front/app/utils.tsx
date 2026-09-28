@@ -106,7 +106,6 @@ export const enum FieldsSubmissionType {
 export const genericSubmitForm = (
     url: string,
     fields: string[],
-    setStateData: React.Dispatch<SetStateAction<any>>,
     dispatch: React.Dispatch<ReducerAction>,
     fieldsSubmissionType: FieldsSubmissionType,
     additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
@@ -114,7 +113,7 @@ export const genericSubmitForm = (
 ): FormEventHandler => {
 
     const fetchData = async (formData: Map<string, string>): Promise<void> => {
-        await fetchDataWrapper(url, formData, setStateData, dispatch, fieldsSubmissionType, additionalData, method);
+        await fetchDataWrapper(url, formData, dispatch, fieldsSubmissionType, additionalData, method);
     };
 
     const onSubmit = (e: any) => {
@@ -129,7 +128,6 @@ export const genericSubmitForm = (
 export async function fetchDataWrapper(
     url: string,
     formData: Map<string, string>,
-    setStateData: React.Dispatch<SetStateAction<any>>,
     dispatch: React.Dispatch<ReducerAction>,
     fieldsSubmissionType: FieldsSubmissionType,
     additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
@@ -147,11 +145,9 @@ export async function fetchDataWrapper(
         response.then(async result => {
             data = await result.json();
 
-            setStateData(data);
-            dispatch({type: FormStatus.Ok.toString(), payload: null});
+            dispatch({type: FormStatus.Ok.toString(), payload: data});
         });
     } catch (err: any) {
-        setStateData(err);
         dispatch({type: FormStatus.Failed.toString(), payload: []});
     }
 }

@@ -1,5 +1,5 @@
 import {Table} from "reactstrap";
-import React, {MouseEventHandler, useContext, useState} from "react";
+import React, {MouseEventHandler, useContext} from "react";
 import {
     ContactBlockActions,
     ContactState,
@@ -196,7 +196,6 @@ export function EditContactButton({uuid, contactvm, onClick}:
 export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact: ContactState, accessToken: string }) {
     const fieldsArray = ['firstName', 'lastName', 'email', 'phoneNo', 'uuid', 'account'];
 
-    const [responseData, setData] = useState<[]>([]);
     // @ts-ignore
     const {dispatchState} = useContext(ContactsDispatchContext);
 
@@ -209,7 +208,6 @@ export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact
 
     const onSubmit = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/contact",
         fieldsArray,
-        setData,
         dispatchState,
         FieldsSubmissionType.JsonFormParams,
         additionalData,
