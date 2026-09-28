@@ -155,10 +155,14 @@ export async function fetchDataWrapper(
 export function onSubmitFetchData(fields: string[], fetchData: (formData: Map<string, string>) => Promise<void>, e: any): Promise<void> {
     const result: Map<string, string> = new Map<string, string>();
 
-    fields.forEach((field) =>
+    fields.forEach((field) => {
+            // TODO: preprocessing to allow empty lists; native solution would be better
+            const value = e.target[field]?.value == "[]" ? [] : e.target[field]?.value;
         //TODO: optional retrieval is suboptimal;
         // it came off the back of the changes to new record form that somehow broke form for blank uuid
-        result.set(field, e.target[field]?.value));
+            result.set(field, value)
+        }
+    );
 
     return fetchData(result);
 }
