@@ -24,8 +24,6 @@ export default function ContactsBlock({}: {}) {
                 }
                 cvmArray.push(contactvm);
             })
-        } else {
-
         }
         dispatchState({
             type: ContactBlockActions.SetAll,
