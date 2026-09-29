@@ -86,7 +86,6 @@ export default function LoginBlock({}: {}) {
 
                     //decode token and validate
                     let outcome = jwtVerify(data.access_token, jwks, options);
-                    console.log("outcome: " + outcome);
                     outcome.then(result => {
                         return result.payload;
                     }).then(payload => {

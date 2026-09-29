@@ -1,4 +1,4 @@
-import React, {FormEventHandler, SetStateAction} from "react";
+import React, {FormEventHandler} from "react";
 
 export const enum Discriminator {
     ContactDto = 'ContactDto',
@@ -19,6 +19,7 @@ export interface ContactState {
     phoneNo: string;
     email: string;
     active: boolean;
+    account: string;
 }
 
 export interface ContactDto {
@@ -59,7 +60,9 @@ export interface Account {
     uuid: string;
     ownersFirstName: string;
     ownersSurname: string;
-    contactDetails: number[];
+    contactDetails: string[];
+    accountType: string,
+    accountState: string
 }
 
 export interface FormState {
@@ -105,7 +108,6 @@ export const enum FieldsSubmissionType {
 export const genericSubmitForm = (
     url: string,
     fields: string[],
-    setStateData: React.Dispatch<SetStateAction<any>>,
     dispatch: React.Dispatch<ReducerAction>,
     fieldsSubmissionType: FieldsSubmissionType,
     additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
@@ -113,7 +115,7 @@ export const genericSubmitForm = (
 ): FormEventHandler => {
 
     const fetchData = async (formData: Map<string, string>): Promise<void> => {
-        await fetchDataWrapper(url, formData, setStateData, dispatch, fieldsSubmissionType, additionalData, method);
+        await fetchDataWrapper(url, formData, dispatch, fieldsSubmissionType, additionalData, method);
     };
 
     const onSubmit = (e: any) => {
@@ -128,7 +130,6 @@ export const genericSubmitForm = (
 export async function fetchDataWrapper(
     url: string,
     formData: Map<string, string>,
-    setStateData: React.Dispatch<SetStateAction<any>>,
     dispatch: React.Dispatch<ReducerAction>,
     fieldsSubmissionType: FieldsSubmissionType,
     additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
@@ -146,11 +147,9 @@ export async function fetchDataWrapper(
         response.then(async result => {
             data = await result.json();
 
-            setStateData(data);
-            dispatch({type: FormStatus.Ok.toString(), payload: null});
+            dispatch({type: FormStatus.Ok.toString(), payload: data});
         });
     } catch (err: any) {
-        setStateData(err);
         dispatch({type: FormStatus.Failed.toString(), payload: []});
     }
 }
@@ -158,10 +157,14 @@ export async function fetchDataWrapper(
 export function onSubmitFetchData(fields: string[], fetchData: (formData: Map<string, string>) => Promise<void>, e: any): Promise<void> {
     const result: Map<string, string> = new Map<string, string>();
 
-    fields.forEach((field) =>
+    fields.forEach((field) => {
+            // TODO: preprocessing to allow empty lists; native solution would be better
+            const value = e.target[field]?.value == "[]" ? [] : e.target[field]?.value;
         //TODO: optional retrieval is suboptimal;
         // it came off the back of the changes to new record form that somehow broke form for blank uuid
-        result.set(field, e.target[field]?.value));
+            result.set(field, value)
+        }
+    );
 
     return fetchData(result);
 }
@@ -199,4 +202,19 @@ export async function genericFetch(
     }
 
     return await fetch(url, requestConfs);
+}
+
+export function fetchThenHandleBody(endpoint: string, method: string, accessToken: string, handleBody: (formData: any) => void): Promise<void | Response> {
+    return fetch(endpoint, {
+        method: method,
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error("Error response received", {cause: response});
+        } else {
+            return response.json();
+        }
+    }).then(body => handleBody(body))
 }
