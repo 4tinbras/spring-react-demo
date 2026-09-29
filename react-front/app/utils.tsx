@@ -204,8 +204,8 @@ export async function genericFetch(
     return await fetch(url, requestConfs);
 }
 
-export function fetchThenHandleBody(endpoint: string, method: string, accessToken: string, handleBody: (formData: any) => void) {
-    fetch(endpoint, {
+export function fetchThenHandleBody(endpoint: string, method: string, accessToken: string, handleBody: (formData: any) => void): Promise<void | Response> {
+    return fetch(endpoint, {
         method: method,
         headers: {
             'Authorization': `Bearer ${accessToken}`
