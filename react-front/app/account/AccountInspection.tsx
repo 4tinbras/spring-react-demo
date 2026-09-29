@@ -36,11 +36,11 @@ export default function AccountInspection({inspectorIsAdmin, accessToken}:
 
 
             <div id={"info-block"}>
-                <span>{state.inspectedAccount.ownersFirstName}</span>
-                <span>{state.inspectedAccount.ownersSurname}</span>
+                <span className={"display-block full-width"}>{state.inspectedAccount.ownersFirstName}</span>
+                <span className={"display-block full-width"}>{state.inspectedAccount.ownersSurname}</span>
                 <br/>
                 {/*query for contact details*/}
-                <span>No Contact Details found</span>
+                <span className={"display-block full-width"}>No Contact Details found</span>
                 {/*<span>{state.payload.inspectedAccount.contactDetails}</span>*/}
             </div>
         </div>
@@ -127,10 +127,12 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     //TODO: remove hardcoded fallback
                     <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
                            {...register("id")}/>
-                    <label htmlFor={"ownersFirstName"}>Account holder's first name</label>
+                    <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
+                        name</label>
                     <input id={"ownersFirstName"} type={"text"} defaultValue={originalAccount.ownersFirstName}
                            {...register("ownersFirstName")}/>
-                    <label htmlFor={"ownersSurname"}>Account holder's surname</label>
+                    <label htmlFor={"ownersSurname"} className={"full-width display-block"}>Account holder's
+                        surname</label>
                     <input id={"ownersSurname"} type={"text"} defaultValue={originalAccount.ownersSurname}
                            {...register("ownersSurname")}/>
                     <input hidden id={"contactDetails"} type={"text"}
@@ -148,10 +150,12 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                 <fieldset>
                     <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
                            {...register("id")}/>
-                    <label htmlFor={"ownersFirstName"}>Account holder's first name</label>
+                    <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
+                        name</label>
                     <input id={"ownersFirstName"} type={"text"} defaultValue={originalAccount.ownersFirstName}
                            {...register("ownersFirstName")}/>
-                    <label htmlFor={"ownersSurname"}>Account holder's surname</label>
+                    <label htmlFor={"ownersSurname"} className={"full-width display-block"}>Account holder's
+                        surname</label>
                     <input id={"ownersSurname"} type={"text"} defaultValue={originalAccount.ownersSurname}
                            {...register("ownersSurname")}/>
                     <input hidden id={"contactDetails"} type={"text"}
