@@ -182,7 +182,7 @@ export function ContactsRecord({uuid, contactvm, handleClick}: {
         {/*it should be empty if it's a new record so that backend assigned that value*/}
         <td hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
                           defaultValue={contact.uuid}></input></td>
-        <td hidden><input hidden readOnly type="text" name="account" form={`form${contact.account}`}
+        <td hidden><input hidden readOnly type="text" name="account" form={`form${contact.uuid}`}
                           defaultValue={contact.account}></input></td>
     </>;
 }
