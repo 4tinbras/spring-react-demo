@@ -39,6 +39,8 @@ export default function AccountsBlock({}: {}) {
         fetchThenHandleBody(endpoint, 'GET', accessToken, handleAccountBody)
     }
 
+    console.log(isLastFetchInspection)
+
     return (
         <>
             {tokenPayload !== undefined && ((tokenPayload?.scope as string).includes("admin") &&

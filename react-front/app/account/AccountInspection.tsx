@@ -124,7 +124,6 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
         <form id={"edit-block"} onSubmit={handleSubmit(onSubmit)}>
             {inspectorIsAdmin && (
                 <fieldset>
-                    //TODO: remove hardcoded fallback
                     <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
@@ -162,7 +161,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                         // defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
                            value={"[]"}
                            {...register("contactDetails")}/>
-                    {/* TODO:   form to edit account state; ensure it's not necessary for end-user inspection
+                    {/* TODO:   form to edit account state; ensure it's not necessary for end-user inspection or unmodifiable
                     */}
                     <input hidden id={"accountType"} type={"text"} value={"END_USER"} {...register("accountType")}/>
                     <input hidden id={"accountState"} type={"text"} value={"OK"} {...register("accountState")}/>

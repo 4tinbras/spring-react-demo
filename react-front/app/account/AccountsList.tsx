@@ -33,9 +33,12 @@ export default function AccountsList() {
 
     }
 
+
     const listItems = state.accounts?.map((account: Account) => {
             //if has uuid (retrieved from backend) use it, otherwise generate subsequent number (to avoid clashes on multiple additions)
             const key = getUuidWithFallback(account);
+
+        console.log(account.contactDetails.at(0))
 
             return <tr key={`${key}`}>
                 <AccountRecord key={`${key}records`} uuid={key} account={account}
@@ -75,14 +78,16 @@ export function AccountRecord({uuid, account, handleClick}: {
     return (<>
         <td><span>{account.ownersFirstName}</span></td>
         <td><span>{account.ownersSurname}</span></td>
-        <td><span>{account.contactDetails}</span></td>
-        <td><EditAccountButton uuid={uuid} account={account}
-                               onClick={(event) => handleClick(event, account)}></EditAccountButton></td>
+        {/*// @ts-ignore*/}
+        <td><span>{account.contactDetails?.at(0) !== undefined ? account.contactDetails?.at(0).uuid : ""}</span></td>
+        <td><EditAccountButton uuid={uuid}
+                               onClick={(event) => handleClick(event, account)}>
+        </EditAccountButton></td>
     </>)
 }
 
-export function EditAccountButton({uuid, account, onClick}:
-                                  { uuid: string, account: Account, onClick: MouseEventHandler }) {
+export function EditAccountButton({uuid, onClick}:
+                                  { uuid: string, onClick: MouseEventHandler }) {
     return <button onClick={onClick} key={`Edit${uuid}`}
                    form={`form${uuid}`}>{`Edit`}</button>;
 }

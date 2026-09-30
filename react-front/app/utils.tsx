@@ -60,7 +60,7 @@ export interface Account {
     uuid: string;
     ownersFirstName: string;
     ownersSurname: string;
-    contactDetails: string[];
+    contactDetails: ContactState[];
     accountType: string,
     accountState: string
 }
