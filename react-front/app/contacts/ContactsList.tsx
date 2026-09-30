@@ -75,8 +75,6 @@ export default function ContactsList({contacts, accessToken}:
         return <tr key={`${key}`}>
             <ContactsRecord key={`${key}records`} uuid={key} contactvm={contactvm}
                                 handleClick={handleEditButtonClick}></ContactsRecord>
-                {/*needs to set status text based on cell state*/}
-                <th>Prompt</th>
             </tr>;
         }
     );

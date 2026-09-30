@@ -40,7 +40,6 @@ export default function AccountsList() {
             return <tr key={`${key}`}>
                 <AccountRecord key={`${key}records`} uuid={key} account={account}
                                handleClick={handleEditButtonClick}></AccountRecord>
-                {/*needs to set status text based on cell state*/}
             </tr>;
         }
     );
