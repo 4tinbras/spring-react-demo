@@ -33,7 +33,7 @@ const validStatePropsWithInspection = {
 }
 
 const validStatePropsWithInspectionAndAccounts = {
-    type: AccountBlockActions.SetInspectedAccount,
+    type: AccountBlockActions.SetAccounts,
     payload: {inspectedAccount: inspectedAccount, status: FormStatus.Ok},
     inspectedAccount: inspectedAccount,
     accounts: [inspectedAccount]
@@ -92,7 +92,9 @@ describe('AccountInspection ', () => {
         expect(screen.queryByText('Return to the list')).not.toBeInTheDocument();
     })
 
-    it('given an admin view and list fetched it shows back to list button', async () => {
+    it('given an admin view ' +
+        'and list fetched it shows back to list button' +
+        'and after clicking back to list it shows list as seen last time', async () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
@@ -112,6 +114,17 @@ describe('AccountInspection ', () => {
         expect(screen.queryByText('Personal details'));
         expect(screen.queryByText('Account configuration'));
         expect(screen.queryByText('Return to the list'));
+
+        const returnToTheListButton = screen.getByRole('button', {name: 'Return to the list'})
+
+        act(() => {
+            fireEvent.click(returnToTheListButton)
+        });
+
+        expect(screen.queryByText('First Name'));
+        expect(screen.queryByText('Tom'));
+        expect(screen.queryByText('Last Name'));
+        expect(screen.queryByText('Smith'));
     })
 
     it('for an end-user view shows his own details ' +

@@ -2,7 +2,7 @@
 
 import {AccountsDispatchContext, useAccounts} from "@/app/StateManagement";
 import {useContext, useState} from "react";
-import {Account, FieldsSubmissionType, genericSubmitForm} from "@/app/utils";
+import {Account, AccountBlockActions, FieldsSubmissionType, FormStatus, genericSubmitForm} from "@/app/utils";
 import {FieldError, useForm} from "react-hook-form";
 import {accountsValidation} from "@/app/validation/validationUtils";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -22,13 +22,23 @@ export default function AccountInspection({inspectorIsAdmin, accessToken}:
         setEditionMode(!editionMode);
     }
 
+    const handleBackToListButtonClick = (event: any, accounts: Account[]) => {
+
+        dispatchState({
+            type: AccountBlockActions.SetAccounts,
+            payload: {accounts: accounts, status: FormStatus.Ok}
+        });
+    }
+
     return (<>
         <h1>Account</h1>
 
         {!editionMode && (<>
         <div id={'personal-details-inspection-block'}>
             {inspectorIsAdmin && state.accounts !== undefined && state.accounts.length > 0 && (
-                <button disabled={true}>Return to the list</button>
+                <button onClick={(event) => handleBackToListButtonClick(event, state.accounts)}>
+                    Return to the list
+                </button>
             )}
             <button onClick={(event) => onSubmitEdit(event)}>Edit</button>
 
@@ -102,12 +112,10 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
 
         innerSubmit(event);
 
-        console.log("SUCCESS");
     }
 
     let errorIndex = 0
     const errorList: ErrorDescriptor[] = Object.entries(errors).map(([key, value]) => {
-        console.log("ref: " + (value as FieldError).ref)
 
         const temp: ErrorDescriptor = {
             id: errorIndex.toString(),

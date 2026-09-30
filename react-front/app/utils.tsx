@@ -91,6 +91,11 @@ export const enum AccountBlockActions {
     SetAccounts = 'SET_ACCOUNTS',
 }
 
+export const enum AccountBlockView {
+    AccountsList = 'ACCOUNT_LIST',
+    InspectedAccount = 'INSPECTED_ACCOUNT',
+}
+
 export interface ReducerAction {
     readonly discriminator?: Discriminator.ReducerAction;
     type: string;

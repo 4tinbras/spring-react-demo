@@ -1,4 +1,4 @@
-import {render, screen} from "@testing-library/react";
+import {act, fireEvent, render, screen} from "@testing-library/react";
 import React from "react";
 import {
     AccountsDispatchContext,
@@ -88,7 +88,9 @@ describe('AccountsList ', () => {
         expect(screen.queryByText('Return to the inspection')).not.toBeInTheDocument();
     })
 
-    it('given previous inspection it renders list with edit button and with back to inspection button', async () => {
+    it('given previous inspection it renders list with edit button ' +
+        'and with back to inspection button' +
+        'and clicking back to inspection shows last inspected account', async () => {
 
         customRender(<AccountsDispatchContext.Consumer>
                 {value => <AuthZContext.Consumer>
@@ -107,6 +109,15 @@ describe('AccountsList ', () => {
         expect(screen.queryByText('Tom'));
         expect(screen.queryByText('Doe'));
         expect(screen.queryByText('Return to the inspection'));
+
+        const returnToTheInspectionButton = screen.getByRole('button', {name: 'Return to the inspection'})
+
+        act(() => {
+            fireEvent.click(returnToTheInspectionButton)
+        });
+
+        expect(screen.queryByText('Personal details'));
+        expect(screen.queryByText('Tom'));
     })
 
     it('given no items render empty list and suggests repeated fetch', async () => {

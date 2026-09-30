@@ -14,7 +14,6 @@ export default function AccountsList() {
     // probably from that point onward both pages should include link to switch between views
     const handleEditButtonClick = (event: any, account: Account) => {
 
-
         dispatchState({
             type: AccountBlockActions.SetInspectedAccount,
             payload: {inspectedAccount: account, status: FormStatus.Ok}
@@ -38,8 +37,6 @@ export default function AccountsList() {
             //if has uuid (retrieved from backend) use it, otherwise generate subsequent number (to avoid clashes on multiple additions)
             const key = getUuidWithFallback(account);
 
-        console.log(account.contactDetails.at(0))
-
             return <tr key={`${key}`}>
                 <AccountRecord key={`${key}records`} uuid={key} account={account}
                                handleClick={handleEditButtonClick}></AccountRecord>
@@ -49,7 +46,9 @@ export default function AccountsList() {
 
     return (<>
         {state.inspectedAccount !== undefined && (
-            <button disabled={true}>Return to the inspection</button>
+            <button onClick={(event) => handleEditButtonClick(event, state.inspectedAccount)}>
+                Return to the inspection
+            </button>
         )}
         <Table className={"table-striped-columns"}>
             <caption>
