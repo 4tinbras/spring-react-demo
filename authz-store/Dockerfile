@@ -10,6 +10,7 @@ FROM quay.io/keycloak/keycloak:26.4.1
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
 COPY ./kc-spreact.json /opt/keycloak/data/import/
+COPY ./keycloak.conf /opt/keycloak/conf/
 
 ENV KC_HOSTNAME=localhost
 ENV KC_HTTP_PORT=8020

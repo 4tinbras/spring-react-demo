@@ -16,14 +16,11 @@ public class Relationship {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long uuid;
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "first_contact_id")
-    private ContactDetails firstContactId;
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "second_contact_id")
-    private ContactDetails secondContactId;
+
+    @Column(name = "first_contact_id")
+    private Long firstContactId;
+    @Column(name = "second_contact_id")
+    private Long secondContactId;
     @NotNull
     private RelationshipType relationshipType;
 

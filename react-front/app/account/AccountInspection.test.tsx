@@ -1,0 +1,166 @@
+import {act, fireEvent, render, screen} from "@testing-library/react";
+import AccountInspection from "@/app/account/AccountInspection";
+import React from "react";
+import {
+    AccountsDispatchContext,
+    AccountsProvider,
+    accountsReducer,
+    AuthZContext,
+    AuthZContextProps
+} from "@/app/StateManagement";
+import {AccountBlockActions, FormStatus} from "@/app/utils";
+
+const customRender = (ui: React.ReactElement,
+                      {contactsProviderProps, authZProviderProps, ...renderOptions}: {
+                          [x: string]: any,
+                          authZProviderProps: AuthZContextProps
+                      }) => {
+    return render(
+        <AccountsProvider initialState={contactsProviderProps} reducer={accountsReducer}>
+            <AuthZContext.Provider {...authZProviderProps} value={authZProviderProps}>{ui}
+            </AuthZContext.Provider>
+        </AccountsProvider>,
+        renderOptions,
+    )
+}
+
+const inspectedAccount = {uuid: "1", ownersFirstName: "Tom", ownersSurname: "Smith", contactDetails: []};
+
+const validStatePropsWithInspection = {
+    type: AccountBlockActions.SetInspectedAccount,
+    payload: {inspectedAccount: inspectedAccount, status: FormStatus.Ok},
+    inspectedAccount: inspectedAccount,
+}
+
+const validStatePropsWithInspectionAndAccounts = {
+    type: AccountBlockActions.SetAccounts,
+    payload: {inspectedAccount: inspectedAccount, status: FormStatus.Ok},
+    inspectedAccount: inspectedAccount,
+    accounts: [inspectedAccount]
+}
+
+const endUserTokenPresentProps: AuthZContextProps = {
+    authZToken: "accessToken",
+    setAuthZToken: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
+    tokenPayload: {"jti": "11", "scope": "someScope"},
+    setTokenPayload: jest.fn(),
+}
+
+describe('AccountInspection ', () => {
+    it('for an end-user view shows his own details', async () => {
+
+        customRender(<AccountsDispatchContext.Consumer>
+                {value => <AuthZContext.Consumer>
+                    {value =>
+                        <AccountInspection inspectorIsAdmin={false} accessToken={"accessToken"}/>}
+
+                </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
+            {
+                contactsProviderProps: validStatePropsWithInspection,
+                authZProviderProps: endUserTokenPresentProps,
+                renderOptions: []
+            })
+
+        expect(screen.queryByText('Tom'));
+        expect(screen.queryByText('Smith'));
+        expect(screen.queryByText('No Contact Details found'));
+        expect(screen.queryByText('Personal details'));
+        expect(screen.queryByText('Account configuration')).not.toBeInTheDocument();
+    })
+
+    it('given an admin view shows his own details as well as admin options and no return to list button', async () => {
+
+        customRender(<AccountsDispatchContext.Consumer>
+                {value => <AuthZContext.Consumer>
+                    {value =>
+                        <AccountInspection inspectorIsAdmin={true} accessToken={"accessToken"}/>}
+
+                </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
+            {
+                contactsProviderProps: validStatePropsWithInspection,
+                authZProviderProps: endUserTokenPresentProps,
+                renderOptions: []
+            })
+
+        expect(screen.queryByText('Tom'));
+        expect(screen.queryByText('Smith'));
+        expect(screen.queryByText('No Contact Details found'));
+        expect(screen.queryByText('Personal details'));
+        expect(screen.queryByText('Account configuration'));
+        expect(screen.queryByText('Return to the list')).not.toBeInTheDocument();
+    })
+
+    it('given an admin view ' +
+        'and list fetched it shows back to list button' +
+        'and after clicking back to list it shows list as seen last time', async () => {
+
+        customRender(<AccountsDispatchContext.Consumer>
+                {value => <AuthZContext.Consumer>
+                    {value =>
+                        <AccountInspection inspectorIsAdmin={true} accessToken={"accessToken"}/>}
+
+                </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
+            {
+                contactsProviderProps: validStatePropsWithInspectionAndAccounts,
+                authZProviderProps: endUserTokenPresentProps,
+                renderOptions: []
+            })
+
+        expect(screen.queryByText('Tom'));
+        expect(screen.queryByText('Smith'));
+        expect(screen.queryByText('No Contact Details found'));
+        expect(screen.queryByText('Personal details'));
+        expect(screen.queryByText('Account configuration'));
+        expect(screen.queryByText('Return to the list'));
+
+        const returnToTheListButton = screen.getByRole('button', {name: 'Return to the list'})
+
+        act(() => {
+            fireEvent.click(returnToTheListButton)
+        });
+
+        expect(screen.queryByText('First Name'));
+        expect(screen.queryByText('Tom'));
+        expect(screen.queryByText('Last Name'));
+        expect(screen.queryByText('Smith'));
+    })
+
+    it('for an end-user view shows his own details ' +
+        'and when edition clicked view is replaced with interactive form ' +
+        'and when saved it shows error message due to lack of input', async () => {
+
+        customRender(<AccountsDispatchContext.Consumer>
+                {value => <AuthZContext.Consumer>
+                    {value =>
+                        <AccountInspection inspectorIsAdmin={false} accessToken={"accessToken"}/>}
+
+                </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
+            {
+                contactsProviderProps: validStatePropsWithInspection,
+                authZProviderProps: endUserTokenPresentProps,
+                renderOptions: []
+            })
+
+        expect(screen.queryByText('Personal details'));
+        expect(screen.queryByText('Account configuration')).not.toBeInTheDocument();
+        expect(screen.queryByText('Account holder\'s first name')).not.toBeInTheDocument();
+        expect(screen.queryByText('Account holder\'s surname')).not.toBeInTheDocument();
+
+        const editAccountButton = screen.getByRole('button', {name: 'Edit'})
+
+        act(() => {
+            fireEvent.click(editAccountButton)
+        });
+
+        expect(screen.queryByText('Account holder\'s first name'));
+        expect(screen.queryByText('Account holder\'s surname'));
+
+        const saveAccountButton = screen.getByRole('button', {name: 'Save'})
+        act(() => {
+            fireEvent.click(saveAccountButton)
+        });
+        expect(screen.queryByText('Too small: expected string to have >=1 characters'));
+    })
+})

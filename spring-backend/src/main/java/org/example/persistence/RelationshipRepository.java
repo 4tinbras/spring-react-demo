@@ -8,9 +8,9 @@ import java.util.List;
 @Repository
 public interface RelationshipRepository extends JpaRepository<Relationship, String> {
 
-    List<Relationship> findByFirstContactId(String id);
+    List<Relationship> findByFirstContactId(Long id);
 
-    List<Relationship> findBySecondContactId(String id);
+    List<Relationship> findBySecondContactId(Long id);
 
-    List<Relationship> findByFirstContactIdAndSecondContactId(String id, String secondId);
+    List<Relationship> findByFirstContactIdAndSecondContactId(Long id, Long secondId);
 }

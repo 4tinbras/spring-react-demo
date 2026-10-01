@@ -35,19 +35,19 @@ public class RelationshipService {
         return relationshipRepository.findById(id);
     }
 
-    public List<Relationship> findByContactId(String id) {
+    public List<Relationship> findByContactId(Long id) {
         List<Relationship> result = new ArrayList<>();
         result.addAll(relationshipRepository.findByFirstContactId(id));
         result.addAll(relationshipRepository.findBySecondContactId(id));
         return result;
     }
 
-    public List<Relationship> findByContactPair(String id, String secondId) {
+    public List<Relationship> findByContactPair(Long id, Long secondId) {
         return relationshipRepository.findByFirstContactIdAndSecondContactId(id, secondId);
     }
 
     public boolean isRelationshipValid(Relationship relationship) {
-        return contactService.findByUuid(relationship.getFirstContactId().getUuid().toString()).isPresent()
-                && contactService.findByUuid(relationship.getSecondContactId().getUuid().toString()).isPresent();
+        return contactService.findByUuid(relationship.getFirstContactId().toString()).isPresent()
+                && contactService.findByUuid(relationship.getSecondContactId().toString()).isPresent();
     }
 }

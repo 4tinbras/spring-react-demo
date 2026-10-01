@@ -1,5 +1,5 @@
 import {Table} from "reactstrap";
-import React, {MouseEventHandler, useContext, useState} from "react";
+import React, {MouseEventHandler, useContext} from "react";
 import {
     ContactBlockActions,
     ContactState,
@@ -30,7 +30,8 @@ export default function ContactsList({contacts, accessToken}:
                 lastName: contact.lastName,
                 phoneNo: contact.phoneNo,
                 email: contact.email,
-                active: !contact.active
+                active: !contact.active,
+                account: contact.account,
             },
             formStatus: contactvm.formStatus
         }
@@ -74,8 +75,6 @@ export default function ContactsList({contacts, accessToken}:
         return <tr key={`${key}`}>
             <ContactsRecord key={`${key}records`} uuid={key} contactvm={contactvm}
                                 handleClick={handleEditButtonClick}></ContactsRecord>
-                {/*needs to set status text based on cell state*/}
-                <th>Prompt</th>
             </tr>;
         }
     );
@@ -137,6 +136,7 @@ export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] })
                 phoneNo: "phone_number_placeholder",
                 email: "email_placeholder",
                 active: true,
+                account: "1",
             },
             formStatus: FormStatus.Editing
         });
@@ -180,6 +180,8 @@ export function ContactsRecord({uuid, contactvm, handleClick}: {
         {/*it should be empty if it's a new record so that backend assigned that value*/}
         <td hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
                           defaultValue={contact.uuid}></input></td>
+        <td hidden><input hidden readOnly type="text" name="account" form={`form${contact.uuid}`}
+                          defaultValue={contact.account}></input></td>
     </>;
 }
 
@@ -190,9 +192,8 @@ export function EditContactButton({uuid, contactvm, onClick}:
 }
 
 export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact: ContactState, accessToken: string }) {
-    const fieldsArray = ['firstName', 'lastName', 'email', 'phoneNo', 'uuid'];
+    const fieldsArray = ['firstName', 'lastName', 'email', 'phoneNo', 'uuid', 'account'];
 
-    const [responseData, setData] = useState<[]>([]);
     // @ts-ignore
     const {dispatchState} = useContext(ContactsDispatchContext);
 
@@ -203,9 +204,8 @@ export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact
         ])]
     ])
 
-    const onSubmit = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}`,
+    const onSubmit = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/contact",
         fieldsArray,
-        setData,
         dispatchState,
         FieldsSubmissionType.JsonFormParams,
         additionalData,

@@ -41,6 +41,8 @@ describe('NavBar ', () => {
         expect(screen.getByText('Home')).toHaveClass('active')
         expect(screen.getByText('Login')).toBeInTheDocument();
         expect(screen.getByText('Login')).not.toHaveClass('active');
+        expect(screen.getByText('Account')).toBeInTheDocument();
+        expect(screen.getByText('Account')).not.toHaveClass('active');
     });
 
     it('renders with active login based on state', async () => {
@@ -55,6 +57,8 @@ describe('NavBar ', () => {
         expect(screen.getByText('Home')).not.toHaveClass('active')
         expect(screen.getByText('Login')).toBeInTheDocument();
         expect(screen.getByText('Login')).toHaveClass('active');
+        expect(screen.getByText('Account')).toBeInTheDocument();
+        expect(screen.getByText('Account')).not.toHaveClass('active');
     });
 
 });

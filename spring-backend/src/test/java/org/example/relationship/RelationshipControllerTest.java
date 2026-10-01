@@ -34,6 +34,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -62,9 +63,9 @@ class RelationshipControllerTest extends ControllerSuiteUtil {
             .build();
     private static final String KEY_ID = "12345678901234567890";
 
-    private final ContactDetails firstValidContact = new ContactDetails(1L, null, "Different", "Usern", "ts@example.com", "074978234");
-    private final ContactDetails secondValidContact = new ContactDetails(2L, null, "Different", "Usern", "ts@example.com", "074978234");
-    private final Relationship validRelationship = new Relationship(1L, firstValidContact, secondValidContact, Relationship.RelationshipType.FRIENDS);
+    private final ContactDetails firstValidContact = new ContactDetails(1L, null, "Different", "Usern", "ts@example.com", "074978234", List.of(), List.of());
+    private final ContactDetails secondValidContact = new ContactDetails(2L, null, "Different", "Usern", "ts@example.com", "074978234", List.of(), List.of());
+    private final Relationship validRelationship = new Relationship(1L, 1L, 2L, Relationship.RelationshipType.FRIENDS);
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
@@ -120,7 +121,7 @@ class RelationshipControllerTest extends ControllerSuiteUtil {
     @Test
     void whenGetRelationshipByContactId_thenReturnValidSetOfRecords_andReturn200() throws Exception {
         //given
-        when(relationshipService.findByContactId(eq("1"))).thenReturn(Collections.EMPTY_LIST);
+        when(relationshipService.findByContactId(eq(1L))).thenReturn(Collections.EMPTY_LIST);
 
 //        when
         mockMvc.perform(
@@ -135,8 +136,8 @@ class RelationshipControllerTest extends ControllerSuiteUtil {
     @Test
     void whenGetRelationshipByContactIds_thenReturnValidSetOfRecords_andReturn200() throws Exception {
         //given
-        when(relationshipService.findByContactId(eq("1"))).thenReturn(Collections.EMPTY_LIST);
-        when(relationshipService.findByContactPair(eq("1"), eq("2"))).thenReturn(Collections.EMPTY_LIST);
+        when(relationshipService.findByContactId(eq(1L))).thenReturn(Collections.EMPTY_LIST);
+        when(relationshipService.findByContactPair(eq(1L), eq(2L))).thenReturn(Collections.EMPTY_LIST);
 
 //        when
         mockMvc.perform(
