@@ -60,7 +60,7 @@ export interface Account {
     uuid: string;
     ownersFirstName: string;
     ownersSurname: string;
-    contactDetails: string[];
+    contactDetails: ContactState[];
     accountType: string,
     accountState: string
 }
@@ -89,6 +89,11 @@ export const enum AccountBlockActions {
     SetInspectedAccount = 'SET_INSPECTED_ACCOUNT',
     SetLoading = 'SET_LOADING',
     SetAccounts = 'SET_ACCOUNTS',
+}
+
+export const enum AccountBlockView {
+    AccountsList = 'ACCOUNT_LIST',
+    InspectedAccount = 'INSPECTED_ACCOUNT',
 }
 
 export interface ReducerAction {

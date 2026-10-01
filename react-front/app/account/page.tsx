@@ -8,7 +8,8 @@ export default function AccountsPage({}: {}) {
 
     return (
         <>
-            <AccountsProvider initialState={{accounts: [], status: FormStatus.Initial}} reducer={accountsReducer}>
+            <AccountsProvider initialState={{accounts: [], inspectedAccount: undefined, status: FormStatus.Initial}}
+                              reducer={accountsReducer}>
                 <AccountsBlock></AccountsBlock>
             </AccountsProvider>
         </>

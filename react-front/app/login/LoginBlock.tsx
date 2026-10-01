@@ -3,13 +3,26 @@ import React, {useReducer} from "react";
 import {useSearchParams} from 'next/navigation'
 import {useAuthZ} from "@/app/StateManagement";
 import {createRemoteJWKSet, jwtVerify} from "jose";
+import {useLocalStorage} from 'usehooks-ts'
 
 export default function LoginBlock({}: {}) {
     const AUTHORIZATION_SERVER_URL = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}`;
     const AUTHORIZATION_ENDPOINT_PATH = `${process.env.NEXT_PUBLIC_AUTHZ_ENDPOINT}`;
     const TOKEN_ENDPOINT_PATH = `${process.env.NEXT_PUBLIC_TOKEN_ENDPOINT}`;
+
+    const [scopes, setScopes] = useLocalStorage<string>('scopes', "openid profile");
+
+    const onScopesChange = (e: any) => {
+        setScopes(e.target.value);
+    }
+
     // TODO: replace verifier with randomised S256 value
-    const AUTHORIZATION_QUERY = "?client_id=spreact-client&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin&grant_type=authorization_code&response_type=code&code_challenge=My_Custom_CodeVerifier_But_Its_Length_Must_Be_AtLeast_43_Characters&code_challenge_method=plain";
+    const AUTHORIZATION_QUERY = "?client_id=spreact-client" +
+        "&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin" +
+        "&grant_type=authorization_code&response_type=code" +
+        "&code_challenge=My_Custom_CodeVerifier_But_Its_Length_Must_Be_AtLeast_43_Characters" +
+        "&code_challenge_method=plain" +
+        "&scope=" + scopes;
     const AUTHORIZATION_URL = AUTHORIZATION_SERVER_URL + AUTHORIZATION_ENDPOINT_PATH + AUTHORIZATION_QUERY;
 
     const initialState = FormStatus.Editing;
@@ -47,6 +60,7 @@ export default function LoginBlock({}: {}) {
             ['client_id', 'spreact-client'],
             ['redirect_uri', 'http://localhost:3000/login'],
             ['grant_type', 'authorization_code'],
+            ['scope', scopes]
         ])]
     ])
 
@@ -119,7 +133,8 @@ export default function LoginBlock({}: {}) {
                 || (<>
 
                     <h2>Please submit form to initiate login</h2>
-
+                    <label htmlFor={"scopes"}></label>
+                    <input id={"scopes"} type={"text"} defaultValue={"profile"} onChange={onScopesChange}/>
                     <LoginForm onSubmitHandler={onSubmitHandler}></LoginForm>
                 </>)}
         </div>

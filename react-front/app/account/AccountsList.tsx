@@ -14,7 +14,6 @@ export default function AccountsList() {
     // probably from that point onward both pages should include link to switch between views
     const handleEditButtonClick = (event: any, account: Account) => {
 
-
         dispatchState({
             type: AccountBlockActions.SetInspectedAccount,
             payload: {inspectedAccount: account, status: FormStatus.Ok}
@@ -33,6 +32,7 @@ export default function AccountsList() {
 
     }
 
+
     const listItems = state.accounts?.map((account: Account) => {
             //if has uuid (retrieved from backend) use it, otherwise generate subsequent number (to avoid clashes on multiple additions)
             const key = getUuidWithFallback(account);
@@ -40,14 +40,15 @@ export default function AccountsList() {
             return <tr key={`${key}`}>
                 <AccountRecord key={`${key}records`} uuid={key} account={account}
                                handleClick={handleEditButtonClick}></AccountRecord>
-                {/*needs to set status text based on cell state*/}
             </tr>;
         }
     );
 
     return (<>
         {state.inspectedAccount !== undefined && (
-            <button disabled={true}>Return to the inspection</button>
+            <button onClick={(event) => handleEditButtonClick(event, state.inspectedAccount)}>
+                Return to the inspection
+            </button>
         )}
         <Table className={"table-striped-columns"}>
             <caption>
@@ -76,14 +77,16 @@ export function AccountRecord({uuid, account, handleClick}: {
     return (<>
         <td><span>{account.ownersFirstName}</span></td>
         <td><span>{account.ownersSurname}</span></td>
-        <td><span>{account.contactDetails}</span></td>
-        <td><EditAccountButton uuid={uuid} account={account}
-                               onClick={(event) => handleClick(event, account)}></EditAccountButton></td>
+        {/*// @ts-ignore*/}
+        <td><span>{account.contactDetails?.at(0) !== undefined ? account.contactDetails?.at(0).uuid : ""}</span></td>
+        <td><EditAccountButton uuid={uuid}
+                               onClick={(event) => handleClick(event, account)}>
+        </EditAccountButton></td>
     </>)
 }
 
-export function EditAccountButton({uuid, account, onClick}:
-                                  { uuid: string, account: Account, onClick: MouseEventHandler }) {
+export function EditAccountButton({uuid, onClick}:
+                                  { uuid: string, onClick: MouseEventHandler }) {
     return <button onClick={onClick} key={`Edit${uuid}`}
                    form={`form${uuid}`}>{`Edit`}</button>;
 }

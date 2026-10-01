@@ -1,10 +1,9 @@
 'use client'
 
 import {useAccounts, useAuthZ} from "@/app/StateManagement";
-import {AccountBlockActions, fetchThenHandleBody, FormStatus} from "@/app/utils";
+import {AccountBlockActions, AccountBlockView, fetchThenHandleBody, FormStatus} from "@/app/utils";
 import AccountInspection from "@/app/account/AccountInspection";
 import AccountsList from "@/app/account/AccountsList";
-import {useState} from "react";
 
 
 export default function AccountsBlock({}: {}) {
@@ -15,20 +14,17 @@ export default function AccountsBlock({}: {}) {
     const accessToken = authZToken;
 
     const {state, dispatchState} = useAccounts();
-    const [isLastFetchInspection, setIsLastFetchInspection] = useState(false);
 
     function handleGetAccounts(isFetchAll: boolean) {
         const endpoint = isFetchAll ? getAccountsEndpoint : getAccountEndpoint;
 
         const handleAccountBody = (body: any) => {
             if (isFetchAll) {
-                setIsLastFetchInspection(false);
                 dispatchState({
                     type: AccountBlockActions.SetAccounts,
                     payload: {accounts: Array.isArray(body) ? body : null, status: FormStatus.Ok}
                 });
             } else {
-                setIsLastFetchInspection(true);
                 dispatchState({
                     type: AccountBlockActions.SetInspectedAccount,
                     payload: {inspectedAccount: !Array.isArray(body) ? body : null, status: FormStatus.Ok}
@@ -50,11 +46,11 @@ export default function AccountsBlock({}: {}) {
                     </button>
 
                     {/*    hidden inspection element*/}
-                    {(state.inspectedAccount !== undefined && isLastFetchInspection) && (
+                    {(state.inspectedAccount !== undefined && state.showedView === AccountBlockView.InspectedAccount) && (
                         <AccountInspection inspectorIsAdmin={true} accessToken={accessToken}></AccountInspection>
                     )}
                     {/*    hidden list element*/}
-                    {(state.accounts !== undefined && !isLastFetchInspection) && (
+                    {(state.accounts !== undefined && state.showedView === AccountBlockView.AccountsList) && (
                         <AccountsList></AccountsList>
                     )}
                 </>)

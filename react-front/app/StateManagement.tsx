@@ -3,6 +3,7 @@ import React, {createContext, Dispatch, SetStateAction, useContext, useReducer, 
 import {
     Account,
     AccountBlockActions,
+    AccountBlockView,
     ContactBlockActions,
     ContactViewModel,
     FormStatus,
@@ -79,7 +80,8 @@ export const useContacts = () => {
 export type AccountsState = {
     status: FormStatus,
     accounts: Account[],
-    inspectedAccount: Account
+    inspectedAccount: Account,
+    showedView: AccountBlockView
 }
 
 export type AccountsContextProps = {
@@ -97,13 +99,17 @@ export const accountsReducer = (state: AccountsState, action: ReducerAction) => 
         if (Object.values(AccountBlockActions).includes(action.type)) {
             switch (action.type) {
                 case AccountBlockActions.SetAccounts: {
-                    return {...state, accounts: action.payload.accounts}
+                    return {...state, accounts: action.payload.accounts, showedView: AccountBlockView.AccountsList}
                 }
                 case AccountBlockActions.SetLoading: {
                     return {...state, status: action.payload.status}
                 }
                 case AccountBlockActions.SetInspectedAccount: {
-                    return {...state, inspectedAccount: action.payload.inspectedAccount}
+                    return {
+                        ...state,
+                        inspectedAccount: action.payload.inspectedAccount,
+                        showedView: AccountBlockView.InspectedAccount
+                    }
                 }
             }
         }
