@@ -30,7 +30,7 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 * Frontend allows only to look up records in DB via backend service (login needed; see below).
 * To call any backend endpoints an Access Token is needed, That can be obtained from keycloak service:
   * by using user-agent to obtain access token and make direct requests to backend
-  * using frontend as-is with compulsory containers
+  * using frontend as-is with remaining compulsory containers
 * Repository includes postman collection which guides through login process and backend interactions.
 * Monitoring currently includes only a simple error rate rule
 
@@ -38,12 +38,12 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 * first insertion intermittently causes issues if it overlaps with already existing UUID
 * healthcheck test stopped working since update to spring boot 4
 * relationship management is broken as it is not propagated to relevant entities in contact details/persona entity
-* docker compose postgres needs changing to support keycloak saving to db
+* keycloak container struggles to connect to postgres container; please use locally run keycloak and match backend to
+  expect localhost authz as a temporary workaround
 
 ## TODOs
 * non-root container executions
-* add missing monitoring (alerts and alertmanager left)
-* add proper backend model hierarchy and sample microservices
+* add missing monitoring
 * add terraform script for simple AWS deployment
 * replace h2 db with something more reasonable
 * add missing resources for k8s deployments
