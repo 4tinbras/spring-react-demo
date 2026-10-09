@@ -78,8 +78,7 @@ services:
     ports:
       - "3000:3000"
 
-  # TODO: remove image; since it is unversioned it does not pickup changes on ots own and pulls outdated config
-  #  fails connection to service started on host machine and image needs updating with second db
+  #  fails connection to service started on host machine or container db
   keycloak:
     #    image: local/authz-service
     build: ./authz-store/.
