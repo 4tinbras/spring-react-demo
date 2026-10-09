@@ -9,7 +9,7 @@ RUN /opt/keycloak/bin/kc.sh build
 FROM quay.io/keycloak/keycloak:26.4.1
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
-COPY ./kc-spreact.json /opt/keycloak/data/import/
+COPY ./kc-spreact.json /opt/keycloak/data/import/spreact-realm.json
 COPY ./keycloak.conf /opt/keycloak/conf/
 
 ENV KC_HOSTNAME=localhost
