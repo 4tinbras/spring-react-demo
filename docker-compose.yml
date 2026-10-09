@@ -93,7 +93,7 @@ services:
       - "9100:9100"
 
   db:
-    image: ./database/.
+    build: ./database/.
     restart: always
     shm_size: 128mb
     ports:
