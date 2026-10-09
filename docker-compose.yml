@@ -78,18 +78,13 @@ services:
     ports:
       - "3000:3000"
 
+  # TODO: remove image; since it is unversioned it does not pickup changes on ots own and pulls outdated config
+  #  fails connection to service started on host machine and image needs updating with second db
   keycloak:
     #    image: local/authz-service
     build: ./authz-store/.
     environment:
-      KEYCLOAK_ADMIN: sample-admin
-      KEYCLOAK_ADMIN_PASSWORD: sample-pass
-      KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8030
-      KC_HOSTNAME_STRICT_BACKCHANNEL: "true"
       KC_LOG_LEVEL: info
-    volumes:
-      - ./authz-store/kc-spreact.json:/opt/keycloak/data/import/kc-spreact.json
     networks:
       - demo
     ports:
@@ -98,7 +93,7 @@ services:
       - "9100:9100"
 
   db:
-    image: postgres
+    image: ./database/.
     restart: always
     shm_size: 128mb
     ports:
@@ -110,10 +105,6 @@ services:
         target: /dev/shm
         tmpfs:
           size: 134217728 # 128*2^20 bytes = 128Mb
-    environment:
-      POSTGRES_USER: demo
-      POSTGRES_PASSWORD: demo
-      POSTGRES_DB: spreact
 
   adminer:
     image: adminer
