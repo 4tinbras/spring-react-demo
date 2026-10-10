@@ -21,7 +21,7 @@ public class KafkaConsumer implements MessagingConsumer {
         this.consumer = kafkaConsumerFactory.createConsumer();
     }
 
-    @KafkaListener(topics = {KafkaConsumer.DEFAULT_TOPIC}, groupId = "spreact")
+    @KafkaListener(id = "email-listener", topics = {KafkaConsumer.DEFAULT_TOPIC}, groupId = "spreact")
     public void processEmailEvent(ConsumerRecord<?, ?> consumerRecord) {
         System.out.println("Received Message in default topic: " + consumerRecord.value());
         payload = consumerRecord.toString();
