@@ -45,3 +45,6 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 * non-root container executions
 * add missing monitoring
 * add terraform script for simple AWS deployment
+* replace h2 db with something more reasonable
+* add missing resources for k8s deployments
+* update proxy to work as direct gateway to backend via mTLS protected connection

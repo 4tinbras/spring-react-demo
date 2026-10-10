@@ -7,6 +7,6 @@ public class NoopMessagingService implements MessagingService {
 
     @Override
     public void publishMessage(String message) {
-        log.info("Noop messaging service logs message: {}", message);
+        log.info("Noop messaging service logs message to 'send': {}", message);
     }
 }
