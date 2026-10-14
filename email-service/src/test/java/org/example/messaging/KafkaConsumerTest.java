@@ -67,7 +67,7 @@ class KafkaConsumerTest {
 
         assertThat(userKafkaConsumer.getPayload(), containsString("Message"));
 
-//        seems to delay consumption by listener which then fails test
+//        TODO: seems to delay consumption by listener which then fails test
 //        verify(emailProducer, times(1)).produceHtmlEmail(any());
     }
 }
