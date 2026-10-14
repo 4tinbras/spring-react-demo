@@ -1,9 +1,11 @@
 package org.example.email;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,26 +24,31 @@ import java.util.Collections;
 @Configuration
 public class EmailConfig {
 
-    private static final String JAVA_MAIL_FILE = "classpath:mail/javamail.properties";
-    private static final String HOST = "http://localhost";
-    private static final String PORT = "7777";
-    private static final String PROTOCOL = "smtp";
-    private static final String USERNAME = "my.gmail@gmail.com";
-    private static final String PASSWORD = "password";
+    @Value("${services.email.sender.host}")
+    private String host;
+    @Value("${services.email.sender.port}")
+    private String port;
+    @Value("${services.email.sender.protocol}")
+    private String protocol;
+    @Value("${services.email.sender.username}")
+    private String username;
+    @Value("${services.email.sender.password}")
+    private String password;
     private ApplicationContext applicationContext;
     private Environment environment;
 
+    @Profile("send-email")
     @Bean
     public JavaMailSender mailSender() throws IOException {
 
         final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         // Basic mail sender configuration, based on emailconfig.properties
-        mailSender.setHost(HOST);
-        mailSender.setPort(Integer.parseInt(PORT));
-        mailSender.setProtocol(PROTOCOL);
-        mailSender.setUsername(USERNAME);
-        mailSender.setPassword(PASSWORD);
+        mailSender.setHost(host);
+        mailSender.setPort(Integer.parseInt(port));
+        mailSender.setProtocol(protocol);
+        mailSender.setUsername(username);
+        mailSender.setPassword(password);
 
         return mailSender;
 
