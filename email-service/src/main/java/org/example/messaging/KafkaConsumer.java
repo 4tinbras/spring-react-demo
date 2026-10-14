@@ -7,10 +7,12 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.example.email.EmailProducer;
 import org.example.email.EmailService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.stereotype.Component;
 
+@Profile("kafka-msg")
 @Getter
 @Component
 public class KafkaConsumer implements MessagingConsumer {
