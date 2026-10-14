@@ -1,5 +1,6 @@
 package org.example.messaging;
 
+import jakarta.mail.MessagingException;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -34,6 +35,12 @@ class KafkaConsumerTest {
     @Autowired
     private EmbeddedKafkaBroker embeddedKafka;
 
+//    @MockitoSpyBean
+//    private EmailProducer emailProducer;
+//
+//    @MockitoSpyBean
+//    private EmailService emailService;
+
     private Producer<String, String> producer;
 
     @BeforeEach
@@ -50,7 +57,7 @@ class KafkaConsumerTest {
 
     // this needs the sleep so that consumer had time to pick up the message, without it fails
     @Test
-    void givenMessageIsPresent_thenListenerConsumesIt() throws InterruptedException {
+    void givenMessageIsPresent_thenListenerConsumesIt() throws InterruptedException, MessagingException {
 
         producer.send(new ProducerRecord<>(DEFAULT_TOPIC, "Message"));
         producer.flush();
@@ -59,5 +66,8 @@ class KafkaConsumerTest {
 
 
         assertThat(userKafkaConsumer.getPayload(), containsString("Message"));
+
+//        seems to delay consumption by listener which then fails test
+//        verify(emailProducer, times(1)).produceHtmlEmail(any());
     }
 }
