@@ -1,8 +1,9 @@
 package org.example.messaging;
 
+import jakarta.mail.MessagingException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public interface MessagingConsumer {
 
-    public void processEmailEvent(ConsumerRecord<?, ?> consumerRecord);
+    public void processEmailEvent(ConsumerRecord<?, ?> consumerRecord) throws MessagingException;
 }

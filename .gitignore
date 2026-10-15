@@ -44,4 +44,7 @@ build/
 .env
 
 ### Generated ###
-./data
+/data/
+/.run/
+/email-service/src/test/resources/testOutputTargetDir/
+/email-service/src/main/resources/outputTargetDir/

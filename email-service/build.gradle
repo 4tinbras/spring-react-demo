@@ -25,6 +25,10 @@ dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:4.0.0")
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: springBootVer
+    implementation("jakarta.mail:jakarta.mail-api:2.1.5")
+
     //core
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc', version: springBootVer
@@ -58,6 +62,7 @@ dependencies {
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-restclient-test', version: springBootVer
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator-test', version: springBootVer
     testImplementation group: 'org.springframework.kafka', name: 'spring-kafka-test', version: springBootVer
+    testImplementation("org.thymeleaf.testing:thymeleaf-testing:3.1.5.RELEASE")
 
     testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }

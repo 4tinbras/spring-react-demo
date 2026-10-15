@@ -25,6 +25,18 @@ management:
 server:
   port: 8040
 
+services:
+  email:
+    file:
+      folder: ./src/main/resources/outputTargetDir/
+      name: email-to-be-sent.html
+    sender:
+      host: localhost
+      port: 7777
+      protocol: smtp
+      username: user
+      password: password
+
 spring:
   kafka:
     bootstrap-servers: localhost:9092
