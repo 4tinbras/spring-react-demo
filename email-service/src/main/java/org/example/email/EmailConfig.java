@@ -2,12 +2,10 @@ package org.example.email;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.thymeleaf.TemplateEngine;
@@ -34,8 +32,6 @@ public class EmailConfig {
     private String username;
     @Value("${services.email.sender.password}")
     private String password;
-    private ApplicationContext applicationContext;
-    private Environment environment;
 
     @Profile("send-email")
     @Bean

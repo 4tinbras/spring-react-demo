@@ -4,7 +4,7 @@ spring.kafka.consumer.group-id: spreact
 services:
   email:
     file:
-      folder: ./
+      folder: ./src/test/resources/testOutputTargetDir/
       name: email-to-be-sent.html
     sender:
       host: localhost

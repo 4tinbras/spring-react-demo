@@ -28,7 +28,7 @@ server:
 services:
   email:
     file:
-      folder: ./
+      folder: ./src/main/resources/outputTargetDir/
       name: email-to-be-sent.html
     sender:
       host: localhost
