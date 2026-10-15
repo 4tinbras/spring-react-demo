@@ -12,7 +12,7 @@ export default function Home() {
           </div>
 
           <div>
-              <text>Please use tabs to navigate demo.</text>
+              <p>Please use tabs to navigate demo.</p>
           </div>
       </>
   )

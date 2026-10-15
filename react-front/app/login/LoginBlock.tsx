@@ -122,7 +122,7 @@ export default function LoginBlock({}: {}) {
                     <LoginForm onSubmitHandler={onSubmitHandler}></LoginForm>
                 </>)
                 || state === FormStatus.Failed && (<>
-                    <text>Login failed. If problem persists - please try later.</text>
+                    <p>Login failed. If problem persists - please try later.</p>
                     <LoginForm onSubmitHandler={onSubmitHandler}></LoginForm>
                 </>)
                 || authzCodeValue !== undefined && authzCodeValue !== null && (<>

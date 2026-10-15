@@ -117,11 +117,11 @@ describe('AccountInspection ', () => {
 
         const returnToTheListButton = screen.getByRole('button', {name: 'Return to the list'})
 
-        act(() => {
+        act(async () => {
             fireEvent.click(returnToTheListButton)
         });
 
-        expect(screen.queryByText('First Name'));
+        await expect(screen.queryByText('First Name'));
         expect(screen.queryByText('Tom'));
         expect(screen.queryByText('Last Name'));
         expect(screen.queryByText('Smith'));
@@ -150,7 +150,7 @@ describe('AccountInspection ', () => {
 
         const editAccountButton = screen.getByRole('button', {name: 'Edit'})
 
-        act(() => {
+        act(async () => {
             fireEvent.click(editAccountButton)
         });
 
@@ -158,9 +158,9 @@ describe('AccountInspection ', () => {
         expect(screen.queryByText('Account holder\'s surname'));
 
         const saveAccountButton = screen.getByRole('button', {name: 'Save'})
-        act(() => {
+        act(async () => {
             fireEvent.click(saveAccountButton)
         });
-        expect(screen.queryByText('Too small: expected string to have >=1 characters'));
+        await expect(screen.queryByText('Too small: expected string to have >=1 characters'));
     })
 })
