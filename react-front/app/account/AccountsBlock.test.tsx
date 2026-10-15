@@ -130,7 +130,7 @@ describe('AccountsBlock ', () => {
 
         const contactsButton = screen.getByRole('button', {name: 'Get your Account'})
 
-        act(() => {
+        await act(() => {
             fireEvent.click(contactsButton)
         });
 
@@ -189,7 +189,7 @@ describe('AccountsBlock ', () => {
         const contactsButton = screen.getByRole('button', {name: 'Get All Accounts'})
         const contactButton = screen.getByRole('button', {name: 'Get your Account'})
 
-        act(() => {
+        await act(() => {
             fireEvent.click(contactsButton)
             fireEvent.click(contactButton)
         });

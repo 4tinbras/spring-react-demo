@@ -1,6 +1,6 @@
 import React from "react";
 import ContactsBlock from "@/app/contacts/ContactsBlock";
-import {fireEvent, render, screen} from '@testing-library/react'
+import {act, fireEvent, render, screen} from '@testing-library/react'
 import {http, HttpResponse} from 'msw'
 import {setupServer} from "msw/node";
 import {ContactDto, ErrorResp, FormStatus} from "@/app/utils";
@@ -89,7 +89,10 @@ describe('ContactsBlock', () => {
 
         // ACT
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
-        fireEvent.click(contactsButton);
+
+        act(() => {
+            fireEvent.click(contactsButton);
+        })
 
         await screen.findByText('Loading...')
 
@@ -131,7 +134,10 @@ describe('ContactsBlock', () => {
         expect(screen.findByText('No contacts found so far.'));
 
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
-        fireEvent.click(contactsButton);
+
+        act(() => {
+            fireEvent.click(contactsButton);
+        })
 
         await screen.findByText('Loading...')
 
@@ -142,7 +148,9 @@ describe('ContactsBlock', () => {
 
         expect(screen.getByText('First Name'))
 
-        fireEvent.click(contactsButton);
+        act(() => {
+            fireEvent.click(contactsButton);
+        })
 
         await screen.findByText('Loading...');
 
@@ -161,7 +169,10 @@ function validateEditSaveButton() {
     expect(screen.getByRole('button', {name: 'Edit'}));
     expect(screen.queryByRole('button', {name: 'Save'})).not.toBeInTheDocument();
     const editButton = screen.getByRole('button', {name: 'Edit'})
-    fireEvent.click(editButton);
+
+    act(() => {
+        fireEvent.click(editButton);
+    })
 
     expect(screen.getByRole('button', {name: 'Save'}));
     expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
@@ -170,7 +181,9 @@ function validateEditSaveButton() {
 function validateAddNewRecordButton() {
     const newRecordButton = screen.getByText('Add new record');
 
-    fireEvent.click(newRecordButton);
+    act(() => {
+        fireEvent.click(newRecordButton);
+    })
     expect(screen.getAllByRole('form')).toHaveLength(2)
 
     const forms: HTMLElement[] = screen.getAllByRole('form')
