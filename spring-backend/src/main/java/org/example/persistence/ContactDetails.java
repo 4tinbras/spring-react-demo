@@ -38,8 +38,8 @@ public class ContactDetails {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "first_contact_id", referencedColumnName = "uuid")
-    private List<ContactDetails> firstContactDetails = new ArrayList<>();
+    private List<Relationship> firstRelationshipList = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "second_contact_id", referencedColumnName = "uuid")
-    private List<ContactDetails> secondContactDetails = new ArrayList<>();
+    private List<Relationship> secondRelationshipList = new ArrayList<>();
 }
