@@ -132,6 +132,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
         <form id={"edit-block"} onSubmit={handleSubmit(onSubmit)}>
             {inspectorIsAdmin && (
                 <fieldset>
+                    <legend>Provide update to user details</legend>
                     <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
@@ -155,6 +156,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     <button>Save</button>
                 </fieldset>) || (
                 <fieldset>
+                    <legend>Provide update to user details</legend>
                     <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
