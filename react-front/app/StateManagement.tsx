@@ -8,7 +8,7 @@ import {
     ContactViewModel,
     FormStatus,
     ReducerAction
-} from "@/app/utils";
+} from "@/app/utilities/utils";
 import {JWTPayload} from "jose";
 
 export type ContactsState = {

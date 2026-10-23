@@ -8,7 +8,7 @@ import {
     AuthZContext,
     AuthZContextProps
 } from "@/app/StateManagement";
-import {AccountBlockActions, FormStatus} from "@/app/utils";
+import {AccountBlockActions, FormStatus} from "@/app/utilities/utils";
 
 const customRender = (ui: React.ReactElement,
                       {contactsProviderProps, authZProviderProps, ...renderOptions}: {

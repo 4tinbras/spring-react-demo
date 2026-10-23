@@ -1,7 +1,7 @@
 'use client'
 
 import {useAccounts, useAuthZ} from "@/app/StateManagement";
-import {AccountBlockActions, AccountBlockView, fetchThenHandleBody, FormStatus} from "@/app/utils";
+import {AccountBlockActions, AccountBlockView, fetchThenHandleBody, FormStatus} from "@/app/utilities/utils";
 import AccountInspection from "@/app/account/AccountInspection";
 import AccountsList from "@/app/account/AccountsList";
 

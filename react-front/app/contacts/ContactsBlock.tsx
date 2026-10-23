@@ -1,7 +1,13 @@
 'use client'
 
 import ContactsList from "@/app/contacts/ContactsList";
-import {ContactBlockActions, ContactState, ContactViewModel, fetchThenHandleBody, FormStatus} from "@/app/utils";
+import {
+    ContactBlockActions,
+    ContactState,
+    ContactViewModel,
+    fetchThenHandleBody,
+    FormStatus
+} from "@/app/utilities/utils";
 import {useAuthZ, useContacts} from "@/app/StateManagement";
 
 export default function ContactsBlock({}: {}) {

@@ -1,7 +1,7 @@
 import React from "react";
 import {render, screen} from '@testing-library/react'
 import ContactsList, {EditContactButton} from "@/app/contacts/ContactsList";
-import {ContactBlockActions, ContactViewModel, FormStatus} from "@/app/utils";
+import {ContactBlockActions, ContactViewModel, FormStatus} from "@/app/utilities/utils";
 import {ContactsDispatchContext, ContactsProvider, contactsReducer} from "@/app/StateManagement";
 
 

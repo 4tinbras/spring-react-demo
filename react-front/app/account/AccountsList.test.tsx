@@ -7,7 +7,7 @@ import {
     AuthZContext,
     AuthZContextProps
 } from "@/app/StateManagement";
-import {Account, AccountBlockActions} from "@/app/utils";
+import {Account, AccountBlockActions} from "@/app/utilities/utils";
 import AccountsList from "@/app/account/AccountsList";
 
 

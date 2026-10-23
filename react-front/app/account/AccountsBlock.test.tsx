@@ -8,7 +8,7 @@ import {
 } from "@/app/StateManagement";
 import React from "react";
 import AccountsBlock from "@/app/account/AccountsBlock";
-import {Account, AccountBlockActions, ErrorResp} from "@/app/utils";
+import {Account, AccountBlockActions, ErrorResp} from "@/app/utilities/utils";
 import {JWTPayload, JWTVerifyResult} from "jose";
 import {setupServer} from "msw/node";
 import {http, HttpResponse} from "msw";

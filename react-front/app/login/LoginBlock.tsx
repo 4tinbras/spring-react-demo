@@ -1,4 +1,4 @@
-import {FieldsSubmissionType, FormStatus, genericFetch, ReducerAction, TokenResponseDto} from "@/app/utils";
+import {FieldsSubmissionType, FormStatus, genericFetch, ReducerAction, TokenResponseDto} from "@/app/utilities/utils";
 import React, {useReducer} from "react";
 import {useSearchParams} from 'next/navigation'
 import {useAuthZ} from "@/app/StateManagement";

@@ -2,7 +2,7 @@
 
 import {AccountsDispatchContext, useAccounts} from "@/app/StateManagement";
 import {useContext, useState} from "react";
-import {Account, AccountBlockActions, FieldsSubmissionType, FormStatus, genericSubmitForm} from "@/app/utils";
+import {Account, AccountBlockActions, FieldsSubmissionType, FormStatus, genericSubmitForm} from "@/app/utilities/utils";
 import {FieldError, useForm} from "react-hook-form";
 import {accountsValidation} from "@/app/validation/validationUtils";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -144,8 +144,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     <input id={"ownersSurname"} type={"text"} defaultValue={originalAccount.ownersSurname}
                            {...register("ownersSurname")}/>
                     <input hidden id={"contactDetails"} type={"text"}
-                        // defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
-                           value={"[]"}
+                           defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
                            {...register("contactDetails")}/>
                     {/* TODO:   form to edit account state; change to:
                     dropdown to change account state
@@ -168,8 +167,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     <input id={"ownersSurname"} type={"text"} defaultValue={originalAccount.ownersSurname}
                            {...register("ownersSurname")}/>
                     <input hidden id={"contactDetails"} type={"text"}
-                        // defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
-                           value={"[]"}
+                           defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
                            {...register("contactDetails")}/>
                     {/* TODO:   form to edit account state; ensure it's not necessary for end-user inspection or unmodifiable
                     */}

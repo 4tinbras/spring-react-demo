@@ -3,7 +3,7 @@ import ContactsBlock from "@/app/contacts/ContactsBlock";
 import {act, fireEvent, render, screen} from '@testing-library/react'
 import {http, HttpResponse} from 'msw'
 import {setupServer} from "msw/node";
-import {ContactDto, ErrorResp, FormStatus} from "@/app/utils";
+import {ContactDto, ErrorResp, FormStatus} from "@/app/utilities/utils";
 import {
     AuthZContext,
     AuthZContextProps,

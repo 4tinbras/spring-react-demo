@@ -5,7 +5,7 @@ import {AuthZContext, AuthZContextProps} from "@/app/StateManagement";
 import {useSearchParams} from "next/navigation";
 import {setupServer} from "msw/node";
 import {http, HttpResponse} from "msw";
-import {ErrorResp, TokenResponseDto} from "@/app/utils";
+import {ErrorResp, TokenResponseDto} from "@/app/utilities/utils";
 
 const server = setupServer(
     http.get<{}, never, TokenResponseDto | ErrorResp>('http://localhost:8020/realms/spreact/protocol/openid-connect/token', (request) => {
