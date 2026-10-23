@@ -90,9 +90,6 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
     // @ts-ignore
     const {dispatchState} = useContext(AccountsDispatchContext);
 
-    const handleBody = (body: any) => {
-    }
-
     const onSubmit = async (data: any, event: any) => {
         event.preventDefault();
 
@@ -103,7 +100,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
             ])]
         ])
 
-        const innerSubmit = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/account",
+        const innerSubmit = genericSubmitForm(postAccountEndpoint,
             fieldsArray,
             dispatchState,
             FieldsSubmissionType.JsonFormParams,
