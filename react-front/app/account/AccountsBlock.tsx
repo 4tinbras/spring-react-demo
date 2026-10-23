@@ -4,6 +4,7 @@ import {useAccounts, useAuthZ} from "@/app/StateManagement";
 import {AccountBlockActions, AccountBlockView, fetchThenHandleBody, FormStatus} from "@/app/utilities/utils";
 import AccountInspection from "@/app/account/AccountInspection";
 import AccountsList from "@/app/account/AccountsList";
+import {SecondaryButton} from "@/app/utilities/prefabComponents";
 
 
 export default function AccountsBlock({}: {}) {
@@ -40,10 +41,10 @@ export default function AccountsBlock({}: {}) {
             {tokenPayload !== undefined && ((tokenPayload?.scope as string).includes("admin") &&
                 (<>
                     {/*    option to retrieve all accounts*/}
-                    <button onClick={() => handleGetAccounts(false)} className={'button-primary'}>Get your Account
-                    </button>
-                    <button onClick={() => handleGetAccounts(true)} className={'button-primary'}>Get All Accounts
-                    </button>
+                    <SecondaryButton initialButtonText={"Get Your Account"}
+                                     onClickHandler={() => handleGetAccounts(false)}></SecondaryButton>
+                    <SecondaryButton initialButtonText={"Get All Accounts"}
+                                     onClickHandler={() => handleGetAccounts(true)}></SecondaryButton>
 
                     {/*    hidden inspection element*/}
                     {(state.inspectedAccount !== undefined && state.showedView === AccountBlockView.InspectedAccount) && (
@@ -56,8 +57,8 @@ export default function AccountsBlock({}: {}) {
                 </>)
                 || (<>
                     {/*    retrieve only relevant account*/}
-                    <button onClick={() => handleGetAccounts(false)} className={'button-primary'}>Get your Account
-                    </button>
+                    <SecondaryButton initialButtonText={"Get Your Account"}
+                                     onClickHandler={() => handleGetAccounts(false)}></SecondaryButton>
 
                     {state.inspectedAccount !== undefined && (
                         <AccountInspection inspectorIsAdmin={false} accessToken={accessToken}></AccountInspection>

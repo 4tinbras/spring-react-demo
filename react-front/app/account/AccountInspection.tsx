@@ -8,6 +8,7 @@ import {accountsValidation} from "@/app/validation/validationUtils";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import ErrorBlock, {ErrorDescriptor, ErrorLevel} from "@/app/error/ErrorBlock";
+import {PrimaryButton} from "@/app/utilities/prefabComponents";
 
 
 export default function AccountInspection({inspectorIsAdmin, accessToken}:
@@ -40,7 +41,7 @@ export default function AccountInspection({inspectorIsAdmin, accessToken}:
                     Return to the list
                 </button>
             )}
-            <button onClick={(event) => onSubmitEdit(event)}>Edit</button>
+            <PrimaryButton initialButtonText={"Edit"} onClickHandler={(event) => onSubmitEdit(event)}></PrimaryButton>
 
             <h2>Personal details</h2>
 
@@ -152,7 +153,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     */}
                     <input hidden id={"accountType"} type={"text"} value={"END_USER"} {...register("accountType")}/>
                     <input hidden id={"accountState"} type={"text"} value={"OK"} {...register("accountState")}/>
-                    <button>Save</button>
+                    <PrimaryButton initialButtonText={"Save"}></PrimaryButton>
                 </fieldset>) || (
                 <fieldset>
                     <legend>Provide update to user details</legend>
@@ -173,7 +174,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     */}
                     <input hidden id={"accountType"} type={"text"} value={"END_USER"} {...register("accountType")}/>
                     <input hidden id={"accountState"} type={"text"} value={"OK"} {...register("accountState")}/>
-                    <button>Save</button>
+                    <PrimaryButton initialButtonText={"Save"}></PrimaryButton>
                 </fieldset>
             )}
             <ErrorBlock errors={errorList}></ErrorBlock>

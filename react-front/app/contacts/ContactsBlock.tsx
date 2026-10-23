@@ -9,6 +9,7 @@ import {
     FormStatus
 } from "@/app/utilities/utils";
 import {useAuthZ, useContacts} from "@/app/StateManagement";
+import {PrimaryButton} from "@/app/utilities/prefabComponents";
 
 export default function ContactsBlock({}: {}) {
 
@@ -48,7 +49,8 @@ export default function ContactsBlock({}: {}) {
 
     return (
         <div style={{width: '100%'}}>
-            <button onClick={() => handleGetContacts()} className={'button-primary'}>Get Contacts</button>
+            <PrimaryButton initialButtonText={"Get Contacts"}
+                           onClickHandler={() => handleGetContacts()}></PrimaryButton>
 
             {accessToken !== "" && accessToken !== undefined && (
                 state.status === FormStatus.Pending && (<p>Loading...</p>) ||
