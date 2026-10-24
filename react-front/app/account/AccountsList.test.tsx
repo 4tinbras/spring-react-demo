@@ -112,7 +112,7 @@ describe('AccountsList ', () => {
 
         const returnToTheInspectionButton = screen.getByRole('button', {name: 'Return to the inspection'})
 
-        act(() => {
+        await act(async () => {
             fireEvent.click(returnToTheInspectionButton)
         });
 

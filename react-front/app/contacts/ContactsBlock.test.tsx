@@ -90,13 +90,13 @@ describe('ContactsBlock', () => {
         // ACT
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
 
-        act(() => {
+        await act(async () => {
             fireEvent.click(contactsButton);
         })
 
-        await screen.findByText('Loading...')
+        screen.findByText('Loading...')
 
-        await screen.findByRole('table')
+        screen.findByRole('table')
 
         // ASSERT
 
@@ -135,26 +135,26 @@ describe('ContactsBlock', () => {
 
         const contactsButton = screen.getByRole('button', {name: 'Get Contacts'})
 
-        act(() => {
+        await act(async () => {
             fireEvent.click(contactsButton);
         })
 
-        await screen.findByText('Loading...')
+        screen.findByText('Loading...')
 
-        await screen.findByRole('table')
+        screen.findByRole('table')
 
         expect(screen.queryByRole('paragraph', {name: 'Loading...'})).not.toBeInTheDocument();
         expect(screen.queryByRole('paragraph', {name: 'No contacts found so far.'})).not.toBeInTheDocument();
 
         expect(screen.getByText('First Name'))
 
-        act(() => {
+        await act(async () => {
             fireEvent.click(contactsButton);
         })
 
-        await screen.findByText('Loading...');
+        screen.findByText('Loading...');
 
-        await screen.findByText('No contacts found so far.');
+        screen.findByText('No contacts found so far.');
 
         expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
         expect(screen.queryByText('First Name')).not.toBeInTheDocument();
