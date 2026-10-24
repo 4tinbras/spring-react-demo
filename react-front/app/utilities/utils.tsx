@@ -163,9 +163,13 @@ export function onSubmitFetchData(fields: string[], fetchData: (formData: Map<st
     const result: Map<string, string> = new Map<string, string>();
 
     fields.forEach((field) => {
-            // TODO: preprocessing to allow empty lists; native solution would be better
-            const value = e.target[field]?.value == "[]" ? [] : e.target[field]?.value;
+        // TODO: preprocessing to allow lists as value of the form since native field[] isn't viable; native solution would be better
         //TODO: optional retrieval is suboptimal;
+        let value = e.target[field]?.value;
+        if (field === 'contactDetails') {
+            value = (value as string).split(",");
+        }
+        console.log(value);
         // it came off the back of the changes to new record form that somehow broke form for blank uuid
             result.set(field, value)
         }

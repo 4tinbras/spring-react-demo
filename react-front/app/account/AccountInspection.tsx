@@ -35,35 +35,36 @@ export default function AccountInspection({inspectorIsAdmin, accessToken}:
         <h1>Account</h1>
 
         {!editionMode && (<>
-        <div id={'personal-details-inspection-block'}>
-            {inspectorIsAdmin && state.accounts !== undefined && state.accounts.length > 0 && (
-                <button onClick={(event) => handleBackToListButtonClick(event, state.accounts)}>
-                    Return to the list
-                </button>
-            )}
-            <PrimaryButton initialButtonText={"Edit"} onClickHandler={(event) => onSubmitEdit(event)}></PrimaryButton>
+            <div id={'personal-details-inspection-block'}>
+                {inspectorIsAdmin && state.accounts !== undefined && state.accounts.length > 0 && (
+                    <button onClick={(event) => handleBackToListButtonClick(event, state.accounts)}>
+                        Return to the list
+                    </button>
+                )}
+                <PrimaryButton initialButtonText={"Edit"}
+                               onClickHandler={(event) => onSubmitEdit(event)}></PrimaryButton>
 
-            <h2>Personal details</h2>
+                <h2>Personal details</h2>
 
 
-            <div id={"info-block"}>
-                <span className={"display-block full-width"}>{state.inspectedAccount.ownersFirstName}</span>
-                <span className={"display-block full-width"}>{state.inspectedAccount.ownersSurname}</span>
-                <br/>
-                {/*query for contact details*/}
-                <span className={"display-block full-width"}>No Contact Details found</span>
-                {/*<span>{state.payload.inspectedAccount.contactDetails}</span>*/}
+                <div id={"info-block"}>
+                    <span className={"display-block full-width"}>{state.inspectedAccount.ownersFirstName}</span>
+                    <span className={"display-block full-width"}>{state.inspectedAccount.ownersSurname}</span>
+                    <br/>
+                    {/*query for contact details*/}
+                    <span className={"display-block full-width"}>No Contact Details found</span>
+                    {/*<span>{state.payload.inspectedAccount.contactDetails}</span>*/}
+                </div>
             </div>
-        </div>
-        {inspectorIsAdmin && (
-            <div id={'admin-details-inspection-block'}>
-                <h2>Account configuration</h2>
-                {/* TODO:   form to edit account state
+            {inspectorIsAdmin && (
+                <div id={'admin-details-inspection-block'}>
+                    <h2>Account configuration</h2>
+                    {/* TODO:   form to edit account state
                 field to show account state
                 field to show account type
             */}
-            </div>
-        )}
+                </div>
+            )}
         </>) || (
             <Form inspectorIsAdmin={inspectorIsAdmin} accessToken={accessToken}
                   originalAccount={state.inspectedAccount}></Form>
@@ -126,12 +127,14 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
         return temp;
     })
 
+    console.log(originalAccount.contactDetails);
+
     return (
         <form id={"edit-block"} onSubmit={handleSubmit(onSubmit)}>
             {inspectorIsAdmin && (
                 <fieldset>
                     <legend>Provide update to user details</legend>
-                    <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
+                    <input id={"uuid"} type={"hidden"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
                         name</label>
@@ -141,8 +144,12 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                         surname</label>
                     <input id={"ownersSurname"} type={"text"} defaultValue={originalAccount.ownersSurname}
                            {...register("ownersSurname")}/>
-                    <input hidden id={"contactDetails"} type={"text"}
-                           defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
+                    <input hidden id={"contactDetails"}
+                           defaultValue={originalAccount.contactDetails.map(item => {
+                               console.log(item);
+                               return item != undefined ? item.uuid.toString() : ""
+                           })
+                           }
                            {...register("contactDetails")}/>
                     {/* TODO:   form to edit account state; change to:
                     dropdown to change account state
@@ -154,7 +161,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                 </fieldset>) || (
                 <fieldset>
                     <legend>Provide update to user details</legend>
-                    <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
+                    <input id={"uuid"} type={"hidden"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
                         name</label>
@@ -165,7 +172,11 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     <input id={"ownersSurname"} type={"text"} defaultValue={originalAccount.ownersSurname}
                            {...register("ownersSurname")}/>
                     <input hidden id={"contactDetails"} type={"text"}
-                           defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
+                           defaultValue={originalAccount.contactDetails.map(item => {
+                               console.log(item);
+                               return item != undefined ? item.uuid.toString() : ""
+                           })
+                           }
                            {...register("contactDetails")}/>
                     {/* TODO:   form to edit account state; ensure it's not necessary for end-user inspection or unmodifiable
                     */}
