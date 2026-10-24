@@ -169,7 +169,6 @@ export function onSubmitFetchData(fields: string[], fetchData: (formData: Map<st
         if (field === 'contactDetails') {
             value = (value as string).split(",");
         }
-        console.log(value);
         // it came off the back of the changes to new record form that somehow broke form for blank uuid
             result.set(field, value)
         }

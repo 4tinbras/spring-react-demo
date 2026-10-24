@@ -146,7 +146,6 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                            {...register("ownersSurname")}/>
                     <input hidden id={"contactDetails"}
                            defaultValue={originalAccount.contactDetails.map(item => {
-                               console.log(item);
                                return item != undefined ? item.uuid.toString() : ""
                            })
                            }
@@ -173,7 +172,6 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                            {...register("ownersSurname")}/>
                     <input hidden id={"contactDetails"} type={"text"}
                            defaultValue={originalAccount.contactDetails.map(item => {
-                               console.log(item);
                                return item != undefined ? item.uuid.toString() : ""
                            })
                            }
