@@ -52,8 +52,9 @@ export default function AccountInspection({inspectorIsAdmin, accessToken}:
                     <span className={"display-block full-width"}>{state.inspectedAccount.ownersSurname}</span>
                     <br/>
                     {/*query for contact details*/}
-                    <span className={"display-block full-width"}>No Contact Details found</span>
-                    {/*<span>{state.payload.inspectedAccount.contactDetails}</span>*/}
+                    <span className={"display-block full-width"}>{state.inspectedAccount.contactDetails.map(item => {
+                        return item != undefined ? item.uuid.toString() : ""
+                    })}</span>
                 </div>
             </div>
             {inspectorIsAdmin && (
