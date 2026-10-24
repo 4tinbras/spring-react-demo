@@ -127,8 +127,6 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
         return temp;
     })
 
-    console.log(originalAccount.contactDetails);
-
     return (
         <form id={"edit-block"} onSubmit={handleSubmit(onSubmit)}>
             {inspectorIsAdmin && (
