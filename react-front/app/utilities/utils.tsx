@@ -166,7 +166,7 @@ export function onSubmitFetchData(fields: string[], fetchData: (formData: Map<st
         // TODO: preprocessing to allow lists as value of the form since native field[] isn't viable; native solution would be better
         //TODO: optional retrieval is suboptimal;
         let value = e.target[field]?.value;
-        if (field === 'contactDetails') {
+        if (field === 'contactDetails' && value != undefined) {
             value = (value as string).split(",");
         }
         // it came off the back of the changes to new record form that somehow broke form for blank uuid
