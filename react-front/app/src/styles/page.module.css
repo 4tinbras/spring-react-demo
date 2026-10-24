@@ -122,6 +122,11 @@ a.secondary {
     align-items: center;
     justify-content: center;
   }
+
+  .top-container {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
