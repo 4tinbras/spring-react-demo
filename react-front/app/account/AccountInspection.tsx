@@ -53,7 +53,7 @@ export default function AccountInspection({inspectorIsAdmin, accessToken}:
                     <br/>
                     {/*query for contact details*/}
                     <span className={"display-block full-width"}>{state.inspectedAccount.contactDetails.map(item => {
-                        return item != undefined ? item.uuid.toString() : ""
+                        return item != undefined && item.uuid != undefined ? item.uuid.toString() : ""
                     })}</span>
                 </div>
             </div>

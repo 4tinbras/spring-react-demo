@@ -151,7 +151,7 @@ describe('AccountInspection ', () => {
 
         const editAccountButton = screen.getByRole('button', {name: 'Edit'})
 
-        await act(async () => {
+        act(() => {
             fireEvent.click(editAccountButton)
         });
 
@@ -159,7 +159,7 @@ describe('AccountInspection ', () => {
         expect(screen.queryByText('Account holder\'s surname'));
 
         const saveAccountButton = screen.getByRole('button', {name: 'Save'})
-        await act(async () => {
+        act(() => {
             fireEvent.click(saveAccountButton)
         });
         expect(screen.queryByText('Too small: expected string to have >=1 characters'));
