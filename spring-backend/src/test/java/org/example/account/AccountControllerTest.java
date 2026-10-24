@@ -11,6 +11,7 @@ import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import org.example.ControllerSuiteUtil;
 import org.example.Main;
 import org.example.persistence.Account;
+import org.example.persistence.AccountDTO;
 import org.example.persistence.AccountRepository;
 import org.example.persistence.ContactDetails;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,6 +63,9 @@ class AccountControllerTest extends ControllerSuiteUtil {
     private static final String KEY_ID = "12345678901234567890";
     private final Account validAccount = new Account(0L, "Tom", "Smith",
             List.of(new ContactDetails(0L, 0L, "Tom", "Smith", "ts@example.com", "079678234", List.of(), List.of())),
+            Account.AccountType.END_USER, Account.AccountState.OK);
+    private final AccountDTO validDtoOfAccount = new AccountDTO(0L, "Tom", "Smith",
+            List.of("0"),
             Account.AccountType.END_USER, Account.AccountState.OK);
     @Autowired
     private MockMvc mockMvc;
@@ -139,7 +143,7 @@ class AccountControllerTest extends ControllerSuiteUtil {
         mockMvc.perform(
                         post("/account")
                                 .header("Authorization", format("Bearer %s", getSignedJwt(wireMockServer)))
-                                .content(objectMapper.writeValueAsBytes(validAccount))
+                                .content(objectMapper.writeValueAsBytes(validDtoOfAccount))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
