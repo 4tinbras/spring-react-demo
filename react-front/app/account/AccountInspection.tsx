@@ -153,8 +153,41 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     dropdown to change account state
                     dropdown to change account type
                     */}
-                    <input hidden id={"accountType"} type={"text"} value={"END_USER"} {...register("accountType")}/>
-                    <input hidden id={"accountState"} type={"text"} value={"OK"} {...register("accountState")}/>
+                    <br/>
+                    <div>
+                        <label htmlFor={"accountType-end-user"}>End-user</label>
+                        <input id={"accountType-end-user"} type={"radio"}
+                               value={"END_USER"} {...register("accountType")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountType-admin"}>Admin</label>
+                        <input id={"accountType-admin"} type={"radio"} value={"ADMIN"} {...register("accountType")}/>
+                    </div>
+
+                    <div>
+                        <label htmlFor={"accountState-ok"}>OK</label>
+                        <input id={"accountState-ok"} type={"radio"} value={"OK"} {...register("accountState")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountState-needs-password"}>Needs New Password</label>
+                        <input id={"accountState-needs-password"} type={"radio"}
+                               value={"NEEDS_NEW_PASSWORD"} {...register("accountState")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountState-frozen"}>Frozen</label>
+                        <input id={"accountState-frozen"} type={"radio"}
+                               value={"FROZEN"} {...register("accountState")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountState-blocked"}>Blocked</label>
+                        <input id={"accountState-blocked"} type={"radio"}
+                               value={"BLOCKED"} {...register("accountState")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountState-inactive"}>Inactive</label>
+                        <input id={"accountState-inactive"} type={"radio"}
+                               value={"INACTIVE"} {...register("accountState")}/>
+                    </div>
                     <PrimaryButton initialButtonText={"Save"}></PrimaryButton>
                 </fieldset>) || (
                 <fieldset>
@@ -177,8 +210,10 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                            {...register("contactDetails")}/>
                     {/* TODO:   form to edit account state; ensure it's not necessary for end-user inspection or unmodifiable
                     */}
-                    <input hidden id={"accountType"} type={"text"} value={"END_USER"} {...register("accountType")}/>
-                    <input hidden id={"accountState"} type={"text"} value={"OK"} {...register("accountState")}/>
+                    <input hidden id={"accountType"} type={"text"}
+                           value={originalAccount.accountType} {...register("accountType")}/>
+                    <input hidden id={"accountState"} type={"text"}
+                           value={originalAccount.accountState} {...register("accountState")}/>
                     <PrimaryButton initialButtonText={"Save"}></PrimaryButton>
                 </fieldset>
             )}
