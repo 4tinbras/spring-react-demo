@@ -60,10 +60,8 @@ export default function AccountInspection({inspectorIsAdmin, accessToken}:
             {inspectorIsAdmin && (
                 <div id={'admin-details-inspection-block'}>
                     <h2>Account configuration</h2>
-                    {/* TODO:   form to edit account state
-                field to show account state
-                field to show account type
-            */}
+                    <span className={"display-block full-width"}>{state.inspectedAccount.accountType}</span>
+                    <span className={"display-block full-width"}>{state.inspectedAccount.accountState}</span>
                 </div>
             )}
         </>) || (
@@ -149,11 +147,9 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                            })
                            }
                            {...register("contactDetails")}/>
-                    {/* TODO:   form to edit account state; change to:
-                    dropdown to change account state
-                    dropdown to change account type
-                    */}
                     <br/>
+
+                    <h2>Account Type</h2>
                     <div>
                         <label htmlFor={"accountType-end-user"}>End-user</label>
                         <input id={"accountType-end-user"} type={"radio"}
@@ -164,6 +160,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                         <input id={"accountType-admin"} type={"radio"} value={"ADMIN"} {...register("accountType")}/>
                     </div>
 
+                    <h2>Account State</h2>
                     <div>
                         <label htmlFor={"accountState-ok"}>OK</label>
                         <input id={"accountState-ok"} type={"radio"} value={"OK"} {...register("accountState")}/>
@@ -208,8 +205,6 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                            })
                            }
                            {...register("contactDetails")}/>
-                    {/* TODO:   form to edit account state; ensure it's not necessary for end-user inspection or unmodifiable
-                    */}
                     <input hidden id={"accountType"} type={"text"}
                            value={originalAccount.accountType} {...register("accountType")}/>
                     <input hidden id={"accountState"} type={"text"}
