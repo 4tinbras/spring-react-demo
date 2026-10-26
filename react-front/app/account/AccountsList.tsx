@@ -1,7 +1,7 @@
 'use client'
 
 import {useAccounts} from "@/app/StateManagement";
-import {Account, AccountBlockActions, FormStatus} from "@/app/utils";
+import {Account, AccountBlockActions, FormStatus} from "@/app/utilities/utils";
 import {Table} from "reactstrap";
 import React, {MouseEventHandler} from "react";
 

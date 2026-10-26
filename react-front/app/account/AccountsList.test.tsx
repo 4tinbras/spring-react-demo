@@ -7,7 +7,7 @@ import {
     AuthZContext,
     AuthZContextProps
 } from "@/app/StateManagement";
-import {Account, AccountBlockActions} from "@/app/utils";
+import {Account, AccountBlockActions} from "@/app/utilities/utils";
 import AccountsList from "@/app/account/AccountsList";
 
 
@@ -112,7 +112,7 @@ describe('AccountsList ', () => {
 
         const returnToTheInspectionButton = screen.getByRole('button', {name: 'Return to the inspection'})
 
-        act(() => {
+        await act(async () => {
             fireEvent.click(returnToTheInspectionButton)
         });
 

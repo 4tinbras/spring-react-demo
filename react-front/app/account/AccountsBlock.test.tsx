@@ -8,7 +8,7 @@ import {
 } from "@/app/StateManagement";
 import React from "react";
 import AccountsBlock from "@/app/account/AccountsBlock";
-import {Account, AccountBlockActions, ErrorResp} from "@/app/utils";
+import {Account, AccountBlockActions, ErrorResp} from "@/app/utilities/utils";
 import {JWTPayload, JWTVerifyResult} from "jose";
 import {setupServer} from "msw/node";
 import {http, HttpResponse} from "msw";
@@ -125,10 +125,10 @@ describe('AccountsBlock ', () => {
             {contactsProviderProps: validStateProps, authZProviderProps: endUserTokenPresentProps, renderOptions: []})
 
 
-        expect(screen.getByText('Get your Account'));
+        expect(screen.getByText('Get Your Account'));
         expect(screen.queryByText('Get All Accounts')).not.toBeInTheDocument();
 
-        const contactsButton = screen.getByRole('button', {name: 'Get your Account'})
+        const contactsButton = screen.getByRole('button', {name: 'Get Your Account'})
 
         await act(() => {
             fireEvent.click(contactsButton)
@@ -151,11 +151,11 @@ describe('AccountsBlock ', () => {
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {contactsProviderProps: validStateProps, authZProviderProps: adminTokenPresentProps, renderOptions: []})
 
-        expect(screen.getByText('Get your Account'));
+        expect(screen.getByText('Get Your Account'));
         expect(screen.getByText('Get All Accounts'));
 
         const contactsButton = screen.getByRole('button', {name: 'Get All Accounts'})
-        const contactButton = screen.getByRole('button', {name: 'Get your Account'})
+        const contactButton = screen.getByRole('button', {name: 'Get Your Account'})
 
         await act(async () => {
             fireEvent.click(contactButton)
@@ -183,11 +183,11 @@ describe('AccountsBlock ', () => {
                 </AuthZContext.Consumer>}</AccountsDispatchContext.Consumer>,
             {contactsProviderProps: validStateProps, authZProviderProps: adminTokenPresentProps, renderOptions: []})
 
-        expect(screen.getByText('Get your Account'));
+        expect(screen.getByText('Get Your Account'));
         expect(screen.getByText('Get All Accounts'));
 
         const contactsButton = screen.getByRole('button', {name: 'Get All Accounts'})
-        const contactButton = screen.getByRole('button', {name: 'Get your Account'})
+        const contactButton = screen.getByRole('button', {name: 'Get Your Account'})
 
         await act(() => {
             fireEvent.click(contactsButton)
@@ -214,6 +214,6 @@ describe('AccountsBlock ', () => {
 
         expect(screen.getByText('You need to login in first'));
         expect(screen.queryByText('Get All Accounts')).not.toBeInTheDocument();
-        expect(screen.queryByText('Get your Account')).not.toBeInTheDocument();
+        expect(screen.queryByText('Get Your Account')).not.toBeInTheDocument();
     })
 })

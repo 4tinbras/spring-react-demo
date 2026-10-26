@@ -44,6 +44,13 @@ a {
 button.button-primary {
   color: var(--foreground);
   background: var(--background);
+  padding: 0 10px 0 10px;
+}
+
+button.button-secondary {
+  color: var(--foreground);
+  background: var(--background);
+  padding: 0 10px 0 10px;
 }
 
 .top-container {
@@ -76,4 +83,12 @@ button.button-primary {
 
 .display-block {
   display: block;
+}
+
+@media (max-width: 520px) {
+  .top-container {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }

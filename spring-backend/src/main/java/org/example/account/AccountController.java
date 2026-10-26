@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.persistence.Account;
+import org.example.persistence.AccountDTO;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,8 @@ public class AccountController {
     }
 
     @PostMapping(path = "/account")
-    public ResponseEntity<Account> createAccount(@Valid @RequestBody final Account account) {
-        Account result = accountService.save(account);
+    public ResponseEntity<Account> createAccount(@Valid @RequestBody final AccountDTO account) {
+        Account result = accountService.save(accountService.convertDtoToAccount(account));
         return new ResponseEntity<>(result, HttpStatusCode.valueOf(201));
     }
 

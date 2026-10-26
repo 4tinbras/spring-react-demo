@@ -2,12 +2,13 @@
 
 import {AccountsDispatchContext, useAccounts} from "@/app/StateManagement";
 import {useContext, useState} from "react";
-import {Account, AccountBlockActions, FieldsSubmissionType, FormStatus, genericSubmitForm} from "@/app/utils";
+import {Account, AccountBlockActions, FieldsSubmissionType, FormStatus, genericSubmitForm} from "@/app/utilities/utils";
 import {FieldError, useForm} from "react-hook-form";
 import {accountsValidation} from "@/app/validation/validationUtils";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import ErrorBlock, {ErrorDescriptor, ErrorLevel} from "@/app/error/ErrorBlock";
+import {PrimaryButton} from "@/app/utilities/prefabComponents";
 
 
 export default function AccountInspection({inspectorIsAdmin, accessToken}:
@@ -34,35 +35,35 @@ export default function AccountInspection({inspectorIsAdmin, accessToken}:
         <h1>Account</h1>
 
         {!editionMode && (<>
-        <div id={'personal-details-inspection-block'}>
-            {inspectorIsAdmin && state.accounts !== undefined && state.accounts.length > 0 && (
-                <button onClick={(event) => handleBackToListButtonClick(event, state.accounts)}>
-                    Return to the list
-                </button>
+            <div id={'personal-details-inspection-block'}>
+                {inspectorIsAdmin && state.accounts !== undefined && state.accounts.length > 0 && (
+                    <button onClick={(event) => handleBackToListButtonClick(event, state.accounts)}>
+                        Return to the list
+                    </button>
+                )}
+                <PrimaryButton initialButtonText={"Edit"}
+                               onClickHandler={(event) => onSubmitEdit(event)}></PrimaryButton>
+
+                <h2>Personal details</h2>
+
+
+                <div id={"info-block"}>
+                    <span className={"display-block full-width"}>{state.inspectedAccount.ownersFirstName}</span>
+                    <span className={"display-block full-width"}>{state.inspectedAccount.ownersSurname}</span>
+                    <br/>
+                    {/*query for contact details*/}
+                    <span className={"display-block full-width"}>{state.inspectedAccount.contactDetails.map(item => {
+                        return item != undefined && item.uuid != undefined ? item.uuid.toString() : ""
+                    })}</span>
+                </div>
+            </div>
+            {inspectorIsAdmin && (
+                <div id={'admin-details-inspection-block'}>
+                    <h2>Account configuration</h2>
+                    <span className={"display-block full-width"}>{state.inspectedAccount.accountType}</span>
+                    <span className={"display-block full-width"}>{state.inspectedAccount.accountState}</span>
+                </div>
             )}
-            <button onClick={(event) => onSubmitEdit(event)}>Edit</button>
-
-            <h2>Personal details</h2>
-
-
-            <div id={"info-block"}>
-                <span className={"display-block full-width"}>{state.inspectedAccount.ownersFirstName}</span>
-                <span className={"display-block full-width"}>{state.inspectedAccount.ownersSurname}</span>
-                <br/>
-                {/*query for contact details*/}
-                <span className={"display-block full-width"}>No Contact Details found</span>
-                {/*<span>{state.payload.inspectedAccount.contactDetails}</span>*/}
-            </div>
-        </div>
-        {inspectorIsAdmin && (
-            <div id={'admin-details-inspection-block'}>
-                <h2>Account configuration</h2>
-                {/* TODO:   form to edit account state
-                field to show account state
-                field to show account type
-            */}
-            </div>
-        )}
         </>) || (
             <Form inspectorIsAdmin={inspectorIsAdmin} accessToken={accessToken}
                   originalAccount={state.inspectedAccount}></Form>
@@ -89,9 +90,6 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
     // @ts-ignore
     const {dispatchState} = useContext(AccountsDispatchContext);
 
-    const handleBody = (body: any) => {
-    }
-
     const onSubmit = async (data: any, event: any) => {
         event.preventDefault();
 
@@ -102,7 +100,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
             ])]
         ])
 
-        const innerSubmit = genericSubmitForm(`${process.env.NEXT_PUBLIC_BACKEND_HOST}` + "/account",
+        const innerSubmit = genericSubmitForm(postAccountEndpoint,
             fieldsArray,
             dispatchState,
             FieldsSubmissionType.JsonFormParams,
@@ -132,7 +130,8 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
         <form id={"edit-block"} onSubmit={handleSubmit(onSubmit)}>
             {inspectorIsAdmin && (
                 <fieldset>
-                    <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
+                    <legend>Provide update to user details</legend>
+                    <input id={"uuid"} type={"hidden"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
                         name</label>
@@ -142,20 +141,55 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                         surname</label>
                     <input id={"ownersSurname"} type={"text"} defaultValue={originalAccount.ownersSurname}
                            {...register("ownersSurname")}/>
-                    <input hidden id={"contactDetails"} type={"text"}
-                        // defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
-                           value={"[]"}
+                    <input hidden id={"contactDetails"}
+                           defaultValue={originalAccount.contactDetails.map(item => {
+                               return item != undefined ? item.uuid.toString() : ""
+                           })
+                           }
                            {...register("contactDetails")}/>
-                    {/* TODO:   form to edit account state; change to:
-                    dropdown to change account state
-                    dropdown to change account type
-                    */}
-                    <input hidden id={"accountType"} type={"text"} value={"END_USER"} {...register("accountType")}/>
-                    <input hidden id={"accountState"} type={"text"} value={"OK"} {...register("accountState")}/>
-                    <button>Save</button>
+                    <br/>
+
+                    <h2>Account Type</h2>
+                    <div>
+                        <label htmlFor={"accountType-end-user"}>End-user</label>
+                        <input id={"accountType-end-user"} type={"radio"}
+                               value={"END_USER"} {...register("accountType")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountType-admin"}>Admin</label>
+                        <input id={"accountType-admin"} type={"radio"} value={"ADMIN"} {...register("accountType")}/>
+                    </div>
+
+                    <h2>Account State</h2>
+                    <div>
+                        <label htmlFor={"accountState-ok"}>OK</label>
+                        <input id={"accountState-ok"} type={"radio"} value={"OK"} {...register("accountState")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountState-needs-password"}>Needs New Password</label>
+                        <input id={"accountState-needs-password"} type={"radio"}
+                               value={"NEEDS_NEW_PASSWORD"} {...register("accountState")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountState-frozen"}>Frozen</label>
+                        <input id={"accountState-frozen"} type={"radio"}
+                               value={"FROZEN"} {...register("accountState")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountState-blocked"}>Blocked</label>
+                        <input id={"accountState-blocked"} type={"radio"}
+                               value={"BLOCKED"} {...register("accountState")}/>
+                    </div>
+                    <div>
+                        <label htmlFor={"accountState-inactive"}>Inactive</label>
+                        <input id={"accountState-inactive"} type={"radio"}
+                               value={"INACTIVE"} {...register("accountState")}/>
+                    </div>
+                    <PrimaryButton initialButtonText={"Save"}></PrimaryButton>
                 </fieldset>) || (
                 <fieldset>
-                    <input hidden id={"uuid"} type={"text"} value={originalAccount.uuid}
+                    <legend>Provide update to user details</legend>
+                    <input id={"uuid"} type={"hidden"} value={originalAccount.uuid}
                            {...register("id")}/>
                     <label htmlFor={"ownersFirstName"} className={"full-width display-block"}>Account holder's first
                         name</label>
@@ -166,14 +200,16 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                     <input id={"ownersSurname"} type={"text"} defaultValue={originalAccount.ownersSurname}
                            {...register("ownersSurname")}/>
                     <input hidden id={"contactDetails"} type={"text"}
-                        // defaultValue={originalAccount.contactDetails.map(item => item != undefined ? item.toString() : "[]")}
-                           value={"[]"}
+                           defaultValue={originalAccount.contactDetails.map(item => {
+                               return item != undefined ? item.uuid.toString() : ""
+                           })
+                           }
                            {...register("contactDetails")}/>
-                    {/* TODO:   form to edit account state; ensure it's not necessary for end-user inspection or unmodifiable
-                    */}
-                    <input hidden id={"accountType"} type={"text"} value={"END_USER"} {...register("accountType")}/>
-                    <input hidden id={"accountState"} type={"text"} value={"OK"} {...register("accountState")}/>
-                    <button>Save</button>
+                    <input hidden id={"accountType"} type={"text"}
+                           value={originalAccount.accountType} {...register("accountType")}/>
+                    <input hidden id={"accountState"} type={"text"}
+                           value={originalAccount.accountState} {...register("accountState")}/>
+                    <PrimaryButton initialButtonText={"Save"}></PrimaryButton>
                 </fieldset>
             )}
             <ErrorBlock errors={errorList}></ErrorBlock>

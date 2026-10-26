@@ -1,7 +1,7 @@
 import * as zod from 'zod';
 import {number} from 'zod';
 
-export const ContactsValidation = zod.object({
+export const contactsValidation = zod.object({
     uuid: zod.string(),
     firstName: zod.string().nonempty(),
     lastName: zod.string().nonempty(),
@@ -14,7 +14,7 @@ export const accountsValidation = zod.object({
     id: zod.string(),
     ownersFirstName: zod.string().nonempty(),
     ownersSurname: zod.string().nonempty(),
-    contactDetails: zod.array(number()).or(zod.string()),
+    contactDetails: zod.array(number()).or(zod.string().or(contactsValidation)),
     accountType: zod.string(),
     accountState: zod.string()
 })

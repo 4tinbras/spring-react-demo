@@ -1,7 +1,7 @@
 'use client'
 import {AccountsProvider, accountsReducer} from "@/app/StateManagement";
 import AccountsBlock from "./AccountsBlock";
-import {FormStatus} from "@/app/utils";
+import {FormStatus} from "@/app/utilities/utils";
 
 
 export default function AccountsPage({}: {}) {

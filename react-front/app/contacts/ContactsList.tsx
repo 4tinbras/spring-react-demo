@@ -7,7 +7,7 @@ import {
     FieldsSubmissionType,
     FormStatus,
     genericSubmitForm
-} from '../utils';
+} from '../utilities/utils';
 import {ContactsDispatchContext} from "@/app/StateManagement";
 
 export default function ContactsList({contacts, accessToken}:
