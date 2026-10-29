@@ -51,13 +51,10 @@ public class AccountService {
                     //check with stub security app
                     RestClient.ResponseSpec securityResponse = restClient.post()
                             .uri(securityServiceUrl + "/account/update/" + toBeSaved.getUuid())
-//                            .body("sample")
                             .retrieve();
                     // save to audit trail via audit service
                     RestClient.ResponseSpec auditResponse = restClient.post()
                             .uri(auditServiceUrl + "/account/update/" + toBeSaved.getUuid())
-//                            .body("sample")
-//                        .httpRequest(request -> request.)
                             .retrieve();
                     // for some of the changes - send an email
                 } catch (RestClientResponseException exception) {
