@@ -23,6 +23,7 @@ class AccountServiceTest {
 
     private static final String AUDIT_SERVICE_URL = "http://localhost:7070";
     private static final String SECURITY_SERVICE_URL = "http://localhost:6060";
+    private static final String CHECKS_PATH = "/account/update/";
     private final ContactDetails VALID_CONTACT = new ContactDetails(
             1L, 1L, "firstName", "surname",
             "sample@example.com", "0685773921", List.of(), List.of());
@@ -66,8 +67,10 @@ class AccountServiceTest {
         RestClient.RequestBodyUriSpec partialRequest1 = Mockito.mock(RestClient.RequestBodyUriSpec.class);
         RestClient.RequestBodySpec partialRequest2 = Mockito.mock(RestClient.RequestBodySpec.class);
         when(restClient.post()).thenReturn(partialRequest1);
-        when(partialRequest1.uri(eq(AUDIT_SERVICE_URL))).thenReturn(partialRequest2);
-        when(partialRequest1.uri(eq(SECURITY_SERVICE_URL))).thenReturn(partialRequest2);
+        when(partialRequest1.uri(eq(AUDIT_SERVICE_URL + CHECKS_PATH + accountToBeSaved.getUuid()))).thenReturn(partialRequest2);
+        when(partialRequest1.uri(eq(SECURITY_SERVICE_URL + CHECKS_PATH + accountToBeSaved.getUuid()))).thenReturn(partialRequest2);
+        when(partialRequest1.body(any())).thenReturn(partialRequest2);
+        when(partialRequest2.body(any())).thenReturn(partialRequest2);
         when(partialRequest2.body(any())).thenReturn(partialRequest2);
         AccountService subject = new AccountService(accountRepository, contactService, restClient, AUDIT_SERVICE_URL, SECURITY_SERVICE_URL);
 
@@ -83,8 +86,8 @@ class AccountServiceTest {
 
         List<String> capturedUrls = urlCaptor.getAllValues();
 
-        assertTrue(capturedUrls.contains(SECURITY_SERVICE_URL));
-        assertTrue(capturedUrls.contains(AUDIT_SERVICE_URL));
+        assertTrue(capturedUrls.contains(SECURITY_SERVICE_URL + CHECKS_PATH + accountToBeSaved.getUuid()));
+        assertTrue(capturedUrls.contains(AUDIT_SERVICE_URL + CHECKS_PATH + accountToBeSaved.getUuid()));
     }
 
     @Test

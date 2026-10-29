@@ -8,6 +8,7 @@ import org.example.persistence.AccountRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,19 +47,22 @@ public class AccountService {
             if (original.getAccountState() != toBeSaved.getAccountState()
                     || original.getAccountType() != toBeSaved.getAccountType()) {
 
-                //TODO: add unhappy paths
-                //check with stub security app
-                RestClient.ResponseSpec securityResponse = restClient.post()
-                        .uri(securityServiceUrl)
-//                        .body("sample") // for some reason mocking it fails
-                        .retrieve();
-                // save to audit trail via audit service
-                RestClient.ResponseSpec auditResponse = restClient.post()
-                        .uri(auditServiceUrl)
-//                        .body("sample") // for some reason mocking it fails
+                try {
+                    //check with stub security app
+                    RestClient.ResponseSpec securityResponse = restClient.post()
+                            .uri(securityServiceUrl + "/account/update/" + toBeSaved.getUuid())
+//                            .body("sample")
+                            .retrieve();
+                    // save to audit trail via audit service
+                    RestClient.ResponseSpec auditResponse = restClient.post()
+                            .uri(auditServiceUrl + "/account/update/" + toBeSaved.getUuid())
+//                            .body("sample")
 //                        .httpRequest(request -> request.)
-                        .retrieve();
-                // for some of the changes - send an email
+                            .retrieve();
+                    // for some of the changes - send an email
+                } catch (RestClientResponseException exception) {
+                    exception.printStackTrace();
+                }
             }
         }
 
