@@ -26,7 +26,7 @@ public class ServiceConfig {
     public RestClientCustomizer virtualThreadsCustomizer() {
         HttpClient httpClient = HttpClient.newBuilder()
                 .executor(Executors.newVirtualThreadPerTaskExecutor())
-                .version(HttpClient.Version.HTTP_2)
+                .version(HttpClient.Version.HTTP_3)
                 .build();
         return (client) -> {
             client.requestFactory(new JdkClientHttpRequestFactory(httpClient));
@@ -37,7 +37,7 @@ public class ServiceConfig {
     public RestClient defaultRestClient() {
         var httpClient = HttpClient.newBuilder()
                 .executor(Executors.newVirtualThreadPerTaskExecutor())
-                .version(HttpClient.Version.HTTP_2)
+                .version(HttpClient.Version.HTTP_3)
                 .build();
         var requestFactory = new JdkClientHttpRequestFactory(httpClient);
 
