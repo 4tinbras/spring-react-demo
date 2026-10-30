@@ -32,8 +32,6 @@ public class ServiceConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerEndpoint);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "spreact");
-//        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JacksonJsonDeserializer.class);
         return new DefaultKafkaConsumerFactory<String, EmailServiceCommand>(
                 props, new StringDeserializer(), new JacksonJsonDeserializer<>(EmailServiceCommand.class));
     }
