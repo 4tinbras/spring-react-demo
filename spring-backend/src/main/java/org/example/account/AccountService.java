@@ -2,6 +2,9 @@ package org.example.account;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.contact.ContactService;
+import org.example.messaging.EmailCommandType;
+import org.example.messaging.EmailServiceCommand;
+import org.example.messaging.MessagingService;
 import org.example.persistence.Account;
 import org.example.persistence.AccountDTO;
 import org.example.persistence.AccountRepository;
@@ -20,11 +23,13 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final ContactService contactService;
-    public final String auditServiceUrl;
-    public final String securityServiceUrl;
+    private final String auditServiceUrl;
+    private final String securityServiceUrl;
     private final RestClient restClient;
+    private final MessagingService messagingService;
 
     public AccountService(AccountRepository accountRepository, ContactService contactService, RestClient restClient,
+                          MessagingService messagingService,
                           @Value("${services.account.audit-service-url}") String auditServiceUrl,
                           @Value("${services.account.security-service-url}") String securityServiceUrl) {
         this.accountRepository = accountRepository;
@@ -32,6 +37,7 @@ public class AccountService {
         this.restClient = restClient;
         this.auditServiceUrl = auditServiceUrl;
         this.securityServiceUrl = securityServiceUrl;
+        this.messagingService = messagingService;
     }
 
     public List<Account> findAll() {
@@ -56,12 +62,13 @@ public class AccountService {
                     RestClient.ResponseSpec auditResponse = restClient.post()
                             .uri(auditServiceUrl + "/account/update/" + toBeSaved.getUuid())
                             .retrieve();
-                    // for some of the changes - send an email
                 } catch (RestClientResponseException exception) {
                     exception.printStackTrace();
                 }
             }
         }
+        messagingService.publishMessage(new EmailServiceCommand(toBeSaved.getContactDetails().getFirst().getEmail(), toBeSaved.getOwnersFirstName(),
+                toBeSaved.getUuid() == null ? EmailCommandType.CONTACT_CREATED : EmailCommandType.CONTACT_UPDATED));
 
         return accountRepository.save(toBeSaved);
     }

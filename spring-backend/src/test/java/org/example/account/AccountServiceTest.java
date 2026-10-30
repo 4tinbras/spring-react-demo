@@ -1,6 +1,9 @@
 package org.example.account;
 
 import org.example.contact.ContactService;
+import org.example.messaging.EmailCommandType;
+import org.example.messaging.EmailServiceCommand;
+import org.example.messaging.MessagingService;
 import org.example.persistence.Account;
 import org.example.persistence.AccountDTO;
 import org.example.persistence.AccountRepository;
@@ -35,18 +38,24 @@ class AccountServiceTest {
         Account accountToBeSaved = new Account(1L, "changedName", "changedSurname", List.of(VALID_CONTACT),
                 Account.AccountType.END_USER, Account.AccountState.OK);
 
+        MessagingService messagingService = Mockito.mock(MessagingService.class);
+
         ContactService contactService = Mockito.mock(ContactService.class);
         AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
         when(accountRepository.findById("1")).thenReturn(Optional.of(currentAccountState));
         when(accountRepository.save(eq(accountToBeSaved))).thenReturn(accountToBeSaved);
         RestClient restClient = Mockito.mock(RestClient.class);
 
-        AccountService subject = new AccountService(accountRepository, contactService, restClient, AUDIT_SERVICE_URL, SECURITY_SERVICE_URL);
+        AccountService subject = new AccountService(accountRepository, contactService, restClient, messagingService, AUDIT_SERVICE_URL, SECURITY_SERVICE_URL);
 
         subject.save(accountToBeSaved);
 
         verify(accountRepository).save(eq(accountToBeSaved));
         verify(restClient, never()).post();
+
+        EmailServiceCommand expectedCommand = new EmailServiceCommand(
+                accountToBeSaved.getContactDetails().getFirst().getEmail(), accountToBeSaved.getOwnersFirstName(), EmailCommandType.CONTACT_UPDATED);
+        verify(messagingService).publishMessage(eq(expectedCommand));
     }
 
     @Test
@@ -63,6 +72,8 @@ class AccountServiceTest {
         when(accountRepository.findById("1")).thenReturn(Optional.of(currentAccountState));
         when(accountRepository.save(eq(accountToBeSaved))).thenReturn(accountToBeSaved);
 
+        MessagingService messagingService = Mockito.mock(MessagingService.class);
+
         RestClient restClient = Mockito.mock(RestClient.class);
         RestClient.RequestBodyUriSpec partialRequest1 = Mockito.mock(RestClient.RequestBodyUriSpec.class);
         RestClient.RequestBodySpec partialRequest2 = Mockito.mock(RestClient.RequestBodySpec.class);
@@ -72,7 +83,7 @@ class AccountServiceTest {
         when(partialRequest1.body(any())).thenReturn(partialRequest2);
         when(partialRequest2.body(any())).thenReturn(partialRequest2);
         when(partialRequest2.body(any())).thenReturn(partialRequest2);
-        AccountService subject = new AccountService(accountRepository, contactService, restClient, AUDIT_SERVICE_URL, SECURITY_SERVICE_URL);
+        AccountService subject = new AccountService(accountRepository, contactService, restClient, messagingService, AUDIT_SERVICE_URL, SECURITY_SERVICE_URL);
 
         Account outcome = subject.save(accountToBeSaved);
         assertEquals(accountToBeSaved, outcome);
@@ -83,6 +94,10 @@ class AccountServiceTest {
         verify(partialRequest1, times(2)).uri(urlCaptor.capture());
         verify(partialRequest2, times(2)).retrieve();
         verify(accountRepository).save(eq(accountToBeSaved));
+
+        EmailServiceCommand expectedCommand = new EmailServiceCommand(
+                accountToBeSaved.getContactDetails().getFirst().getEmail(), accountToBeSaved.getOwnersFirstName(), EmailCommandType.CONTACT_UPDATED);
+        verify(messagingService).publishMessage(eq(expectedCommand));
 
         List<String> capturedUrls = urlCaptor.getAllValues();
 
@@ -108,7 +123,7 @@ class AccountServiceTest {
         when(contactService.findByUuid("1")).thenReturn(Optional.of(firstContactDetails));
         when(contactService.findByUuid("2")).thenReturn(Optional.of(secondContactDetails));
         RestClient restClient = Mockito.mock(RestClient.class);
-        AccountService subject = new AccountService(null, contactService, restClient, null, null);
+        AccountService subject = new AccountService(null, contactService, restClient, null, null, null);
 
         Account outcome = subject.convertDtoToAccount(accountDTO);
 
