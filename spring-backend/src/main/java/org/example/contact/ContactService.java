@@ -2,6 +2,7 @@ package org.example.contact;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.messaging.EmailCommandType;
 import org.example.messaging.EmailServiceCommand;
 import org.example.messaging.MessagingService;
 import org.example.persistence.ContactDetails;
@@ -26,7 +27,8 @@ public class ContactService {
     }
 
     public ContactDetails save(final ContactDetails toBeSaved) {
-        messagingService.publishMessage(new EmailServiceCommand(toBeSaved.getEmail(), toBeSaved.getFirstName(), "update"));
+        messagingService.publishMessage(new EmailServiceCommand(toBeSaved.getEmail(), toBeSaved.getFirstName(),
+                toBeSaved.getUuid() == null ? EmailCommandType.CONTACT_CREATED : EmailCommandType.CONTACT_UPDATED));
 
         final ContactDetails returnedRecord = contactRepository.save(toBeSaved);
         return returnedRecord;

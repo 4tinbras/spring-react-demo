@@ -53,7 +53,7 @@ class KafkaProducerTest {
             throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        EmailServiceCommand data = new EmailServiceCommand("example@example.com", "Tom", "update");
+        EmailServiceCommand data = new EmailServiceCommand("example@example.com", "Tom", EmailCommandType.CONTACT_UPDATED);
 
         producer.publishMessage(data);
 

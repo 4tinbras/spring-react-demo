@@ -1,5 +1,6 @@
 package org.example.contact;
 
+import org.example.messaging.EmailCommandType;
 import org.example.messaging.EmailServiceCommand;
 import org.example.messaging.MessagingService;
 import org.example.persistence.Account;
@@ -40,7 +41,7 @@ class ContactServiceTest {
 
     @Test
     void whenSaveWithValidRecord_thenMessageEmitted_andSavedRecordReturned() {
-        EmailServiceCommand message = new EmailServiceCommand(validRecord.getEmail(), validRecord.getFirstName(), "update");
+        EmailServiceCommand message = new EmailServiceCommand(validRecord.getEmail(), validRecord.getFirstName(), EmailCommandType.CONTACT_UPDATED);
 
         ContactDetails outcome = subject.save(validRecord);
         assertEquals(validRecord, outcome);
