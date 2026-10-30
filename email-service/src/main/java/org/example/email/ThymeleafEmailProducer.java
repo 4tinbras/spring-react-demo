@@ -4,6 +4,8 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.example.messaging.EmailCommandType;
+import org.example.messaging.EmailServiceCommand;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -19,19 +21,25 @@ public class ThymeleafEmailProducer implements EmailProducer {
     private final TemplateEngine templateEngine;
 
     @Override
-    public MimeMessage produceHtmlEmail(String emailInfo) throws MessagingException {
+    public MimeMessage produceHtmlEmail(EmailServiceCommand emailInfo) throws MessagingException {
         final Context ctx = new Context(Locale.UK);
         ctx.setVariable("subscriptionDate", ZonedDateTime.now());
-        ctx.setVariable("name", "Joe Doe");
+        ctx.setVariable("name", emailInfo.recipientsName());
 
         final MimeMessage mimeMessage = new MimeMessage(Session.getDefaultInstance(new Properties()));
         final MimeMessageHelper message =
                 new MimeMessageHelper(mimeMessage, true, "UTF-8");
         message.setSubject("Example HTML email");
         message.setFrom("email@example.com");
-        message.setTo(emailInfo);
+        message.setTo(emailInfo.recipientsEmail());
 
-        final String htmlContent = this.templateEngine.process("update-email.html", ctx);
+        final String htmlContent;
+
+        if (EmailCommandType.CONTACT_CREATED.equals(emailInfo.typeOfUpdate())) {
+            htmlContent = this.templateEngine.process("update-email.html", ctx);
+        } else {
+            htmlContent = this.templateEngine.process("create-email.html", ctx);
+        }
         message.setText(htmlContent, true);
 
         return mimeMessage;

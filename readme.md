@@ -35,9 +35,9 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 * Monitoring currently includes only a simple error rate rule
 
 ## Known backend issues
-* first insertion intermittently causes issues if it overlaps with already existing UUID
+
+* openapi spec works only as json, html is broken
 * healthcheck test stopped working since update to spring boot 4
-* relationship management is broken as it is not propagated to relevant entities in contact details/persona entity
 * keycloak container struggles to connect to postgres container; please use locally run keycloak and match backend to
   expect localhost authz as a temporary workaround
 
@@ -45,6 +45,5 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 * non-root container executions
 * add missing monitoring
 * add terraform script for simple AWS deployment
-* replace h2 db with something more reasonable
 * add missing resources for k8s deployments
 * update proxy to work as direct gateway to backend via mTLS protected connection

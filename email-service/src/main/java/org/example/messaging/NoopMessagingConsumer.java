@@ -7,7 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 public class NoopMessagingConsumer implements MessagingConsumer {
 
     @Override
-    public void processEmailEvent(ConsumerRecord<?, ?> consumerRecord) {
+    public void processEmailEvent(ConsumerRecord<String, EmailServiceCommand> consumerRecord) {
         log.info("Noop messaging service logs received message: {}", consumerRecord.value());
     }
 }

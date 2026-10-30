@@ -19,13 +19,13 @@ public class KafkaConsumer implements MessagingConsumer {
 
     public static final String DEFAULT_TOPIC = "spreact-emails-out";
 
-    private final Consumer<String, String> consumer;
+    private final Consumer<String, EmailServiceCommand> consumer;
 
     private final EmailService emailService;
     private final EmailProducer emailProducer;
-    private String payload;
+    private EmailServiceCommand payload;
 
-    public KafkaConsumer(ConsumerFactory<String, String> kafkaConsumerFactory,
+    public KafkaConsumer(ConsumerFactory<String, EmailServiceCommand> kafkaConsumerFactory,
                          EmailService emailService, EmailProducer emailProducer) {
         this.consumer = kafkaConsumerFactory.createConsumer();
         this.emailService = emailService;
@@ -33,9 +33,9 @@ public class KafkaConsumer implements MessagingConsumer {
     }
 
     @KafkaListener(id = "email-listener", topics = {KafkaConsumer.DEFAULT_TOPIC}, groupId = "spreact")
-    public void processEmailEvent(ConsumerRecord<?, ?> consumerRecord) throws MessagingException {
+    public void processEmailEvent(ConsumerRecord<String, EmailServiceCommand> consumerRecord) throws MessagingException {
         System.out.println("Received Message in default topic: " + consumerRecord.value());
-        payload = (String) consumerRecord.value();
+        payload = consumerRecord.value();
 
         MimeMessage email = emailProducer.produceHtmlEmail(payload);
         emailService.processEmail(email);

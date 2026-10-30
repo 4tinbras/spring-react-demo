@@ -15,8 +15,7 @@ repositories {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21) //TODO: increment to 25;
-        // notice that java parser lags behind and high lang targets are not supported
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -25,8 +24,7 @@ configurations.testImplementation {
 }
 
 dependencies {
-    //TODO: incrementing to 4.1 breaks kafka context
-    def springBootVer = '4.1.0'
+    def springBootVer = '4.1.2'
     def jakartaVer='3.0.0'
     def lombokVer = '1.18.46'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVer
@@ -39,6 +37,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVer
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: springBootVer
+    implementation group: 'org.springframework.boot', name: 'spring-boot-restclient', version: springBootVer
     implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: springBootVer
     //security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: springBootVer
