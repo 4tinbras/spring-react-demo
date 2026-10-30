@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
@@ -20,8 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.example.messaging.KafkaConsumer.DEFAULT_TOPIC;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ActiveProfiles({"test", "kafka-msg"})
 @SpringBootTest
@@ -41,7 +41,7 @@ class KafkaConsumerTest {
 //    @MockitoSpyBean
 //    private EmailService emailService;
 
-    private Producer<String, String> producer;
+    private Producer<String, EmailServiceCommand> producer;
 
     @BeforeEach
     void setup() {
@@ -52,20 +52,25 @@ class KafkaConsumerTest {
 
 
         Map<String, Object> configs = new HashMap<>(KafkaTestUtils.producerProps(embeddedKafka));
-        producer = new DefaultKafkaProducerFactory<>(configs, new StringSerializer(), new StringSerializer()).createProducer();
+        producer = new DefaultKafkaProducerFactory<String, EmailServiceCommand>(configs, new StringSerializer(),
+                new JacksonJsonSerializer<EmailServiceCommand>()).createProducer();
     }
 
     // this needs the sleep so that consumer had time to pick up the message, without it fails
     @Test
     void givenMessageIsPresent_thenListenerConsumesIt() throws InterruptedException, MessagingException {
 
-        producer.send(new ProducerRecord<>(DEFAULT_TOPIC, "Message"));
+        EmailServiceCommand data = new EmailServiceCommand("example@example.com", "Tom", EmailCommandType.CONTACT_UPDATED);
+
+        producer.send(new ProducerRecord<String, EmailServiceCommand>(DEFAULT_TOPIC, data));
         producer.flush();
 
         Thread.sleep(200);
 
 
-        assertThat(userKafkaConsumer.getPayload(), containsString("Message"));
+        assertEquals(data.recipientsName(), userKafkaConsumer.getPayload().recipientsName());
+        assertEquals(data.recipientsEmail(), userKafkaConsumer.getPayload().recipientsEmail());
+        assertEquals(data.typeOfUpdate(), userKafkaConsumer.getPayload().typeOfUpdate());
 
 //        TODO: seems to delay consumption by listener which then fails test
 //        verify(emailProducer, times(1)).produceHtmlEmail(any());

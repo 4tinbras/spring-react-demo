@@ -5,5 +5,5 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public interface MessagingConsumer {
 
-    public void processEmailEvent(ConsumerRecord<?, ?> consumerRecord) throws MessagingException;
+    public void processEmailEvent(ConsumerRecord<String, EmailServiceCommand> consumerRecord) throws MessagingException;
 }
