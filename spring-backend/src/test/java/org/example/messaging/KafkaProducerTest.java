@@ -14,6 +14,7 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class KafkaProducerTest {
 
     @Autowired
-    private ProducerFactory<String, String> kafkaProducerFactory;
+    private ProducerFactory<String, EmailServiceCommand> kafkaProducerFactory;
 
     private KafkaProducer producer;
 
@@ -50,7 +51,9 @@ class KafkaProducerTest {
     @Test
     public void givenEmbeddedKafkaBroker_whenSendingWithSimpleProducer_thenMessageReceived()
             throws Exception {
-        String data = "Sending with our own simple KafkaProducer";
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        EmailServiceCommand data = new EmailServiceCommand("example@example.com", "Tom", "update");
 
         producer.publishMessage(data);
 
@@ -59,7 +62,10 @@ class KafkaProducerTest {
         Consumer<Integer, String> consumer = cf.createConsumer();
         embeddedKafka.consumeFromAllEmbeddedTopics(consumer);
         ConsumerRecord<Integer, String> received = KafkaTestUtils.getSingleRecord(consumer, DEFAULT_TOPIC);
-        assertEquals(data, received.value());
+        EmailServiceCommand outcome = objectMapper.readValue(received.value(), EmailServiceCommand.class);
+        assertEquals(data.typeOfUpdate(), outcome.typeOfUpdate());
+        assertEquals(data.recipientsEmail(), outcome.recipientsEmail());
+        assertEquals(data.recipientsName(), outcome.recipientsName());
 
     }
 }

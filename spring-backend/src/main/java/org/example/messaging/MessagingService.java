@@ -2,5 +2,5 @@ package org.example.messaging;
 
 public interface MessagingService {
 
-    void publishMessage(final String message);
+    void publishMessage(final EmailServiceCommand message);
 }

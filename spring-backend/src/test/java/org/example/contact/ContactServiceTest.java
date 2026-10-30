@@ -1,5 +1,6 @@
 package org.example.contact;
 
+import org.example.messaging.EmailServiceCommand;
 import org.example.messaging.MessagingService;
 import org.example.persistence.Account;
 import org.example.persistence.ContactDetails;
@@ -11,7 +12,6 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.Optional;
 
-import static org.example.contact.ContactService.MESSAGE_PREFIX;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -40,10 +40,12 @@ class ContactServiceTest {
 
     @Test
     void whenSaveWithValidRecord_thenMessageEmitted_andSavedRecordReturned() {
+        EmailServiceCommand message = new EmailServiceCommand(validRecord.getEmail(), validRecord.getFirstName(), "update");
+
         ContactDetails outcome = subject.save(validRecord);
         assertEquals(validRecord, outcome);
 
-        verify(messagingService, times(1)).publishMessage(eq(MESSAGE_PREFIX + validRecord.getUuid()));
+        verify(messagingService, times(1)).publishMessage(eq(message));
     }
 
     @Test

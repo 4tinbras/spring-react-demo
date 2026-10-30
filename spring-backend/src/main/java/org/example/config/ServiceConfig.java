@@ -2,6 +2,7 @@ package org.example.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.example.messaging.EmailServiceCommand;
 import org.example.messaging.MessagingService;
 import org.example.messaging.NoopMessagingService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 import org.springframework.web.client.RestClient;
 
 import java.net.http.HttpClient;
@@ -49,7 +51,7 @@ public class ServiceConfig {
 
     @Profile("kafka-msg")
     @Bean(name = "kafkaProducerFactory")
-    public ProducerFactory<String, String> kafkaProducerFactory() {
+    public ProducerFactory<String, EmailServiceCommand> kafkaProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -58,7 +60,7 @@ public class ServiceConfig {
                 StringSerializer.class);
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
+                JacksonJsonSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
