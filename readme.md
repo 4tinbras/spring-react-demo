@@ -12,6 +12,7 @@ In order to run the project manually startup each project:
     * use config flag to load config yml
   * Grafana requires either copying provisioning folder to ``/etc/grafana/provisioning`` or providing absolute path to
     that folder in ``grafana.ini`` config file
+    * Grafana is configured to connect to postgres in line with remainder of demo
 * Keycloak instance as per ``https://www.keycloak.org/getting-started/getting-started-zip``
   * suggested command for running keycloak is:
     ``[keycloak-root-directory]/bin/kc.sh start-dev --http-port 8020 --metrics-enabled=true --event-metrics-user-enabled=true --event-metrics-user-tags=realm,idp,clientId``
