@@ -1,0 +1,96 @@
+rule_files:
+  - rules.yml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'http_server_requests_seconds_count{outcome="ERROR", uri="/sampleNonStatsUri", app="sampleApp"}'
+        values: '10 20 30 40 50 60 70 80 90 10'
+      - series: 'http_server_requests_seconds_count{outcome="SUCCESS", uri="/sampleNonStatsUri", app="sampleApp"}'
+        values: '1 2 3 4 5 6 7 8 9 10'
+
+    alert_rule_test:
+      - alertname: HighErrorRate
+        eval_time: 5m
+        exp_alerts: [ ]
+      - eval_time: 10m
+        alertname: HighErrorRate
+        exp_alerts:
+          - exp_labels:
+              severity: high
+              app: sampleApp
+              uri: /sampleNonStatsUri
+              outcome: ERROR
+            exp_annotations:
+              summary: "High request error rate"
+              description: "Application sampleApp has been returning high rate of errors"
+
+  - interval: 1m
+    input_series:
+      - series: 'http_server_requests_seconds_count{outcome="ERROR", uri="/sampleNonStatsUri", status="500", app="sampleApp"}'
+        values: '1 2 3 4 5 6 7 8 9 10'
+      - series: 'http_server_requests_seconds_count{outcome="SUCCESS", uri="/sampleNonStatsUri", status="200", app="sampleApp"}'
+        values: '10 20 30 40 50 60 70 80 90 10'
+
+    alert_rule_test:
+      - alertname: Other500Errors
+        eval_time: 5m
+        exp_alerts: [ ]
+      - eval_time: 10m
+        alertname: Other500Errors
+        exp_alerts:
+          - exp_labels:
+              severity: high
+              app: sampleApp
+              uri: /sampleNonStatsUri
+              outcome: ERROR
+              status: 500
+            exp_annotations:
+              summary: "High request 5** error rate"
+              description: "Application sampleApp has been returning high rate of 5** errors"
+
+  - interval: 1m
+    input_series:
+      - series: 'http_server_requests_seconds_count{outcome="ERROR", uri="/sampleNonStatsUri", status="500", app="keycloak"}'
+        values: '1 2 3 4 5 6 7 8 9 10'
+      - series: 'http_server_requests_seconds_count{outcome="SUCCESS", uri="/sampleNonStatsUri", status="200", app="keycloak"}'
+        values: '1000 2000 3000 4000 5000 6000 7000 8000 9000 1000'
+
+    alert_rule_test:
+      - alertname: Keycloak500Errors
+        eval_time: 5m
+        exp_alerts: [ ]
+      - eval_time: 10m
+        alertname: Keycloak500Errors
+        exp_alerts:
+          - exp_labels:
+              severity: high
+              app: keycloak
+              uri: /sampleNonStatsUri
+              outcome: ERROR
+              status: 500
+            exp_annotations:
+              summary: "High request 5** error rate"
+              description: "Application keycloak has been returning high rate of 5** errors"
+
+  - interval: 1m
+    input_series:
+      - series: 'http_server_requests_seconds_count{outcome="ERROR", uri="/sampleNonStatsUri", app="keycloak"}'
+        values: '1 2 3 4 5 6 7 8 9 10'
+      - series: 'http_server_requests_seconds_sum{outcome="SUCCESS", uri="/sampleNonStatsUri", app="keycloak"}'
+        values: '1000 2000 3000 4000 5000 6000 7000 8000 9000 1000'
+
+    alert_rule_test:
+      - alertname: HighLatency
+        eval_time: 5m
+        exp_alerts: [ ]
+      - eval_time: 10m
+        alertname: HighLatency
+        exp_alerts:
+          - exp_labels:
+              severity: medium
+            exp_annotations:
+              summary: "High response latency"
+              description: "Application  has been responding with high latency"

@@ -2,7 +2,8 @@ groups:
 - name: HTTP requests
   rules:
      - alert: HighErrorRate
-       expr: increase(http_server_requests_seconds_count{outcome!="SUCCESS", uri!~".*metrics"}[1m]) / increase(http_server_requests_seconds_count{uri!~".*metrics"}[1m]) > 0.1
+       #       increase over 1m leads to a bug as it overlaps with interval so they cancel out
+       expr: increase(http_server_requests_seconds_count{outcome!="SUCCESS", uri!~".*metrics"}[5m]) / increase(http_server_requests_seconds_count{uri!~".*metrics"}[5m]) > 0.1
        for: 5m
        keep_firing_for: 5m
        labels:
@@ -14,7 +15,7 @@ groups:
 
     #    as a standardised app it should never really return 500, any 500 should raise an alert
      - alert: Keycloak500Errors
-       expr: increase(http_server_requests_seconds_count{status=~"5.*", app="keycloak"}[1m]) > 0
+       expr: increase(http_server_requests_seconds_count{status=~"5.*", app="keycloak"}[5m]) > 0
        for: 5m
        keep_firing_for: 5m
        labels:
@@ -25,7 +26,7 @@ groups:
 
     #   as a custom app there is always a scope for error, be more tolerant
      - alert: Other500Errors
-       expr: increase(http_server_requests_seconds_count{status=~"5.*", app!="keycloak"}[1m]) / increase(http_server_requests_seconds_count{uri!~".*metrics"}[1m]) > 0.5
+       expr: increase(http_server_requests_seconds_count{status=~"5.*", app!="keycloak"}[5m]) / increase(http_server_requests_seconds_count{uri!~".*metrics"}[5m]) > 0.5
        for: 5m
        keep_firing_for: 5m
        labels:
@@ -35,7 +36,7 @@ groups:
          description: "Application {{ $labels.app }} has been returning high rate of 5** errors"
 
      - alert: HighLatency
-       expr: sum(rate(http_server_requests_seconds_sum[1m])) / sum(rate(http_server_requests_seconds_count[1m]))
+       expr: sum(rate(http_server_requests_seconds_sum[5m])) / sum(rate(http_server_requests_seconds_count[5m]))
        for: 5m
        keep_firing_for: 5m
        labels:
