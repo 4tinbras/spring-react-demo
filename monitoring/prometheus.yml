@@ -15,14 +15,14 @@ rule_files:
 
 scrape_configs:
   #  - add a config for frontend; conundrum as to what system to chose
-  - job_name: "contacts"
+  - job_name: "accounts_service"
     metrics_path: /actuator/prometheus
     # scheme defaults to 'http'
     static_configs:
       # by default - go to host gateway; if run outside of the container - use localhost:8071 instead
       - targets: [ "172.17.0.1:8071" ]
         labels:
-          app: "contacts"
+          app: "accounts_service"
   # should use mTLS
   - job_name: "keycloak"
     metrics_path: /metrics
