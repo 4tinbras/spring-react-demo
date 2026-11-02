@@ -36,7 +36,7 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
   * by using user-agent to obtain access token and make direct requests to backend
   * using frontend as-is with remaining compulsory containers
 * Repository includes postman collection which guides through login process and backend interactions.
-* Monitoring currently includes only a simple error rate rule
+* Basic monitoring configs added to the repo
 
 ## Known backend issues
 
@@ -47,7 +47,6 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 
 ## TODOs
 * non-root container executions
-* add missing monitoring
 * add terraform script for simple AWS deployment
 * add missing resources for k8s deployments
 * update proxy to work as direct gateway to backend via mTLS protected connection
