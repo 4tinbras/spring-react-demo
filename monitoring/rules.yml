@@ -2,10 +2,50 @@ groups:
 - name: HTTP requests
   rules:
      - alert: HighErrorRate
-       expr: http_server_requests_seconds_count{outcome!="SUCCESS"} / http_server_requests_seconds_count > 0.1
+       #       increase over 1m leads to a bug as it overlaps with interval so they cancel out
+       expr: increase(http_server_requests_seconds_count{outcome!="SUCCESS", uri!~".*metrics"}[5m]) / increase(http_server_requests_seconds_count{uri!~".*metrics"}[5m]) > 0.1
        for: 5m
        keep_firing_for: 5m
        labels:
          severity: high
        annotations:
-         summary: High request error rate
+         summary: "High request error rate"
+         #         templating means that it will be raised separately for each app that collects that metric
+         description: "Application {{ $labels.app }} has been returning high rate of errors"
+
+    #    as a standardised app it should never really return 500, any 500 should raise an alert
+     - alert: Keycloak500Errors
+       expr: increase(http_server_requests_seconds_count{status=~"5.*", app="keycloak"}[5m]) > 0
+       for: 5m
+       keep_firing_for: 5m
+       labels:
+         severity: high
+       annotations:
+         summary: "High request 5** error rate"
+         description: "Application {{ $labels.app }} has been returning high rate of 5** errors"
+
+    #   as a custom app there is always a scope for error, be more tolerant
+     - alert: Other500Errors
+       expr: increase(http_server_requests_seconds_count{status=~"5.*", app!="keycloak"}[5m]) / increase(http_server_requests_seconds_count{uri!~".*metrics"}[5m]) > 0.5
+       for: 5m
+       keep_firing_for: 5m
+       labels:
+         severity: high
+       annotations:
+         summary: "High request 5** error rate"
+         description: "Application {{ $labels.app }} has been returning high rate of 5** errors"
+
+     - alert: HighLatency
+       expr: sum(rate(http_server_requests_seconds_sum[5m])) / sum(rate(http_server_requests_seconds_count[5m]))
+       for: 5m
+       keep_firing_for: 5m
+       labels:
+         severity: medium
+       annotations:
+         summary: "High response latency"
+         description: "Application {{ $labels.app }} has been responding with high latency"
+
+#improve rules i.e. by
+# adding specialised checks i.e. high rate of login failures or high rate of token failures
+
+# add file with tests for above
