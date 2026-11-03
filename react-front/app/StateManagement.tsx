@@ -146,10 +146,16 @@ export const useAccounts = () => {
 export type AuthZContextProps = {
     authZToken: string;
     setAuthZToken: Dispatch<SetStateAction<string>>;
-    activeTab: string;
-    setActiveTab: Dispatch<SetStateAction<string>>;
     tokenPayload: JWTPayload | undefined;
     setTokenPayload: Dispatch<SetStateAction<JWTPayload>>;
+
+    activeTab: string;
+    setActiveTab: Dispatch<SetStateAction<string>>;
+
+    refreshToken: string;
+    setRefreshToken: Dispatch<SetStateAction<string>>;
+    refreshTokenPayload: JWTPayload | undefined;
+    setRefreshTokenPayload: Dispatch<SetStateAction<JWTPayload>>;
 }
 
 export const AuthZContext = createContext<AuthZContextProps | undefined>(undefined);
@@ -159,10 +165,15 @@ export const AuthZProvider = ({children}: { children: any }) => {
     const [authZToken, setAuthZToken] = useState<string>('');
     const [activeTab, setActiveTab] = useState<string>('HOME');
     const [tokenPayload, setTokenPayload] = useState<JWTPayload>();
+    const [refreshToken, setRefreshToken] = useState<string>('');
+    const [refreshTokenPayload, setRefreshTokenPayload] = useState<JWTPayload>();
 
     return (
         // @ts-ignore
-        <AuthZContext.Provider value={{authZToken, setAuthZToken, tokenPayload, setTokenPayload}}>
+        <AuthZContext.Provider value={{
+            authZToken, setAuthZToken, tokenPayload, setTokenPayload,
+            refreshToken, setRefreshToken, refreshTokenPayload, setRefreshTokenPayload
+        }}>
             {children}
         </AuthZContext.Provider>
     );

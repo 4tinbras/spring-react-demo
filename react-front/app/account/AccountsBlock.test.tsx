@@ -90,28 +90,46 @@ const validStateProps = {
 const tokenMissingProps: AuthZContextProps = {
     authZToken: "",
     setAuthZToken: jest.fn(),
-    activeTab: "",
-    setActiveTab: jest.fn(),
     tokenPayload: undefined,
     setTokenPayload: jest.fn(),
+
+    activeTab: "",
+    setActiveTab: jest.fn(),
+
+    refreshToken: "",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: undefined,
+    setRefreshTokenPayload: jest.fn(),
 }
 
 const endUserTokenPresentProps: AuthZContextProps = {
     authZToken: "accessToken",
     setAuthZToken: jest.fn(),
-    activeTab: "",
-    setActiveTab: jest.fn(),
     tokenPayload: {"jti": "11", "scope": "someScope"},
     setTokenPayload: jest.fn(),
+
+    activeTab: "",
+    setActiveTab: jest.fn(),
+
+    refreshToken: "refreshToken",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: {"jti": "11", "scope": "someScope"},
+    setRefreshTokenPayload: jest.fn(),
 }
 
 const adminTokenPresentProps: AuthZContextProps = {
     authZToken: "accessToken",
     setAuthZToken: jest.fn(),
-    activeTab: "",
-    setActiveTab: jest.fn(),
     tokenPayload: {"jti": "11", "scope": "someScope admin"},
     setTokenPayload: jest.fn(),
+
+    activeTab: "",
+    setActiveTab: jest.fn(),
+
+    refreshToken: "refreshToken",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: {"jti": "11", "scope": "someScope admin"},
+    setRefreshTokenPayload: jest.fn(),
 }
 
 describe('AccountsBlock ', () => {

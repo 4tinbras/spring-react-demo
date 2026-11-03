@@ -16,15 +16,31 @@ const customRender = (ui: any, {providerProps, ...renderOptions}: {
 const activeHomeProps: AuthZContextProps = {
     authZToken: "",
     setAuthZToken: jest.fn(),
+    tokenPayload: undefined,
+    setTokenPayload: jest.fn(),
+
     activeTab: "HOME",
     setActiveTab: jest.fn(),
+
+    refreshToken: "",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: undefined,
+    setRefreshTokenPayload: jest.fn(),
 }
 
 const activeLoginProps: AuthZContextProps = {
     authZToken: "",
     setAuthZToken: jest.fn(),
+    tokenPayload: undefined,
+    setTokenPayload: jest.fn(),
+
     activeTab: "LOGIN",
     setActiveTab: jest.fn(),
+
+    refreshToken: "",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: undefined,
+    setRefreshTokenPayload: jest.fn(),
 }
 
 

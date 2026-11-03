@@ -62,20 +62,32 @@ const customRender = (ui: any, {providerProps, ...renderOptions}: {
 const initialStateProps: AuthZContextProps = {
     authZToken: "",
     setAuthZToken: jest.fn(),
-    activeTab: "",
-    setActiveTab: jest.fn(),
     tokenPayload: {"jti": "11"},
     setTokenPayload: jest.fn(),
+
+    activeTab: "",
+    setActiveTab: jest.fn(),
+
+    refreshToken: "",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: undefined,
+    setRefreshTokenPayload: jest.fn(),
 }
 
 
 const validTokenProps: AuthZContextProps = {
     authZToken: "accessToken",
     setAuthZToken: jest.fn(),
-    activeTab: "",
-    setActiveTab: jest.fn(),
     tokenPayload: {"jti": "11"},
     setTokenPayload: jest.fn(),
+
+    activeTab: "",
+    setActiveTab: jest.fn(),
+
+    refreshToken: "refreshToken",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: undefined,
+    setRefreshTokenPayload: jest.fn(),
 }
 
 jest.mock('next/navigation');

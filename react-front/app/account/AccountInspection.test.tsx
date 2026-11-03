@@ -42,10 +42,16 @@ const validStatePropsWithInspectionAndAccounts = {
 const endUserTokenPresentProps: AuthZContextProps = {
     authZToken: "accessToken",
     setAuthZToken: jest.fn(),
-    activeTab: "",
-    setActiveTab: jest.fn(),
     tokenPayload: {"jti": "11", "scope": "someScope"},
     setTokenPayload: jest.fn(),
+
+    activeTab: "",
+    setActiveTab: jest.fn(),
+
+    refreshToken: "refreshToken",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: {"jti": "11", "scope": "someScope"},
+    setRefreshTokenPayload: jest.fn(),
 }
 
 describe('AccountInspection ', () => {
