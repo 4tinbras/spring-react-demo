@@ -12,6 +12,7 @@ In order to run the project manually startup each project:
     * use config flag to load config yml
   * Grafana requires either copying provisioning folder to ``/etc/grafana/provisioning`` or providing absolute path to
     that folder in ``grafana.ini`` config file
+    * Grafana is configured to connect to postgres in line with remainder of demo
 * Keycloak instance as per ``https://www.keycloak.org/getting-started/getting-started-zip``
   * suggested command for running keycloak is:
     ``[keycloak-root-directory]/bin/kc.sh start-dev --http-port 8020 --metrics-enabled=true --event-metrics-user-enabled=true --event-metrics-user-tags=realm,idp,clientId``
@@ -36,7 +37,7 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
   * by using user-agent to obtain access token and make direct requests to backend
   * using frontend as-is with remaining compulsory containers
 * Repository includes postman collection which guides through login process and backend interactions.
-* Monitoring currently includes only a simple error rate rule
+* Basic monitoring configs added to the repo
 
 ## Known backend issues
 
@@ -47,7 +48,6 @@ In order to use OAuth2 authorization it is necessary to start Keycloak service o
 
 ## TODOs
 * non-root container executions
-* add missing monitoring
 * add terraform script for simple AWS deployment
 * add missing resources for k8s deployments
 * update proxy to work as direct gateway to backend via mTLS protected connection
