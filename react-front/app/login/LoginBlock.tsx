@@ -2,7 +2,7 @@ import {FieldsSubmissionType, FormStatus, genericFetch, ReducerAction, TokenResp
 import React, {useReducer} from "react";
 import {useSearchParams} from 'next/navigation'
 import {useAuthZ} from "@/app/StateManagement";
-import {createRemoteJWKSet, jwtVerify} from "jose";
+import {createRemoteJWKSet, decodeJwt, jwtVerify} from "jose";
 import {useLocalStorage} from 'usehooks-ts'
 
 export default function LoginBlock({}: {}) {
@@ -67,11 +67,14 @@ export default function LoginBlock({}: {}) {
     const searchParams = useSearchParams();
     const authzCodeValue = searchParams.get("code");
 
-    const {authZToken, setAuthZToken, tokenPayload, setTokenPayload} = useAuthZ();
+    const {
+        authZToken, setAuthZToken, tokenPayload, setTokenPayload,
+        refreshToken, setRefreshToken, refreshTokenPayload, setRefreshTokenPayload
+    } = useAuthZ();
     const accessToken = authZToken;
 
     const options = {
-        algorithms: ['RS256'],
+        algorithms: ['RS256', 'HS512'], //hs512 doesn't work regardless of being listed here
         issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`
     };
 
@@ -97,6 +100,7 @@ export default function LoginBlock({}: {}) {
                     const data: TokenResponseDto = await result.json();
 
                     setAuthZToken(data.access_token);
+                    setRefreshToken(data.refresh_token);
 
                     //decode token and validate
                     let outcome = jwtVerify(data.access_token, jwks, options);
@@ -105,6 +109,17 @@ export default function LoginBlock({}: {}) {
                     }).then(payload => {
                         setTokenPayload(payload)
                     });
+
+                    // keycloak doesn't give an option of changing signing key from HS512 and library seems to block it
+                    // so no verification is possible
+                    setRefreshTokenPayload(decodeJwt(data.refresh_token));
+
+                    // let refreshOutcome = jwtVerify(data.refresh_token, jwks, options);
+                    // refreshOutcome.then(result => {
+                    //     return result.payload;
+                    // }).then(payload => {
+                    //     setRefreshTokenPayload(payload)
+                    // });
                 });
 
             } catch (err: any) {
@@ -134,7 +149,7 @@ export default function LoginBlock({}: {}) {
 
                     <h2>Please submit form to initiate login</h2>
                     <label htmlFor={"scopes"}></label>
-                    <input id={"scopes"} type={"text"} defaultValue={"profile"} onChange={onScopesChange}/>
+                    <input id={"scopes"} type={"text"} defaultValue={scopes} onChange={onScopesChange}/>
                     <LoginForm onSubmitHandler={onSubmitHandler}></LoginForm>
                 </>)}
         </div>
