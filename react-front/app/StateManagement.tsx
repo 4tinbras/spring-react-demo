@@ -1,15 +1,28 @@
 'use client';
-import React, {createContext, Dispatch, SetStateAction, useContext, useReducer, useState} from 'react';
+import React, {
+    createContext,
+    Dispatch,
+    SetStateAction,
+    useContext,
+    useEffect,
+    useEffectEvent,
+    useReducer,
+    useState
+} from 'react';
 import {
     Account,
     AccountBlockActions,
     AccountBlockView,
     ContactBlockActions,
     ContactViewModel,
+    FieldsSubmissionType,
     FormStatus,
-    ReducerAction
+    genericFetch,
+    ReducerAction,
+    unpackAndSaveTokenResponse
 } from "@/app/utilities/utils";
-import {JWTPayload} from "jose";
+import {createRemoteJWKSet, JWTPayload} from "jose";
+import {useLocalStorage} from "usehooks-ts";
 
 export type ContactsState = {
     status: FormStatus,
@@ -168,13 +181,60 @@ export const AuthZProvider = ({children}: { children: any }) => {
     const [refreshToken, setRefreshToken] = useState<string>('');
     const [refreshTokenPayload, setRefreshTokenPayload] = useState<JWTPayload>();
 
+    // ___________________________
+    const AUTHORIZATION_SERVER_URL = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}`;
+    const TOKEN_ENDPOINT_PATH = `${process.env.NEXT_PUBLIC_TOKEN_ENDPOINT}`;
+    const FIVE_MINS_MARGIN = 5 * 60 * 1000;
+    const [scopes, setScopes] = useLocalStorage<string>('scopes', "openid profile");
+
+    const options = {
+        algorithms: ['RS256', 'HS512'], //hs512 doesn't work regardless of being listed here
+        issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`
+    };
+
+    const jwksUri = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}` + `${process.env.NEXT_PUBLIC_JWKS_ENDPOINT}`;
+    const jwks = createRemoteJWKSet(new URL(jwksUri));
+
+    const onTick = useEffectEvent(() => {
+        // dropped milliseconds as tokens do not track it and change in length breaks logic
+        const nowInEpoch = Math.floor(new Date().getTime() / 1000);
+        // if access token soon expires and refresh token is valid
+        if (nowInEpoch + FIVE_MINS_MARGIN > tokenPayload?.exp && tokenPayload?.exp < refreshTokenPayload?.exp) {
+            // refresh tokens
+            const postTokenAdditionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
+                [FieldsSubmissionType.UrlFormParams, new Map([
+                    ['client_id', 'spreact-client'],
+                    ['redirect_uri', 'http://localhost:3000/login'],
+                    ['grant_type', 'refresh_token'],
+                    ['scope', scopes],
+                    ['refresh_token', refreshToken]
+                ])]
+            ])
+
+            const tokenResponse = genericFetch(AUTHORIZATION_SERVER_URL + TOKEN_ENDPOINT_PATH,
+                postTokenAdditionalData, 'POST');
+            unpackAndSaveTokenResponse(tokenResponse, jwks, options, setAuthZToken, setTokenPayload, setRefreshToken, setRefreshTokenPayload);
+        }
+    });
+
+    useEffect(() => {
+        const keepTokenRefreshed = setInterval(() => {
+            onTick();
+        }, 60 * 1000); //once per minute
+        return () => {
+            clearInterval(keepTokenRefreshed);
+        };
+    }, []);
+    // ______________________________
+
     return (
         // @ts-ignore
         <AuthZContext.Provider value={{
             authZToken, setAuthZToken, tokenPayload, setTokenPayload,
             refreshToken, setRefreshToken, refreshTokenPayload, setRefreshTokenPayload
-        }}>
+        }}><>
             {children}
+        </>
         </AuthZContext.Provider>
     );
 };
