@@ -1,8 +1,14 @@
-import {FieldsSubmissionType, FormStatus, genericFetch, ReducerAction, TokenResponseDto} from "@/app/utilities/utils";
+import {
+    FieldsSubmissionType,
+    FormStatus,
+    genericFetch,
+    ReducerAction,
+    unpackAndSaveTokenResponse
+} from "@/app/utilities/utils";
 import React, {useReducer} from "react";
 import {useSearchParams} from 'next/navigation'
 import {useAuthZ} from "@/app/StateManagement";
-import {createRemoteJWKSet, decodeJwt, jwtVerify} from "jose";
+import {createRemoteJWKSet} from "jose";
 import {useLocalStorage} from 'usehooks-ts'
 
 export default function LoginBlock({}: {}) {
@@ -96,31 +102,7 @@ export default function LoginBlock({}: {}) {
                 const tokenResponse = genericFetch(AUTHORIZATION_SERVER_URL + TOKEN_ENDPOINT_PATH,
                     postTokenAdditionalData, 'POST');
 
-                tokenResponse.then(async (result: Response) => {
-                    const data: TokenResponseDto = await result.json();
-
-                    setAuthZToken(data.access_token);
-                    setRefreshToken(data.refresh_token);
-
-                    //decode token and validate
-                    let outcome = jwtVerify(data.access_token, jwks, options);
-                    outcome.then(result => {
-                        return result.payload;
-                    }).then(payload => {
-                        setTokenPayload(payload)
-                    });
-
-                    // keycloak doesn't give an option of changing signing key from HS512 and library seems to block it
-                    // so no verification is possible
-                    setRefreshTokenPayload(decodeJwt(data.refresh_token));
-
-                    // let refreshOutcome = jwtVerify(data.refresh_token, jwks, options);
-                    // refreshOutcome.then(result => {
-                    //     return result.payload;
-                    // }).then(payload => {
-                    //     setRefreshTokenPayload(payload)
-                    // });
-                });
+                unpackAndSaveTokenResponse(tokenResponse, jwks, options, setAuthZToken, setTokenPayload, setRefreshToken, setRefreshTokenPayload);
 
             } catch (err: any) {
                 dispatch({type: FormStatus.Failed.toString(), payload: null});
