@@ -69,8 +69,6 @@ describe('ContactsList ', () => {
             {value => <ContactsList contacts={[inactiveContact]} accessToken={""}></ContactsList>}
         </ContactsDispatchContext.Consumer>, {providerProps: validStateProps, renderOptions: []})
 
-        await screen.findByRole('table');
-
 
         // ASSERT
         expect(screen.getByDisplayValue('Tom')).toHaveAttribute('readonly', '');
@@ -96,7 +94,6 @@ describe('ContactsList ', () => {
             }]} accessToken={""}></ContactsList>}
         </ContactsDispatchContext.Consumer>, {providerProps: validStateProps, renderOptions: []})
 
-        await screen.findByRole('table');
 
         // ASSERT
         expect(screen.getByDisplayValue('Tom')).not.toHaveAttribute('readonly');
