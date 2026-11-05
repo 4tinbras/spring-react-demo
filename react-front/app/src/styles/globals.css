@@ -64,6 +64,26 @@ button.button-secondary {
   align-items: center;
 }
 
+.display-grid {
+  display: grid;
+}
+
+.five-col-grid {
+  grid-template-columns: 2fr 2fr 2fr 2fr 1fr;
+
+  input {
+    background: none;
+    border: none;
+    color: var(--background);
+  }
+}
+
+.five-col-grid > span {
+  --n: 5;
+  --c: #ddd;
+  background: conic-gradient(var(--c)) 0/calc(sign(var(--n) -mod(sibling-index() - 1, 2 * var(--n))) * 1%)
+}
+
 .display-flex {
   display: flex;
   flex-wrap: nowrap;

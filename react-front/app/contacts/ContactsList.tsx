@@ -1,4 +1,3 @@
-import {Table} from "reactstrap";
 import React, {MouseEventHandler, useContext} from "react";
 import {
     ContactBlockActions,
@@ -72,10 +71,9 @@ export default function ContactsList({contacts, accessToken}:
         //if has uuid (retrieved from backend) use it, otherwise generate subsequent number (to avoid clashes on multiple additions)
         const key = getUuidWithFallback(contactvm);
 
-        return <tr key={`${key}`}>
-            <ContactsRecord key={`${key}records`} uuid={key} contactvm={contactvm}
+        return <ContactsRecord key={`${key}records`} uuid={key} contactvm={contactvm}
                                 handleClick={handleEditButtonClick}></ContactsRecord>
-            </tr>;
+
         }
     );
 
@@ -92,25 +90,21 @@ export default function ContactsList({contacts, accessToken}:
                 <div>
                     {formsList}
                 </div>
-                <Table className={"table-striped-columns"}>
-                    <caption>
-                        Known contacts
-                    </caption>
-                    <thead>
-                    <tr>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Phone no.</th>
-                        <th scope="col">Email address</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                <div className={"display-grid five-col-grid alternating-colour"}>
+                    <span>First Name</span>
+                    <span>Last Name</span>
+                    <span>Phone no.</span>
+                    <span>Email address</span>
+                    <span></span>
                     {listItems}
-                    </tbody>
-                </Table>
+                </div>
             </div>)}
         <AddNewRecordButton contacts={contacts}></AddNewRecordButton>
     </div>
+}
+
+export function GridRowRecord() {
+
 }
 
 export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] }) {
@@ -165,23 +159,25 @@ export function ContactsRecord({uuid, contactvm, handleClick}: {
 
     //TODO: if readonly - change styling
     return <>
-        <td><input type="text" name="firstName" form={`form${uuid}`}
+        <span><input type="text" name="firstName" form={`form${uuid}`}
                    defaultValue={contact.firstName} {...inputProps}></input>
-        </td>
-        <td><input type="text" name="lastName" form={`form${uuid}`}
+        </span>
+        <span><input type="text" name="lastName" form={`form${uuid}`}
                    defaultValue={contact.lastName} {...inputProps}></input>
-        </td>
-        <td><input type="text" name="phoneNo" form={`form${uuid}`}
-                   defaultValue={contact.phoneNo} {...inputProps}></input></td>
-        <td><input type="text" name="email" form={`form${uuid}`}
-                   defaultValue={contact.email} {...inputProps}></input></td>
-        <td><EditContactButton uuid={uuid} contactvm={contactvm}
-                               onClick={(event) => handleClick(event, contactvm)}></EditContactButton></td>
-        {/*it should be empty if it's a new record so that backend assigned that value*/}
-        <td hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
-                          defaultValue={contact.uuid}></input></td>
-        <td hidden><input hidden readOnly type="text" name="account" form={`form${contact.uuid}`}
-                          defaultValue={contact.account}></input></td>
+        </span>
+        <span><input type="text" name="phoneNo" form={`form${uuid}`}
+                     defaultValue={contact.phoneNo} {...inputProps}></input></span>
+        <span><input type="text" name="email" form={`form${uuid}`}
+                     defaultValue={contact.email} {...inputProps}></input></span>
+        {/*wraps also hidden inputs so that it fitted into 5 column grid*/}
+        <span><EditContactButton uuid={uuid} contactvm={contactvm}
+                                 onClick={(event) => handleClick(event, contactvm)}></EditContactButton>
+            {/*it should be empty if it's a new record so that backend assigned that value*/}
+            <span hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
+                                defaultValue={contact.uuid}></input></span>
+            <span hidden><input hidden readOnly type="text" name="account" form={`form${contact.uuid}`}
+                                defaultValue={contact.account}></input></span>
+        </span>
     </>;
 }
 
