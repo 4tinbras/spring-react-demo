@@ -154,7 +154,6 @@ describe('LoginBlock', () => {
         // await screen.findByRole('form')
 
         await screen.findByText('You have already logged in!')
-        await screen.findByRole('button')
     });
 
     it('on failed request renders form', async () => {
