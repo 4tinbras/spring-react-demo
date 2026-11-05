@@ -1,4 +1,5 @@
-import React, {FormEventHandler} from "react";
+import React, {Dispatch, FormEventHandler, SetStateAction} from "react";
+import {decodeJwt, JWTPayload, jwtVerify, RemoteJWKSet} from "jose";
 
 export const enum Discriminator {
     ContactDto = 'ContactDto',
@@ -225,4 +226,36 @@ export function fetchThenHandleBody(endpoint: string, method: string, accessToke
             return response.json();
         }
     }).then(body => handleBody(body))
+}
+
+export function unpackAndSaveTokenResponse(tokenResponse: Promise<Response>, jwks: RemoteJWKSet, options: any,
+                                           setAuthZToken: Dispatch<SetStateAction<string>>,
+                                           setTokenPayload: Dispatch<SetStateAction<JWTPayload>>,
+                                           setRefreshToken: Dispatch<SetStateAction<string>>,
+                                           setRefreshTokenPayload: Dispatch<SetStateAction<JWTPayload>>) {
+    tokenResponse.then(async (result: Response) => {
+        const data: TokenResponseDto = await result.json();
+
+        setAuthZToken(data.access_token);
+        setRefreshToken(data.refresh_token);
+
+        //decode token and validate
+        let outcome = jwtVerify(data.access_token, jwks, options);
+        outcome.then(result => {
+            return result.payload;
+        }).then(payload => {
+            setTokenPayload(payload)
+        });
+
+        // keycloak doesn't give an option of changing signing key from HS512 and library seems to block it
+        // so no verification is possible
+        setRefreshTokenPayload(decodeJwt(data.refresh_token));
+
+        // let refreshOutcome = jwtVerify(data.refresh_token, jwks, options);
+        // refreshOutcome.then(result => {
+        //     return result.payload;
+        // }).then(payload => {
+        //     setRefreshTokenPayload(payload)
+        // });
+    });
 }

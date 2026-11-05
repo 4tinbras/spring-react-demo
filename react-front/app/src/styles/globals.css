@@ -64,11 +64,6 @@ button.button-secondary {
   align-items: center;
 }
 
-.display-flex {
-  display: flex;
-  flex-wrap: nowrap;
-}
-
 .navbar-brand {
   margin-right: 1rem;
 }
@@ -91,4 +86,39 @@ button.button-secondary {
     margin-left: 0;
     margin-right: 0;
   }
+}
+
+/*_____________________________Grid styles_____________________________*/
+
+.display-grid {
+  display: grid;
+}
+
+.display-colour-alternating-grid {
+  display: grid;
+  --background-colour: conic-gradient(var(--c)) 0/calc(sign(var(--n) - mod(sibling-index() - 1,2*var(--n)))*1%);
+}
+
+.five-col-grid {
+  --n: 5;
+  --c: #ddd;
+
+  grid-template-columns: 2fr 2fr 2fr 2fr 1fr;
+
+  > span {
+    background: var(--background-colour);
+  }
+
+  input:read-only {
+    background: none;
+    border: none;
+    color: var(--background);
+  }
+}
+
+/*_____________________________Flex styles_____________________________*/
+
+.display-flex {
+  display: flex;
+  flex-wrap: nowrap;
 }

@@ -10,6 +10,22 @@ import {
 } from "@/app/StateManagement";
 import {AccountBlockActions, FormStatus} from "@/app/utilities/utils";
 
+jest.mock('jose', () => {
+    return {
+        createRemoteJWKSet: jest.fn(),
+        decodeJwt: jest.fn().mockResolvedValue(
+            {
+                payload: {
+                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+                    jti: '11',
+                },
+                protectedHeader: {alg: "RS256"}
+            }
+        )
+
+    }
+});
+
 const customRender = (ui: React.ReactElement,
                       {contactsProviderProps, authZProviderProps, ...renderOptions}: {
                           [x: string]: any,
@@ -42,10 +58,14 @@ const validStatePropsWithInspectionAndAccounts = {
 const endUserTokenPresentProps: AuthZContextProps = {
     authZToken: "accessToken",
     setAuthZToken: jest.fn(),
-    activeTab: "",
-    setActiveTab: jest.fn(),
     tokenPayload: {"jti": "11", "scope": "someScope"},
     setTokenPayload: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
+    refreshToken: "refreshToken",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: {"jti": "11", "scope": "someScope"},
+    setRefreshTokenPayload: jest.fn(),
 }
 
 describe('AccountInspection ', () => {

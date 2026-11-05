@@ -1,8 +1,14 @@
-import {FieldsSubmissionType, FormStatus, genericFetch, ReducerAction, TokenResponseDto} from "@/app/utilities/utils";
+import {
+    FieldsSubmissionType,
+    FormStatus,
+    genericFetch,
+    ReducerAction,
+    unpackAndSaveTokenResponse
+} from "@/app/utilities/utils";
 import React, {useReducer} from "react";
 import {useSearchParams} from 'next/navigation'
 import {useAuthZ} from "@/app/StateManagement";
-import {createRemoteJWKSet, jwtVerify} from "jose";
+import {createRemoteJWKSet} from "jose";
 import {useLocalStorage} from 'usehooks-ts'
 
 export default function LoginBlock({}: {}) {
@@ -67,11 +73,14 @@ export default function LoginBlock({}: {}) {
     const searchParams = useSearchParams();
     const authzCodeValue = searchParams.get("code");
 
-    const {authZToken, setAuthZToken, tokenPayload, setTokenPayload} = useAuthZ();
+    const {
+        authZToken, setAuthZToken, tokenPayload, setTokenPayload,
+        refreshToken, setRefreshToken, refreshTokenPayload, setRefreshTokenPayload
+    } = useAuthZ();
     const accessToken = authZToken;
 
     const options = {
-        algorithms: ['RS256'],
+        algorithms: ['RS256', 'HS512'], //hs512 doesn't work regardless of being listed here
         issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`
     };
 
@@ -93,19 +102,7 @@ export default function LoginBlock({}: {}) {
                 const tokenResponse = genericFetch(AUTHORIZATION_SERVER_URL + TOKEN_ENDPOINT_PATH,
                     postTokenAdditionalData, 'POST');
 
-                tokenResponse.then(async (result: Response) => {
-                    const data: TokenResponseDto = await result.json();
-
-                    setAuthZToken(data.access_token);
-
-                    //decode token and validate
-                    let outcome = jwtVerify(data.access_token, jwks, options);
-                    outcome.then(result => {
-                        return result.payload;
-                    }).then(payload => {
-                        setTokenPayload(payload)
-                    });
-                });
+                unpackAndSaveTokenResponse(tokenResponse, jwks, options, setAuthZToken, setTokenPayload, setRefreshToken, setRefreshTokenPayload);
 
             } catch (err: any) {
                 dispatch({type: FormStatus.Failed.toString(), payload: null});
@@ -134,7 +131,7 @@ export default function LoginBlock({}: {}) {
 
                     <h2>Please submit form to initiate login</h2>
                     <label htmlFor={"scopes"}></label>
-                    <input id={"scopes"} type={"text"} defaultValue={"profile"} onChange={onScopesChange}/>
+                    <input id={"scopes"} type={"text"} defaultValue={scopes} onChange={onScopesChange}/>
                     <LoginForm onSubmitHandler={onSubmitHandler}></LoginForm>
                 </>)}
         </div>

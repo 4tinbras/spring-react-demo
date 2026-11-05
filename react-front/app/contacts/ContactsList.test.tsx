@@ -4,6 +4,21 @@ import ContactsList, {EditContactButton} from "@/app/contacts/ContactsList";
 import {ContactBlockActions, ContactViewModel, FormStatus} from "@/app/utilities/utils";
 import {ContactsDispatchContext, ContactsProvider, contactsReducer} from "@/app/StateManagement";
 
+jest.mock('jose', () => {
+    return {
+        createRemoteJWKSet: jest.fn(),
+        decodeJwt: jest.fn().mockResolvedValue(
+            {
+                payload: {
+                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+                    jti: '11',
+                },
+                protectedHeader: {alg: "RS256"}
+            }
+        )
+
+    }
+});
 
 const inactiveContact: ContactViewModel = {
     active: false,
@@ -54,8 +69,6 @@ describe('ContactsList ', () => {
             {value => <ContactsList contacts={[inactiveContact]} accessToken={""}></ContactsList>}
         </ContactsDispatchContext.Consumer>, {providerProps: validStateProps, renderOptions: []})
 
-        await screen.findByRole('table');
-
 
         // ASSERT
         expect(screen.getByDisplayValue('Tom')).toHaveAttribute('readonly', '');
@@ -81,7 +94,6 @@ describe('ContactsList ', () => {
             }]} accessToken={""}></ContactsList>}
         </ContactsDispatchContext.Consumer>, {providerProps: validStateProps, renderOptions: []})
 
-        await screen.findByRole('table');
 
         // ASSERT
         expect(screen.getByDisplayValue('Tom')).not.toHaveAttribute('readonly');

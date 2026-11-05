@@ -129,6 +129,7 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
     return (
         <form id={"edit-block"} onSubmit={handleSubmit(onSubmit)}>
             {inspectorIsAdmin && (
+                <>
                 <fieldset>
                     <legend>Provide update to user details</legend>
                     <input id={"uuid"} type={"hidden"} value={originalAccount.uuid}
@@ -147,9 +148,11 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                            })
                            }
                            {...register("contactDetails")}/>
+                </fieldset>
                     <br/>
 
-                    <h2>Account Type</h2>
+                    <fieldset>
+                        <legend>Provide account type</legend>
                     <div>
                         <label htmlFor={"accountType-end-user"}>End-user</label>
                         <input id={"accountType-end-user"} type={"radio"}
@@ -159,8 +162,10 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                         <label htmlFor={"accountType-admin"}>Admin</label>
                         <input id={"accountType-admin"} type={"radio"} value={"ADMIN"} {...register("accountType")}/>
                     </div>
+                    </fieldset>
 
-                    <h2>Account State</h2>
+                    <fieldset>
+                        <legend>Provide Account State</legend>
                     <div>
                         <label htmlFor={"accountState-ok"}>OK</label>
                         <input id={"accountState-ok"} type={"radio"} value={"OK"} {...register("accountState")}/>
@@ -186,7 +191,8 @@ function Form({inspectorIsAdmin, accessToken, originalAccount}: {
                                value={"INACTIVE"} {...register("accountState")}/>
                     </div>
                     <PrimaryButton initialButtonText={"Save"}></PrimaryButton>
-                </fieldset>) || (
+                    </fieldset>
+                </>) || (
                 <fieldset>
                     <legend>Provide update to user details</legend>
                     <input id={"uuid"} type={"hidden"} value={originalAccount.uuid}

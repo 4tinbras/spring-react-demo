@@ -14,6 +14,21 @@ import {
 } from "@/app/StateManagement";
 import {assertStandardContactListValues} from "@/app/contacts/ContactsList.test";
 
+jest.mock('jose', () => {
+    return {
+        createRemoteJWKSet: jest.fn(),
+        decodeJwt: jest.fn().mockResolvedValue(
+            {
+                payload: {
+                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+                    jti: '11',
+                },
+                protectedHeader: {alg: "RS256"}
+            }
+        )
+
+    }
+});
 
 const server = setupServer(
     http.get<{}, never, ContactDto[] | ErrorResp>('http://localhost:8080/contacts', function* (request) {
@@ -57,19 +72,27 @@ const customRender = (ui: React.ReactElement,
 const validTokenProps: AuthZContextProps = {
     authZToken: "accessToken",
     setAuthZToken: jest.fn(),
+    tokenPayload: {"jti": "11", "scope": "someScope"},
+    setTokenPayload: jest.fn(),
     activeTab: "",
     setActiveTab: jest.fn(),
-    tokenPayload: {"jti": "11"},
-    setTokenPayload: jest.fn(),
+    refreshToken: "refreshToken",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: {"jti": "11", "scope": "someScope"},
+    setRefreshTokenPayload: jest.fn(),
 }
 
 const invalidTokenProps: AuthZContextProps = {
     authZToken: "",
     setAuthZToken: jest.fn(),
-    activeTab: "",
-    setActiveTab: jest.fn(),
     tokenPayload: {"jti": "11"},
     setTokenPayload: jest.fn(),
+    activeTab: "",
+    setActiveTab: jest.fn(),
+    refreshToken: "",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: undefined,
+    setRefreshTokenPayload: jest.fn(),
 }
 describe('ContactsBlock', () => {
 
