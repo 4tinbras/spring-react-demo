@@ -118,7 +118,6 @@ export default function LoginBlock({}: {}) {
             {//state === FormStatus.Ok &&
                 accessToken.length > 0 && (<>
                     <h2>You have already logged in!</h2>
-                    <LoginForm onSubmitHandler={onSubmitHandler}></LoginForm>
                 </>)
                 || state === FormStatus.Failed && (<>
                     <p>Login failed. If problem persists - please try later.</p>
