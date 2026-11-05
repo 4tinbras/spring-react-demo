@@ -166,17 +166,17 @@ export function ContactsRecord({uuid, contactvm, handleClick}: {
                    defaultValue={contact.lastName} {...inputProps}></input>
         </span>
         <span><input type="text" name="phoneNo" form={`form${uuid}`}
-                     defaultValue={contact.phoneNo} {...inputProps}></input></span>
+                   defaultValue={contact.phoneNo} {...inputProps}></input></span>
         <span><input type="text" name="email" form={`form${uuid}`}
-                     defaultValue={contact.email} {...inputProps}></input></span>
+                   defaultValue={contact.email} {...inputProps}></input></span>
         {/*wraps also hidden inputs so that it fitted into 5 column grid*/}
         <span><EditContactButton uuid={uuid} contactvm={contactvm}
-                                 onClick={(event) => handleClick(event, contactvm)}></EditContactButton>
+                               onClick={(event) => handleClick(event, contactvm)}></EditContactButton>
             {/*it should be empty if it's a new record so that backend assigned that value*/}
             <span hidden><input hidden readOnly type="text" name="uuid" form={`form${contact.uuid}`}
-                                defaultValue={contact.uuid}></input></span>
+                              defaultValue={contact.uuid}></input></span>
             <span hidden><input hidden readOnly type="text" name="account" form={`form${contact.uuid}`}
-                                defaultValue={contact.account}></input></span>
+                              defaultValue={contact.account}></input></span>
         </span>
     </>;
 }

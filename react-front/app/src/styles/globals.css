@@ -81,7 +81,7 @@ button.button-secondary {
 .five-col-grid > span {
   --n: 5;
   --c: #ddd;
-  background: conic-gradient(var(--c)) 0/calc(sign(var(--n) -mod(sibling-index() - 1, 2 * var(--n))) * 1%)
+  background: conic-gradient(var(--c)) 0/calc(sign(var(--n) - mod(sibling-index() - 1,2*var(--n)))*1%)
 }
 
 .display-flex {
