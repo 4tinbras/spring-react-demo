@@ -4,6 +4,21 @@ import ContactsList, {EditContactButton} from "@/app/contacts/ContactsList";
 import {ContactBlockActions, ContactViewModel, FormStatus} from "@/app/utilities/utils";
 import {ContactsDispatchContext, ContactsProvider, contactsReducer} from "@/app/StateManagement";
 
+jest.mock('jose', () => {
+    return {
+        createRemoteJWKSet: jest.fn(),
+        decodeJwt: jest.fn().mockResolvedValue(
+            {
+                payload: {
+                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+                    jti: '11',
+                },
+                protectedHeader: {alg: "RS256"}
+            }
+        )
+
+    }
+});
 
 const inactiveContact: ContactViewModel = {
     active: false,

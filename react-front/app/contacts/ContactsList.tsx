@@ -103,10 +103,6 @@ export default function ContactsList({contacts, accessToken}:
     </div>
 }
 
-export function GridRowRecord() {
-
-}
-
 export function AddNewRecordButton({contacts}: { contacts: ContactViewModel[] }) {
 
     const {dispatchState} = useContext(ContactsDispatchContext)!;

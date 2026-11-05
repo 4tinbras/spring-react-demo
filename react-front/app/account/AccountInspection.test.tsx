@@ -10,6 +10,22 @@ import {
 } from "@/app/StateManagement";
 import {AccountBlockActions, FormStatus} from "@/app/utilities/utils";
 
+jest.mock('jose', () => {
+    return {
+        createRemoteJWKSet: jest.fn(),
+        decodeJwt: jest.fn().mockResolvedValue(
+            {
+                payload: {
+                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+                    jti: '11',
+                },
+                protectedHeader: {alg: "RS256"}
+            }
+        )
+
+    }
+});
+
 const customRender = (ui: React.ReactElement,
                       {contactsProviderProps, authZProviderProps, ...renderOptions}: {
                           [x: string]: any,

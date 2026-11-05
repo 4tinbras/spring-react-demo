@@ -3,6 +3,22 @@ import NavBar from "@/app/NavBar";
 import {render, screen} from '@testing-library/react';
 import {AuthZContext, AuthZContextProps} from "@/app/StateManagement";
 
+jest.mock('jose', () => {
+    return {
+        createRemoteJWKSet: jest.fn(),
+        decodeJwt: jest.fn().mockResolvedValue(
+            {
+                payload: {
+                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+                    jti: '11',
+                },
+                protectedHeader: {alg: "RS256"}
+            }
+        )
+
+    }
+});
+
 const customRender = (ui: any, {providerProps, ...renderOptions}: {
     [x: string]: any,
     providerProps: AuthZContextProps
