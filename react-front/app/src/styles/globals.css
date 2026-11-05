@@ -71,7 +71,7 @@ button.button-secondary {
 .five-col-grid {
   grid-template-columns: 2fr 2fr 2fr 2fr 1fr;
 
-  input {
+  input:read-only {
     background: none;
     border: none;
     color: var(--background);
