@@ -10,6 +10,7 @@ import {useSearchParams} from 'next/navigation'
 import {useAuthZ} from "@/app/StateManagement";
 import {createRemoteJWKSet} from "jose";
 import {useLocalStorage} from 'usehooks-ts'
+import {PrimaryButton} from "@/app/utilities/prefabComponents";
 
 export default function LoginBlock({}: {}) {
     const AUTHORIZATION_SERVER_URL = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}`;
@@ -140,11 +141,8 @@ export default function LoginBlock({}: {}) {
 
 export function LoginForm({onSubmitHandler}: { onSubmitHandler: any }) {
     return (<>
-        {/*TODO: allow customisation of default values i.e. scope*/}
         <form action={"/login"} id={'login-form'} onSubmit={onSubmitHandler}>
-            {/*<label htmlFor={'scope'}>scope</label>*/}
-            {/*<input type={'text'} name={'scope'}/>*/}
-            <button type='submit' className={'button-primary'}>Log in</button>
+            <PrimaryButton initialButtonText={"Log in"}></PrimaryButton>
         </form>
     </>)
 }

@@ -153,7 +153,6 @@ export function ContactsRecord({uuid, contactvm, handleClick}: {
         inputProps.readOnly = true
     }
 
-    //TODO: if readonly - change styling
     return <>
         <span><input type="text" name="firstName" form={`form${uuid}`}
                    defaultValue={contact.firstName} {...inputProps}></input>
