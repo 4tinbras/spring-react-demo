@@ -182,6 +182,7 @@ export const AuthZProvider = ({children}: { children: any }) => {
     const [refreshTokenPayload, setRefreshTokenPayload] = useState<JWTPayload>();
 
     // ___________________________
+    const OAUTH_CLIENT_NAME = `${process.env.NEXT_PUBLIC_OAUTH_CLIENT}`;
     const AUTHORIZATION_SERVER_URL = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}`;
     const TOKEN_ENDPOINT_PATH = `${process.env.NEXT_PUBLIC_TOKEN_ENDPOINT}`;
     const FIVE_MINS_MARGIN = 5 * 60 * 1000;
@@ -203,7 +204,7 @@ export const AuthZProvider = ({children}: { children: any }) => {
             // refresh tokens
             const postTokenAdditionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
                 [FieldsSubmissionType.UrlFormParams, new Map([
-                    ['client_id', 'spreact-client'],
+                    ['client_id', OAUTH_CLIENT_NAME],
                     ['redirect_uri', 'http://localhost:3000/login'],
                     ['grant_type', 'refresh_token'],
                     ['scope', scopes],

@@ -16,6 +16,7 @@ export default function LoginBlock({}: {}) {
     const AUTHORIZATION_SERVER_URL = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}`;
     const AUTHORIZATION_ENDPOINT_PATH = `${process.env.NEXT_PUBLIC_AUTHZ_ENDPOINT}`;
     const TOKEN_ENDPOINT_PATH = `${process.env.NEXT_PUBLIC_TOKEN_ENDPOINT}`;
+    const OAUTH_CLIENT_NAME = `${process.env.NEXT_PUBLIC_OAUTH_CLIENT}`;
 
     const [scopes, setScopes] = useLocalStorage<string>('scopes', "openid profile");
 
@@ -24,7 +25,7 @@ export default function LoginBlock({}: {}) {
     }
 
     // TODO: replace verifier with randomised S256 value
-    const AUTHORIZATION_QUERY = "?client_id=spreact-client" +
+    const AUTHORIZATION_QUERY = "?client_id=" + OAUTH_CLIENT_NAME +
         "&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin" +
         "&grant_type=authorization_code&response_type=code" +
         "&code_challenge=My_Custom_CodeVerifier_But_Its_Length_Must_Be_AtLeast_43_Characters" +
@@ -64,7 +65,7 @@ export default function LoginBlock({}: {}) {
 
     const postTokenAdditionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
         [FieldsSubmissionType.UrlFormParams, new Map([
-            ['client_id', 'spreact-client'],
+            ['client_id', OAUTH_CLIENT_NAME],
             ['redirect_uri', 'http://localhost:3000/login'],
             ['grant_type', 'authorization_code'],
             ['scope', scopes]
