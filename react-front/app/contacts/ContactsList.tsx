@@ -90,7 +90,7 @@ export default function ContactsList({contacts, accessToken}:
                 <div>
                     {formsList}
                 </div>
-                <div className={"display-grid five-col-grid"}>
+                <div className={"display-colour-alternating-grid five-col-grid"}>
                     <span>First Name</span>
                     <span>Last Name</span>
                     <span>Phone no.</span>
