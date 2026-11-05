@@ -1,5 +1,5 @@
 import React from "react";
-import {render, screen} from '@testing-library/react';
+import {act, fireEvent, render, screen} from '@testing-library/react';
 import LoginBlock from "@/app/login/LoginBlock";
 import {AuthZContext, AuthZContextProps} from "@/app/StateManagement";
 import {useSearchParams} from "next/navigation";
@@ -157,11 +157,24 @@ describe('LoginBlock', () => {
     });
 
     it('on failed request renders form', async () => {
+        const getMock: jest.Mock = jest.fn(paramName => undefined);
+        (useSearchParams as jest.Mock).mockReturnValue({
+            get: getMock,
+        });
 
         customRender(<AuthZContext.Consumer>
             {value => <LoginBlock/>}
-        </AuthZContext.Consumer>, {providerProps: validTokenProps, renderOptions: []})
+        </AuthZContext.Consumer>, {providerProps: initialStateProps, renderOptions: []})
+
+        const loginButton = screen.getByRole('button', {name: 'Log in'})
+
+        act(() => {
+            fireEvent.click(loginButton)
+        });
+
 
         await screen.findByRole('button')
+        screen.findByText('Login failed. If problem persists - please try later.')
+
     });
 });

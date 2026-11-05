@@ -73,7 +73,7 @@ export default function LoginBlock({}: {}) {
     ])
 
     const searchParams = useSearchParams();
-    const authzCodeValue = searchParams.get("code");
+    let authzCodeValue = searchParams.get("code");
 
     const {
         authZToken, setAuthZToken, tokenPayload, setTokenPayload,
@@ -106,8 +106,10 @@ export default function LoginBlock({}: {}) {
 
                 unpackAndSaveTokenResponse(tokenResponse, jwks, options, setAuthZToken, setTokenPayload, setRefreshToken, setRefreshTokenPayload);
 
+                authzCodeValue=null;
             } catch (err: any) {
                 dispatch({type: FormStatus.Failed.toString(), payload: null});
+                authzCodeValue=null;
             }
         }
     }
