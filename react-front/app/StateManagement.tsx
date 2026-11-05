@@ -196,11 +196,13 @@ export const AuthZProvider = ({children}: { children: any }) => {
     const jwksUri = `${process.env.NEXT_PUBLIC_AUTHZ_SERVICE}` + `${process.env.NEXT_PUBLIC_JWKS_ENDPOINT}`;
     const jwks = createRemoteJWKSet(new URL(jwksUri));
 
+    //TODO: double check: this issues a new 30 min refresh token each time which is misuse of oauth2 on the part of keycloak
     const onTick = useEffectEvent(() => {
         // dropped milliseconds as tokens do not track it and change in length breaks logic
         const nowInEpoch = Math.floor(new Date().getTime() / 1000);
         // if access token soon expires and refresh token is valid
-        if (nowInEpoch + FIVE_MINS_MARGIN > tokenPayload?.exp && tokenPayload?.exp < refreshTokenPayload?.exp) {
+        if (nowInEpoch + FIVE_MINS_MARGIN > tokenPayload?.exp) {
+            if (tokenPayload?.exp < refreshTokenPayload?.exp) {
             // refresh tokens
             const postTokenAdditionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map([
                 [FieldsSubmissionType.UrlFormParams, new Map([
@@ -215,6 +217,12 @@ export const AuthZProvider = ({children}: { children: any }) => {
             const tokenResponse = genericFetch(AUTHORIZATION_SERVER_URL + TOKEN_ENDPOINT_PATH,
                 postTokenAdditionalData, 'POST');
             unpackAndSaveTokenResponse(tokenResponse, jwks, options, setAuthZToken, setTokenPayload, setRefreshToken, setRefreshTokenPayload);
+            } else if (nowInEpoch > tokenPayload?.exp) { // if can't refresh and are past expiry - clear both tokens
+                setAuthZToken("");
+                setRefreshToken("");
+                setTokenPayload(undefined);
+                setRefreshTokenPayload(undefined);
+            }
         }
     });
 
