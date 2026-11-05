@@ -52,15 +52,16 @@ beforeAll(() => server.listen())
 // afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
-const correctValidatedJWTPayload: JWTVerifyResult<JWTPayload> = {
-    payload: {
-        issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
-        jti: '11',
-    },
-    protectedHeader: {alg: "RS256"}
-}
 
 jest.mock('jose', () => {
+    const correctValidatedJWTPayload: JWTVerifyResult<JWTPayload> = {
+        payload: {
+            issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+            jti: '11',
+        },
+        protectedHeader: {alg: "RS256"}
+    }
+
     return {
         createRemoteJWKSet: jest.fn(),
         jwtVerify: jest.fn().mockResolvedValue(correctValidatedJWTPayload)
@@ -92,10 +93,8 @@ const tokenMissingProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     tokenPayload: undefined,
     setTokenPayload: jest.fn(),
-
     activeTab: "",
     setActiveTab: jest.fn(),
-
     refreshToken: "",
     setRefreshToken: jest.fn(),
     refreshTokenPayload: undefined,
@@ -107,10 +106,8 @@ const endUserTokenPresentProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     tokenPayload: {"jti": "11", "scope": "someScope"},
     setTokenPayload: jest.fn(),
-
     activeTab: "",
     setActiveTab: jest.fn(),
-
     refreshToken: "refreshToken",
     setRefreshToken: jest.fn(),
     refreshTokenPayload: {"jti": "11", "scope": "someScope"},
@@ -122,10 +119,8 @@ const adminTokenPresentProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     tokenPayload: {"jti": "11", "scope": "someScope admin"},
     setTokenPayload: jest.fn(),
-
     activeTab: "",
     setActiveTab: jest.fn(),
-
     refreshToken: "refreshToken",
     setRefreshToken: jest.fn(),
     refreshTokenPayload: {"jti": "11", "scope": "someScope admin"},

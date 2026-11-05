@@ -26,6 +26,7 @@ const customRender = (ui: React.ReactElement,
 }
 
 const firstValidAccount: Account = {
+    accountState: "", accountType: "",
     uuid: "11",
     ownersSurname: "Smith",
     ownersFirstName: "Tom",
@@ -33,6 +34,7 @@ const firstValidAccount: Account = {
 }
 
 const secondValidAccount: Account = {
+    accountState: "", accountType: "",
     uuid: "21",
     ownersSurname: "Doe",
     ownersFirstName: "Joe",
@@ -63,10 +65,8 @@ const endUserTokenPresentProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     tokenPayload: {"jti": "11", "scope": "someScope"},
     setTokenPayload: jest.fn(),
-
     activeTab: "",
     setActiveTab: jest.fn(),
-
     refreshToken: "refreshToken",
     setRefreshToken: jest.fn(),
     refreshTokenPayload: {"jti": "11", "scope": "someScope"},

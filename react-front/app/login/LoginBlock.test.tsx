@@ -39,6 +39,15 @@ jest.mock('jose', () => {
                 },
                 protectedHeader: {alg: "RS256"}
             }
+        ),
+        decodeJwt: jest.fn().mockResolvedValue(
+            {
+                payload: {
+                    issuer: `${process.env.NEXT_PUBLIC_TOKEN_ISSUER}`,
+                    jti: '11',
+                },
+                protectedHeader: {alg: "RS256"}
+            }
         )
 
     }
@@ -64,10 +73,8 @@ const initialStateProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     tokenPayload: {"jti": "11"},
     setTokenPayload: jest.fn(),
-
     activeTab: "",
     setActiveTab: jest.fn(),
-
     refreshToken: "",
     setRefreshToken: jest.fn(),
     refreshTokenPayload: undefined,
@@ -80,10 +87,8 @@ const validTokenProps: AuthZContextProps = {
     setAuthZToken: jest.fn(),
     tokenPayload: {"jti": "11"},
     setTokenPayload: jest.fn(),
-
     activeTab: "",
     setActiveTab: jest.fn(),
-
     refreshToken: "refreshToken",
     setRefreshToken: jest.fn(),
     refreshTokenPayload: undefined,
