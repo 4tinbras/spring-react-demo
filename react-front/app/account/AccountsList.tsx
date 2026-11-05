@@ -2,7 +2,6 @@
 
 import {useAccounts} from "@/app/StateManagement";
 import {Account, AccountBlockActions, FormStatus} from "@/app/utilities/utils";
-import {Table} from "reactstrap";
 import React, {MouseEventHandler} from "react";
 
 
@@ -10,8 +9,6 @@ export default function AccountsList() {
 
     const {state, dispatchState} = useAccounts();
 
-    //TODO: it needs to propagate clicked form so that parent could replace list with inspection view
-    // probably from that point onward both pages should include link to switch between views
     const handleEditButtonClick = (event: any, account: Account) => {
 
         dispatchState({
@@ -37,10 +34,9 @@ export default function AccountsList() {
             //if has uuid (retrieved from backend) use it, otherwise generate subsequent number (to avoid clashes on multiple additions)
             const key = getUuidWithFallback(account);
 
-            return <tr key={`${key}`}>
-                <AccountRecord key={`${key}records`} uuid={key} account={account}
+            return <AccountRecord key={`${key}records`} uuid={key} account={account}
                                handleClick={handleEditButtonClick}></AccountRecord>
-            </tr>;
+
         }
     );
 
@@ -50,21 +46,13 @@ export default function AccountsList() {
                 Return to the inspection
             </button>
         )}
-        <Table className={"table-striped-columns"}>
-            <caption>
-                Registered accounts
-            </caption>
-            <thead>
-            <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Linked contact details</th>
-            </tr>
-            </thead>
-            <tbody>
+        <div className={"display-colour-alternating-grid four-col-grid"}>
+            <span>First Name</span>
+            <span>Last Name</span>
+            <span>Linked contact details</span>
+            <span></span>
             {listItems}
-            </tbody>
-        </Table>
+        </div>
     </>)
 }
 
@@ -75,13 +63,13 @@ export function AccountRecord({uuid, account, handleClick}: {
     handleClick: any
 }) {
     return (<>
-        <td><span>{account.ownersFirstName}</span></td>
-        <td><span>{account.ownersSurname}</span></td>
+        <span>{account.ownersFirstName}</span>
+        <span>{account.ownersSurname}</span>
         {/*// @ts-ignore*/}
-        <td><span>{account.contactDetails?.at(0) !== undefined ? account.contactDetails?.at(0).uuid : ""}</span></td>
-        <td><EditAccountButton uuid={uuid}
+        <span>{account.contactDetails?.at(0) !== undefined ? account.contactDetails?.at(0).uuid : ""}</span>
+        <EditAccountButton uuid={uuid}
                                onClick={(event) => handleClick(event, account)}>
-        </EditAccountButton></td>
+        </EditAccountButton>
     </>)
 }
 
