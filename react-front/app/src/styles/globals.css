@@ -69,7 +69,10 @@ button.button-secondary {
 }
 
 footer {
-  min-height: 30vh;
+  min-height: 20vh;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 .navbar-brand {
