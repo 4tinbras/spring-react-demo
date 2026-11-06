@@ -32,9 +32,6 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
             crossOrigin="anonymous"
         />
         <div>
-            {/*https://react.dev/learn/synchronizing-with-effects
-                TODO: add interval checkup on access token expiry and show pop-up or try to refresh
-             */}
             <AuthZProvider>
                 <NavBar></NavBar>
                 <div className={'top-container my-5'}>
@@ -44,6 +41,12 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
                 </div>
             </AuthZProvider>
         </div>
+
+        <footer>
+            <div className={'top-container'}>
+                <span>{'Copyright © ' + new Date().getFullYear()}</span>
+            </div>
+        </footer>
         </body>
         </html>
     );
