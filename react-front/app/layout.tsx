@@ -34,7 +34,7 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
         <div>
             <AuthZProvider>
                 <NavBar></NavBar>
-                <div className={'top-container my-5'}>
+                <div className={'top-container my-5 main-content-container'}>
                     <Suspense fallback={<div>Loading...</div>}>
                         {children}
                     </Suspense>
