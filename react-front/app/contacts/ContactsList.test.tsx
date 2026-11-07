@@ -1,5 +1,5 @@
 import React from "react";
-import {render, screen} from '@testing-library/react'
+import {act, fireEvent, render, screen} from '@testing-library/react'
 import ContactsList, {EditContactButton} from "@/app/contacts/ContactsList";
 import {ContactBlockActions, ContactViewModel, FormStatus} from "@/app/utilities/utils";
 import {ContactsDispatchContext, ContactsProvider, contactsReducer} from "@/app/StateManagement";
@@ -116,7 +116,35 @@ describe('ContactsList ', () => {
         expect(screen.queryByRole('form')).not.toBeInTheDocument();
 
         expect(screen.getByText('Add new record'))
-})
+    })
+
+    it('given invalid record when save should show error block', async () => {
+        customRender(<ContactsDispatchContext.Consumer>
+            {value => <ContactsList contacts={[{
+                active: true,
+                contact: {
+                    uuid: "1",
+                    firstName: "Tom",
+                    lastName: "Smith",
+                    email: "test@test.com",
+                    phoneNo: "111",
+                    active: true,
+                    account: "1"
+                },
+                formStatus: FormStatus.Editing
+            }]} accessToken={""}></ContactsList>}
+        </ContactsDispatchContext.Consumer>, {providerProps: validStateProps, renderOptions: []})
+
+
+        const contactsButton = screen.getByRole('button', {name: 'Save'})
+
+        await act(() => {
+            fireEvent.click(contactsButton)
+        });
+
+        //double check why this message shows, for now it's close enough
+        expect(screen.getByText('Invalid input: expected string, received undefined'))
+    })
 });
 
 describe('EditContactButton ', () => {

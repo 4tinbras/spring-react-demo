@@ -59,6 +59,21 @@ const activeLoginProps: AuthZContextProps = {
     setRefreshTokenPayload: jest.fn(),
 }
 
+const signedInProps: AuthZContextProps = {
+    authZToken: "accessToken",
+    setAuthZToken: jest.fn(),
+    tokenPayload: undefined,
+    setTokenPayload: jest.fn(),
+
+    activeTab: "LOGIN",
+    setActiveTab: jest.fn(),
+
+    refreshToken: "",
+    setRefreshToken: jest.fn(),
+    refreshTokenPayload: undefined,
+    setRefreshTokenPayload: jest.fn(),
+}
+
 
 describe('NavBar ', () => {
     it('renders with link home active by default', async () => {
@@ -73,8 +88,7 @@ describe('NavBar ', () => {
         expect(screen.getByText('Home')).toHaveClass('active')
         expect(screen.getByText('Login')).toBeInTheDocument();
         expect(screen.getByText('Login')).not.toHaveClass('active');
-        expect(screen.getByText('Account')).toBeInTheDocument();
-        expect(screen.getByText('Account')).not.toHaveClass('active');
+        expect(screen.queryByText('Account')).not.toBeInTheDocument();
     });
 
     it('renders with active login based on state', async () => {
@@ -89,8 +103,22 @@ describe('NavBar ', () => {
         expect(screen.getByText('Home')).not.toHaveClass('active')
         expect(screen.getByText('Login')).toBeInTheDocument();
         expect(screen.getByText('Login')).toHaveClass('active');
-        expect(screen.getByText('Account')).toBeInTheDocument();
-        expect(screen.getByText('Account')).not.toHaveClass('active');
+        expect(screen.queryByText('Account')).not.toBeInTheDocument();
+    });
+
+    it('given accessToken renders account tab', async () => {
+
+        customRender(<AuthZContext.Consumer>
+            {value => <NavBar/>}
+        </AuthZContext.Consumer>, {providerProps: signedInProps, renderOptions: []})
+
+        await screen.findByText('Login');
+
+        expect(screen.getByText('Home')).toBeInTheDocument();
+        expect(screen.getByText('Home')).not.toHaveClass('active')
+        expect(screen.getByText('Login')).toBeInTheDocument();
+        expect(screen.getByText('Login')).toHaveClass('active');
+        expect(screen.queryByText('Account')).toBeInTheDocument();
     });
 
 });

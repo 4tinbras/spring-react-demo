@@ -24,6 +24,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+footer {
+  color: var(--foreground);
+  background: var(--background);
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -59,9 +64,15 @@ button.button-secondary {
   margin-right: auto;
 }
 
-.content-container {
-  align-content: center;
-  align-items: center;
+.main-content-container {
+  min-height: 50vh;
+}
+
+footer {
+  min-height: 20vh;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 .navbar-brand {
@@ -97,6 +108,12 @@ button.button-secondary {
 .display-colour-alternating-grid {
   display: grid;
   --background-colour: conic-gradient(var(--c)) 0/calc(sign(var(--n) - mod(sibling-index() - 1,2*var(--n)))*1%);
+
+  input:read-only {
+    background: none;
+    border: none;
+    color: var(--background);
+  }
 }
 
 .five-col-grid {
@@ -108,11 +125,16 @@ button.button-secondary {
   > span {
     background: var(--background-colour);
   }
+}
 
-  input:read-only {
-    background: none;
-    border: none;
-    color: var(--background);
+.four-col-grid {
+  --n: 4;
+  --c: #ddd;
+
+  grid-template-columns: 2fr 2fr 2fr 1fr;
+
+  > span {
+    background: var(--background-colour);
   }
 }
 
