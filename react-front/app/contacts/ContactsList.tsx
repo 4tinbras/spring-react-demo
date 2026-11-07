@@ -1,4 +1,4 @@
-import React, {MouseEventHandler, useContext} from "react";
+import React, {Dispatch, MouseEventHandler, SetStateAction, useContext, useState} from "react";
 import {
     ContactBlockActions,
     ContactState,
@@ -8,10 +8,15 @@ import {
     genericSubmitForm
 } from '../utilities/utils';
 import {ContactsDispatchContext} from "@/app/StateManagement";
+import {contactsValidation} from "@/app/validation/validationUtils";
+import ErrorBlock, {ErrorDescriptor, ErrorLevel} from "@/app/error/ErrorBlock";
+import {FieldError} from "react-hook-form";
+import {ZodSafeParseError} from "zod";
 
 export default function ContactsList({contacts, accessToken}:
                                      { contacts: ContactViewModel[], accessToken: string }) {
 
+    const [errors, setErrors] = useState(false);
     const {dispatchState} = useContext(ContactsDispatchContext)!;
 
     const handleEditButtonClick = (event: any, contactvm: ContactViewModel) => {
@@ -81,8 +86,23 @@ export default function ContactsList({contacts, accessToken}:
         const key = getUuidWithFallback(contactvm);
 
         return <RecordForm key={`form${key}`} uuid={key} contact={contactvm.contact}
-                           accessToken={accessToken}></RecordForm>
+                           accessToken={accessToken} setErrors={setErrors}></RecordForm>
     });
+
+    let errorIndex = 0
+    const errorList: ErrorDescriptor[] = Object.entries(errors).filter(([key,value]) => key !== "name").map(([key, value]) => {
+    const parsedErrorMessage = JSON.parse(value);
+
+        const temp: ErrorDescriptor = {
+            id: errorIndex.toString(),
+            // @ts-ignore
+            message: (parsedErrorMessage[0] as FieldError).message,
+            errorLevel: ErrorLevel.HardException,
+            relatedField: parsedErrorMessage[0].path[0]
+        }
+        errorIndex++;
+        return temp;
+    })
 
     return <div>
         {Array.isArray(contacts) && contacts.length >= 0 && (
@@ -98,6 +118,7 @@ export default function ContactsList({contacts, accessToken}:
                     <span></span>
                     {listItems}
                 </div>
+                <ErrorBlock errors={errorList}></ErrorBlock>
             </div>)}
         <AddNewRecordButton contacts={contacts}></AddNewRecordButton>
     </div>
@@ -182,7 +203,8 @@ export function EditContactButton({uuid, contactvm, onClick}:
                    form={`form${uuid}`}>{contactvm.contact.active ? `Save` : `Edit`}</button>;
 }
 
-export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact: ContactState, accessToken: string }) {
+export function RecordForm({uuid, contact, accessToken, setErrors}:
+                           { uuid: string, contact: ContactState, accessToken: string, setErrors: Dispatch<SetStateAction<ZodSafeParseError<any>>> }) {
     const fieldsArray = ['firstName', 'lastName', 'email', 'phoneNo', 'uuid', 'account'];
 
     // @ts-ignore
@@ -200,7 +222,9 @@ export function RecordForm({uuid, contact, accessToken}: { uuid: string, contact
         dispatchState,
         FieldsSubmissionType.JsonFormParams,
         additionalData,
-        'POST'
+        'POST',
+        contactsValidation,
+        setErrors
     );
 
     return <form id={`form${uuid}`} name={`form${uuid}`} onSubmit={onSubmit}></form>
