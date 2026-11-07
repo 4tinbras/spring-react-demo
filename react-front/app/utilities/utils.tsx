@@ -1,5 +1,6 @@
 import React, {Dispatch, FormEventHandler, SetStateAction} from "react";
 import {decodeJwt, JWTPayload, jwtVerify, RemoteJWKSet} from "jose";
+import {ZodSafeParseError, ZodType} from "zod";
 
 export const enum Discriminator {
     ContactDto = 'ContactDto',
@@ -118,6 +119,8 @@ export const genericSubmitForm = (
     fieldsSubmissionType: FieldsSubmissionType,
     additionalData: Map<FieldsSubmissionType, Map<string, string>> = new Map<FieldsSubmissionType, Map<string, string>>(),
     method: string = 'GET',
+    validator: ZodType | undefined = undefined,
+    setErrorState: Dispatch<SetStateAction<ZodSafeParseError<any>>> | undefined = undefined
 ): FormEventHandler => {
 
     const fetchData = async (formData: Map<string, string>): Promise<void> => {
@@ -127,11 +130,40 @@ export const genericSubmitForm = (
     const onSubmit = (e: any) => {
         e.preventDefault();
 
-        onSubmitFetchData(fields, fetchData, e);
+        const keyValueMap = createFieldValueMap(fields, e);
+
+        if(validator !== undefined) {
+            const object = Object.fromEntries(keyValueMap);
+            // validate with zod; if fails - set state and return earlier
+            const validationOutcome = validator.safeParse(object);
+            if (!validationOutcome.success) {
+                setErrorState(validationOutcome.error);   // set state in parent to trigger rerendering with error prompt
+                return;
+            }
+        }
+
+        fetchData(keyValueMap);
     }
 
     return onSubmit;
 };
+
+function createFieldValueMap(fields: string[], e: any) {
+    const keyValueMap: Map<string, string> = new Map<string, string>();
+    fields.forEach((field) => {
+            // TODO: preprocessing to allow lists as value of the form since native field[] isn't viable; native solution would be better
+            //TODO: optional retrieval is suboptimal;
+            let value = e.target[field]?.value;
+            if (field === 'contactDetails' && value != undefined) {
+                value = (value as string).split(",");
+            }
+            // it came off the back of the changes to new record form that somehow broke form for blank uuid
+            keyValueMap.set(field, value)
+        }
+    );
+
+    return keyValueMap;
+}
 
 export async function fetchDataWrapper(
     url: string,
