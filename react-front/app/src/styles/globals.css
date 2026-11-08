@@ -93,6 +93,10 @@ footer {
   display: block;
 }
 
+.display-inline-block {
+  display: inline-block;
+}
+
 .two-column-layout {
   column-count: 2;
   column-gap: 20px;
