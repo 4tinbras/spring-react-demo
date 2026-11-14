@@ -9,7 +9,7 @@ export default function PostSummary({title, author, date, textSample}:
         <div className={"display-inline-block"}><p>{author}</p></div>
         {/*<div className={"display-inline-block"}><img src={imageSrc} alt={"Blog record image"}/></div>*/}
         <div className={"display-inline-block"}><p>{date}</p></div>
-        <div><p>{textSample}</p></div>
+        <div className={'blog-summary-sample'}><p>{textSample}</p></div>
         <PrimaryButton initialButtonText={"Show Full Post"} onClickHandler={undefined}></PrimaryButton>
     </div>)
 }

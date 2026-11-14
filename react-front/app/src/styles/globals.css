@@ -104,6 +104,11 @@ footer {
   overflow: clip;
 }
 
+.blog-summary-sample {
+  height: 4rem;
+  overflow: clip;
+}
+
 @media (max-width: 680px) {
   .top-container {
     width: 100%;
@@ -121,6 +126,10 @@ footer {
 
   .button-secondary {
     margin: 5px 0 5px 0;
+  }
+
+  .blog-summary-sample {
+    height: 2rem;
   }
 }
 
