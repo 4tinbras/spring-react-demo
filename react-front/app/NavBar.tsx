@@ -33,12 +33,6 @@ export default function NavBar() {
                                 || (<Link href="/contacts">Contacts</Link>)}
                         </NavItem>
                         <NavItem>
-                            {activeTab === 'LOGIN' && (
-                                    <Link href="/login" className={'active'}
-                                          onClick={() => setActiveTab('LOGIN')}>Login</Link>)
-                                || (<Link href="/login">Login</Link>)}
-                        </NavItem>
-                        <NavItem>
                             {activeTab === 'ABOUT' && (
                                     <Link href="/about" className={'active'}
                                           onClick={() => setActiveTab('ABOUT')}>About</Link>)
@@ -52,6 +46,12 @@ export default function NavBar() {
                                 || (<Link href="/account">Account</Link>)}
                         </NavItem>
                         )}
+                        <NavItem>
+                            {activeTab === 'LOGIN' && (
+                                    <Link href="/login" className={'active'}
+                                          onClick={() => setActiveTab('LOGIN')}>Login</Link>)
+                                || (<Link href="/login">Login</Link>)}
+                        </NavItem>
                     </Nav>
                 </Collapse>
             </div>
