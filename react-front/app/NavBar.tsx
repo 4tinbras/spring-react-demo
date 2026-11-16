@@ -27,10 +27,10 @@ export default function NavBar() {
                     <Nav className="justify-content-start full-height" style={{width: "100%"}} navbar pills>
                         <NavItem>
                             {/*TODO logic deciding whether class is needed requires new solution*/}
-                            {activeTab === 'HOME' && (
+                            {activeTab === 'CONTACTS' && (
                                     <Link href="/contacts" className={'active'}
-                                          onClick={() => setActiveTab('HOME')}>Home</Link>)
-                                || (<Link href="/contacts">Home</Link>)}
+                                          onClick={() => setActiveTab('CONTACTS')}>Contacts</Link>)
+                                || (<Link href="/contacts">Contacts</Link>)}
                         </NavItem>
                         <NavItem>
                             {activeTab === 'LOGIN' && (
