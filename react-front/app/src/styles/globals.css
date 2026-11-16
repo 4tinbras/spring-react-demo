@@ -49,12 +49,14 @@ a {
 button.button-primary {
   color: var(--foreground);
   background: var(--background);
+  margin: 10px 0 10px 0;
   padding: 0 10px 0 10px;
 }
 
 button.button-secondary {
   color: var(--foreground);
   background: var(--background);
+  margin: 10px 0 10px 0;
   padding: 0 10px 0 10px;
 }
 
@@ -65,12 +67,11 @@ button.button-secondary {
 }
 
 .main-content-container {
-  min-height: 50vh;
+  min-height: 70vh;
 }
 
 footer {
   min-height: 20vh;
-  position: fixed;
   bottom: 0;
   width: 100%;
 }
@@ -91,11 +92,43 @@ footer {
   display: block;
 }
 
-@media (max-width: 520px) {
+.display-inline-block {
+  display: inline-block;
+}
+
+.two-column-layout {
+  column-count: 2;
+  column-gap: 20px;
+  max-height: 35vh;
+  overflow: clip;
+}
+
+.blog-summary-sample {
+  height: 4rem;
+  overflow: clip;
+}
+
+@media (max-width: 680px) {
   .top-container {
     width: 100%;
     margin-left: 0;
     margin-right: 0;
+  }
+
+  .two-column-layout {
+    max-height: 25vh;
+  }
+
+  .button-primary {
+    margin: 5px 0 5px 0;
+  }
+
+  .button-secondary {
+    margin: 5px 0 5px 0;
+  }
+
+  .blog-summary-sample {
+    height: 2rem;
   }
 }
 
