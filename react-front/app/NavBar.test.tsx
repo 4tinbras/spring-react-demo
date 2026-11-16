@@ -65,7 +65,7 @@ const signedInProps: AuthZContextProps = {
     tokenPayload: undefined,
     setTokenPayload: jest.fn(),
 
-    activeTab: "LOGIN",
+    activeTab: "ACCOUNT",
     setActiveTab: jest.fn(),
 
     refreshToken: "",
@@ -112,13 +112,14 @@ describe('NavBar ', () => {
             {value => <NavBar/>}
         </AuthZContext.Consumer>, {providerProps: signedInProps, renderOptions: []})
 
-        await screen.findByText('Login');
+        await screen.findByText('Account');
 
         expect(screen.getByText('Contacts')).toBeInTheDocument();
         expect(screen.getByText('Contacts')).not.toHaveClass('active')
-        expect(screen.getByText('Login')).toBeInTheDocument();
-        expect(screen.getByText('Login')).toHaveClass('active');
+        expect(screen.queryByText('Login')).not.toBeInTheDocument();
         expect(screen.queryByText('Account')).toBeInTheDocument();
+        expect(screen.getByText('Account')).toHaveClass('active');
+
     });
 
 });

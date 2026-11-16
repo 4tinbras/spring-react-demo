@@ -14,6 +14,10 @@ export default function NavBar() {
 
     //TODO: add check if state was pushed to backend before navigating away
 
+    console.log(authZToken);
+    console.log(authZToken !== "");
+    console.log(authZToken === "");
+
     return (
         <Navbar color="dark" dark expand="md">
             <div className="top-container display-flex">
@@ -42,16 +46,18 @@ export default function NavBar() {
                         <NavItem>
                             {activeTab === 'ACCOUNT' && (
                                     <Link href="/account" className={'active'}
-                                          onClick={() => setActiveTab('ACCOUNT')}>Login</Link>)
+                                          onClick={() => setActiveTab('ACCOUNT')}>Account</Link>)
                                 || (<Link href="/account">Account</Link>)}
                         </NavItem>
                         )}
+                        { authZToken === "" && (
                         <NavItem>
                             {activeTab === 'LOGIN' && (
                                     <Link href="/login" className={'active'}
                                           onClick={() => setActiveTab('LOGIN')}>Login</Link>)
                                 || (<Link href="/login">Login</Link>)}
                         </NavItem>
+                        )}
                     </Nav>
                 </Collapse>
             </div>
