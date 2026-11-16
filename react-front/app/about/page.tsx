@@ -5,7 +5,6 @@ import {loremIpsum} from "lorem-ipsum";
 
 export default function About() {
 
-    //complains about broken hydration; probably because of lorem ipsum
     return (<>
         <h1>About Us</h1>
         <OverflowingTwoColumnBlock children={[
@@ -14,6 +13,6 @@ export default function About() {
         ]}>
         </OverflowingTwoColumnBlock>
 
-        <a href="/about/blog" className="button">See Our Blog</a>
+        <a href="/about/blog" className="link-button">See Our Blog</a>
     </>)
 }
