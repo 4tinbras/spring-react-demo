@@ -1,6 +1,5 @@
 'use client'
 import {OverflowingTwoColumnBlock} from "@/app/about/ContentBlocks";
-import {SecondaryButton} from "@/app/utilities/prefabComponents";
 import {loremIpsum} from "lorem-ipsum";
 
 
@@ -14,6 +13,7 @@ export default function About() {
             <div key={2}>{loremIpsum({count: 10, units: "sentences"})}</div>
         ]}>
         </OverflowingTwoColumnBlock>
-        <SecondaryButton initialButtonText={"See Our Blog"} onClickHandler={undefined}></SecondaryButton>
+
+        <a href="/about/blog" className="button">See Our Blog</a>
     </>)
 }

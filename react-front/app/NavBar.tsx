@@ -38,6 +38,12 @@ export default function NavBar() {
                                           onClick={() => setActiveTab('LOGIN')}>Login</Link>)
                                 || (<Link href="/login">Login</Link>)}
                         </NavItem>
+                        <NavItem>
+                            {activeTab === 'ABOUT' && (
+                                    <Link href="/about" className={'active'}
+                                          onClick={() => setActiveTab('ABOUT')}>About</Link>)
+                                || (<Link href="/about">About</Link>)}
+                        </NavItem>
                         { authZToken !== "" && (
                         <NavItem>
                             {activeTab === 'ACCOUNT' && (
