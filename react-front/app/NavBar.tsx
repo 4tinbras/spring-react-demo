@@ -30,17 +30,22 @@ export default function NavBar() {
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="justify-content-start full-height" style={{width: "100%"}} navbar pills>
                         <NavItem>
-                            {/*TODO logic deciding whether class is needed requires new solution*/}
                             {activeTab === 'CONTACTS' && (
                                     <Link href="/contacts" className={'active'}
                                           onClick={() => setActiveTab('CONTACTS')}>Contacts</Link>)
                                 || (<Link href="/contacts">Contacts</Link>)}
                         </NavItem>
                         <NavItem>
+                            <div className={'dropdown-container full-height'}>
                             {activeTab === 'ABOUT' && (
-                                    <Link href="/about" className={'active'}
+                                    <Link href="/about" className={'active dropdown-link'}
                                           onClick={() => setActiveTab('ABOUT')}>About</Link>)
-                                || (<Link href="/about">About</Link>)}
+                                || (<Link href="/about" className={'dropdown-link'}>About</Link>)}
+                                <div className={'dropdown-content dropdown-grid'}>
+                                    <Link href="/about/blog" className={'dropdown-link'}>Blog</Link>
+                                    <Link href="/about/contact" className={'dropdown-link'}>Contact Us</Link>
+                                </div>
+                            </div>
                         </NavItem>
                         <div className={'display-flex display-flex-expand'}>
                         </div>
