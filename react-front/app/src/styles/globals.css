@@ -117,8 +117,13 @@ footer {
   text-decoration: none;
   color: var(--foreground);
   background: var(--background);
+
   padding: 8px;
   margin: 10px 0;
+  border-top: 2px solid #CCCCCC;
+  border-right: 2px solid #333333;
+  border-bottom: 2px solid #333333;
+  border-left: 2px solid #CCCCCC;
 }
 
 @media (max-width: 680px) {
@@ -160,6 +165,10 @@ footer {
     border: none;
     color: var(--background);
   }
+}
+
+.three-col-grid {
+  grid-template-columns: 1fr 3fr 1fr;
 }
 
 .five-col-grid {
