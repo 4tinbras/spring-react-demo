@@ -12,10 +12,88 @@ export default function Home() {
           </div>
 
           <div>
-              <p>Please use tabs to navigate demo.</p>
+              <p>Home page includes couple of experiments with CSS.</p>
+              <p>For more content - please use tabs to navigate demo.</p>
+          </div>
+
+      {/*   carousel with cards - image on one side, flips over to text;
+            progressbar at the top;
+            */}
+
+          <div className={'display-grid four-col-eq-grid'}>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-1" id="flip-card-anchor-1" className={'transparent-anchor'}>
+                              <h1>S</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-1" id="flip-card-back-1" className={'transparent-anchor flipcard-back-tag'}>
+                            <h1>Single Responsibility</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-2" id="flip-card-anchor-2" className={'transparent-anchor'}>
+                              <h1>O</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-2" id="flip-card-back-2" className={'transparent-anchor flipcard-back-tag'}>
+                              <h1>Open/Close Principle</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-3" id="flip-card-anchor-3" className={'transparent-anchor'}>
+                              <h1>L</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-3" id="flip-card-back-3" className={'transparent-anchor flipcard-back-tag'}>
+                              <h1>Liskov Substitution</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-4" id="flip-card-anchor-4" className={'transparent-anchor'}>
+                              <h1>I</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-4" id="flip-card-back-4" className={'transparent-anchor flipcard-back-tag'}>
+                              <h1>Interface Segregation</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-5" id="flip-card-anchor-5" className={'transparent-anchor'}>
+                              <h1>D</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-5" id="flip-card-back-5" className={'transparent-anchor flipcard-back-tag'}>
+                              <h1>Dependency Inversion</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
           </div>
       </>
-  )
+    )
 
 
 }
