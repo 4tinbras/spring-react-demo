@@ -108,6 +108,24 @@ footer {
   overflow: clip;
 }
 
+.float-right {
+  float: right;
+}
+
+.link-button {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--foreground);
+  background: var(--background);
+
+  padding: 8px;
+  margin: 10px 0;
+  border-top: 2px solid #CCCCCC;
+  border-right: 2px solid #333333;
+  border-bottom: 2px solid #333333;
+  border-left: 2px solid #CCCCCC;
+}
+
 @media (max-width: 680px) {
   .top-container {
     width: 100%;
@@ -149,6 +167,10 @@ footer {
   }
 }
 
+.three-col-grid {
+  grid-template-columns: 1fr 3fr 1fr;
+}
+
 .five-col-grid {
   --n: 5;
   --c: #ddd;
@@ -176,4 +198,8 @@ footer {
 .display-flex {
   display: flex;
   flex-wrap: nowrap;
+}
+
+.display-flex-expand {
+  flex-grow: 1;
 }

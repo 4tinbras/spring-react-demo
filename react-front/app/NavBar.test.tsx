@@ -35,7 +35,7 @@ const activeHomeProps: AuthZContextProps = {
     tokenPayload: undefined,
     setTokenPayload: jest.fn(),
 
-    activeTab: "HOME",
+    activeTab: "CONTACTS",
     setActiveTab: jest.fn(),
 
     refreshToken: "",
@@ -65,7 +65,7 @@ const signedInProps: AuthZContextProps = {
     tokenPayload: undefined,
     setTokenPayload: jest.fn(),
 
-    activeTab: "LOGIN",
+    activeTab: "ACCOUNT",
     setActiveTab: jest.fn(),
 
     refreshToken: "",
@@ -76,16 +76,16 @@ const signedInProps: AuthZContextProps = {
 
 
 describe('NavBar ', () => {
-    it('renders with link home active by default', async () => {
+    it('renders with link contacts active by default', async () => {
 
         customRender(<AuthZContext.Consumer>
             {value => <NavBar/>}
         </AuthZContext.Consumer>, {providerProps: activeHomeProps, renderOptions: []})
 
-        await screen.findByText('Home');
+        await screen.findByText('Contacts');
 
-        expect(screen.getByText('Home')).toBeInTheDocument();
-        expect(screen.getByText('Home')).toHaveClass('active')
+        expect(screen.getByText('Contacts')).toBeInTheDocument();
+        expect(screen.getByText('Contacts')).toHaveClass('active')
         expect(screen.getByText('Login')).toBeInTheDocument();
         expect(screen.getByText('Login')).not.toHaveClass('active');
         expect(screen.queryByText('Account')).not.toBeInTheDocument();
@@ -99,8 +99,8 @@ describe('NavBar ', () => {
 
         await screen.findByText('Login');
 
-        expect(screen.getByText('Home')).toBeInTheDocument();
-        expect(screen.getByText('Home')).not.toHaveClass('active')
+        expect(screen.getByText('Contacts')).toBeInTheDocument();
+        expect(screen.getByText('Contacts')).not.toHaveClass('active')
         expect(screen.getByText('Login')).toBeInTheDocument();
         expect(screen.getByText('Login')).toHaveClass('active');
         expect(screen.queryByText('Account')).not.toBeInTheDocument();
@@ -112,13 +112,14 @@ describe('NavBar ', () => {
             {value => <NavBar/>}
         </AuthZContext.Consumer>, {providerProps: signedInProps, renderOptions: []})
 
-        await screen.findByText('Login');
+        await screen.findByText('Account');
 
-        expect(screen.getByText('Home')).toBeInTheDocument();
-        expect(screen.getByText('Home')).not.toHaveClass('active')
-        expect(screen.getByText('Login')).toBeInTheDocument();
-        expect(screen.getByText('Login')).toHaveClass('active');
+        expect(screen.getByText('Contacts')).toBeInTheDocument();
+        expect(screen.getByText('Contacts')).not.toHaveClass('active')
+        expect(screen.queryByText('Login')).not.toBeInTheDocument();
         expect(screen.queryByText('Account')).toBeInTheDocument();
+        expect(screen.getByText('Account')).toHaveClass('active');
+
     });
 
 });

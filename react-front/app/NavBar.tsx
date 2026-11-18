@@ -14,6 +14,10 @@ export default function NavBar() {
 
     //TODO: add check if state was pushed to backend before navigating away
 
+    console.log(authZToken);
+    console.log(authZToken !== "");
+    console.log(authZToken === "");
+
     return (
         <Navbar color="dark" dark expand="md">
             <div className="top-container display-flex">
@@ -26,24 +30,39 @@ export default function NavBar() {
                 <Collapse isOpen={isOpen} navbar>
                     <Nav className="justify-content-start full-height" style={{width: "100%"}} navbar pills>
                         <NavItem>
-                            {/*TODO logic deciding whether class is needed requires new solution*/}
-                            {activeTab === 'HOME' && (
+                            {activeTab === 'CONTACTS' && (
                                     <Link href="/contacts" className={'active'}
-                                          onClick={() => setActiveTab('HOME')}>Home</Link>)
-                                || (<Link href="/contacts">Home</Link>)}
+                                          onClick={() => setActiveTab('CONTACTS')}>Contacts</Link>)
+                                || (<Link href="/contacts">Contacts</Link>)}
                         </NavItem>
+                        <NavItem>
+                            <div className={'dropdown-container full-height'}>
+                            {activeTab === 'ABOUT' && (
+                                    <Link href="/about" className={'active dropdown-link'}
+                                          onClick={() => setActiveTab('ABOUT')}>About</Link>)
+                                || (<Link href="/about" className={'dropdown-link'}>About</Link>)}
+                                <div className={'dropdown-content dropdown-grid'}>
+                                    <Link href="/about/blog" className={'dropdown-link'}>Blog</Link>
+                                    <Link href="/about/contact" className={'dropdown-link'}>Contact Us</Link>
+                                </div>
+                            </div>
+                        </NavItem>
+                        <div className={'display-flex display-flex-expand'}>
+                        </div>
+                        { authZToken !== "" && (
+                        <NavItem>
+                            {activeTab === 'ACCOUNT' && (
+                                    <Link href="/account" className={'active'}
+                                          onClick={() => setActiveTab('ACCOUNT')}>Account</Link>)
+                                || (<Link href="/account">Account</Link>)}
+                        </NavItem>
+                        )}
+                        { authZToken === "" && (
                         <NavItem>
                             {activeTab === 'LOGIN' && (
                                     <Link href="/login" className={'active'}
                                           onClick={() => setActiveTab('LOGIN')}>Login</Link>)
                                 || (<Link href="/login">Login</Link>)}
-                        </NavItem>
-                        { authZToken !== "" && (
-                        <NavItem>
-                            {activeTab === 'ACCOUNT' && (
-                                    <Link href="/account" className={'active'}
-                                          onClick={() => setActiveTab('ACCOUNT')}>Login</Link>)
-                                || (<Link href="/account">Account</Link>)}
                         </NavItem>
                         )}
                     </Nav>
