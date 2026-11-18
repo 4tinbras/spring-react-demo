@@ -42,6 +42,8 @@ export default function NavBar() {
                                           onClick={() => setActiveTab('ABOUT')}>About</Link>)
                                 || (<Link href="/about">About</Link>)}
                         </NavItem>
+                        <div className={'display-flex display-flex-expand'}>
+                        </div>
                         { authZToken !== "" && (
                         <NavItem>
                             {activeTab === 'ACCOUNT' && (
