@@ -1,6 +1,7 @@
 'use client'
 
 import React from "react";
+import {ImagesCarousel} from "@/app/utilities/prefabComponents";
 // import 'bootstrap/dist/css/bootstrap.min.css'; //not necessary if added CDN link
 
 export default function Home() {
@@ -155,6 +156,9 @@ export default function Home() {
                   </div>
               </div>
           </div>
+
+
+          <ImagesCarousel></ImagesCarousel>
       </>
     )
 

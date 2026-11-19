@@ -222,7 +222,34 @@ footer {
 }
 /*/HBT*/
 
+.carousel-container {
+  height: 300px;
+}
 
+.carousel-image {
+  display: inline-block;
+  background-color: #2980b9;
+  color: white;
+  width: 300px;
+  height: 300px;
+}
+
+.image-switch-anchor {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+/*_____________________________Mobile styles_____________________________*/
 
 @media (max-width: 680px) {
   .top-container {
