@@ -126,12 +126,35 @@ footer {
   border-left: 2px solid #CCCCCC;
 }
 
+.card-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  max-height: 300px;
+  height: 300px;
+
+  animation-name: slidingAnimation;
+  animation-duration: 12s;
+  animation-iteration-count: infinite;
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes slidingAnimation {
+  0% {transform: translateX(0);}
+  50% {transform: translateX(-1200px);}
+  100% {transform: translateX(0);}
+}
+
 /* TBH: largely as found on 3w page*/
 .flip-card {
+  display: inline-block;
   background-color: transparent;
   width: 300px;
   height: 300px;
   perspective: 1000px;
+  flex-shrink: 0;
 }
 
 .flip-card-inner {
@@ -181,6 +204,8 @@ footer {
   height: 100%;
 }
 /*/HBT*/
+
+
 
 @media (max-width: 680px) {
   .top-container {
@@ -249,7 +274,7 @@ footer {
   }
 }
 
-.four-col-eq-grid {
+.five-col-eq-grid {
   grid-template-columns: repeat(5, 1fr);
   grid-column-gap: 0.5rem;
 }

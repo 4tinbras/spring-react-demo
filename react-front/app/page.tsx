@@ -20,7 +20,8 @@ export default function Home() {
             progressbar at the top;
             */}
 
-          <div className={'display-grid four-col-eq-grid'}>
+          {/*<div className={'display-grid five-col-eq-grid'}>*/}
+          <div className={'card-container'}>
               <div className={'flip-card'}>
                   <div className="flip-card-inner">
                       <div className="flip-card-front flipcard-front-tag">
@@ -87,6 +88,69 @@ export default function Home() {
                       <div id="flip-card-back" className="flip-card-back">
                           <a href="#flip-card-anchor-5" id="flip-card-back-5" className={'transparent-anchor flipcard-back-tag'}>
                               <h1>Dependency Inversion</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                              <h1></h1>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-6" id="flip-card-anchor-6" className={'transparent-anchor'}>
+                              <h1>K</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-6" id="flip-card-back-6" className={'transparent-anchor flipcard-back-tag'}>
+                              <h1>Keep</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-7" id="flip-card-anchor-7" className={'transparent-anchor'}>
+                              <h1>I</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-7" id="flip-card-back-7" className={'transparent-anchor flipcard-back-tag'}>
+                              <h1>It</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-8" id="flip-card-anchor-8" className={'transparent-anchor'}>
+                              <h1>S</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-8" id="flip-card-back-8" className={'transparent-anchor flipcard-back-tag'}>
+                              <h1>Simple</h1>
+                          </a>
+                      </div>
+                  </div>
+              </div>
+              <div className={'flip-card'}>
+                  <div className="flip-card-inner">
+                      <div className="flip-card-front flipcard-front-tag">
+                          <a href="#flip-card-back-9" id="flip-card-anchor-9" className={'transparent-anchor'}>
+                              <h1>S</h1>
+                          </a>
+                      </div>
+                      <div id="flip-card-back" className="flip-card-back">
+                          <a href="#flip-card-anchor-9" id="flip-card-back-9" className={'transparent-anchor flipcard-back-tag'}>
+                              <h1>Silly</h1>
                           </a>
                       </div>
                   </div>
