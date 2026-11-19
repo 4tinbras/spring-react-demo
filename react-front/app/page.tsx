@@ -20,7 +20,6 @@ export default function Home() {
             progressbar at the top;
             */}
 
-          {/*<div className={'display-grid five-col-eq-grid'}>*/}
           <div className={'card-container'}>
               <div className={'flip-card'}>
                   <div className="flip-card-inner">
