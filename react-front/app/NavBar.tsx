@@ -12,12 +12,6 @@ export default function NavBar() {
 
     const {authZToken, setAuthZToken, activeTab, setActiveTab} = useAuthZ();
 
-    //TODO: add check if state was pushed to backend before navigating away
-
-    console.log(authZToken);
-    console.log(authZToken !== "");
-    console.log(authZToken === "");
-
     return (
         <Navbar color="dark" dark expand="md">
             <div className="top-container display-flex">
