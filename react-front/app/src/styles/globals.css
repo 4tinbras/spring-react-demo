@@ -143,7 +143,7 @@ footer {
 
 @keyframes slidingAnimation {
   0% {transform: translateX(0);}
-  50% {transform: translateX(-1200px);}
+  50% {transform: translateX(-1500px);}
   100% {transform: translateX(0);}
 }
 
