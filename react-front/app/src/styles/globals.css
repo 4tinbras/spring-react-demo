@@ -126,6 +126,21 @@ footer {
   border-left: 2px solid #CCCCCC;
 }
 
+.card-container-no-animation {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  max-height: 300px;
+  height: 300px;
+
+  transition: transform 12s;
+  transform-style: flat;
+
+  &:hover {
+    transform: translateX(-1500px);
+  }
+}
+
 .card-container {
   display: flex;
   flex-direction: row;
