@@ -17,7 +17,8 @@ export function SecondaryButton({initialButtonText, onClickHandler}: {
 
 export function ImagesCarousel() {
 
-    const NO_OF_ITEMS: number = 3;
+    const NO_OF_ITEMS: number = 5;
+    const MARGIN_ITEMS: number = 1;
     const [activeImage, setActiveImage] = useState<number>(0);
 
     const switchImageOnClick = (input, event) => {
@@ -32,23 +33,32 @@ export function ImagesCarousel() {
 
     }
 
+    function isImageWithinMargin(imageIndex: number, currentIndex: number, margin: number) {
+
+        return (imageIndex >= currentIndex && imageIndex <= currentIndex + margin)
+            || (imageIndex < currentIndex && imageIndex >= currentIndex - margin);
+    }
+
     return (<div className={'carousel-container'}>
         <a className={'image-switch-anchor'} onClick={(event) => switchImageOnClick(-1, event)}>Prev</a>
 
         <div className={'carousel-image-container'}>
-            { activeImage === 0 && (
-            <div className={'carousel-image'}>
+            <div {...(!isImageWithinMargin(0, activeImage, MARGIN_ITEMS) ? {"hidden": true} : [])} className={'carousel-image'}>
                 <h1>First</h1>
-            </div>)
-                || activeImage === 1 && (
-            <div className={'carousel-image'}>
+            </div>
+            <div {...(!isImageWithinMargin(1, activeImage, MARGIN_ITEMS) ? {"hidden": true} : [])} className={'carousel-image'}>
                 <h1>Second</h1>
-            </div>)
-                || activeImage === 2 && (
-            <div className={'carousel-image'}>
+            </div>
+            <div {...(!isImageWithinMargin(2, activeImage, MARGIN_ITEMS) ? {"hidden": true} : [])} className={'carousel-image'}>
                 <h1>Third</h1>
-            </div>)
-            }
+            </div>
+            <div {...(!isImageWithinMargin(3, activeImage, MARGIN_ITEMS) ? {"hidden": true} : [])} className={'carousel-image'}>
+                <h1>Fourth</h1>
+            </div>
+            <div {...(!isImageWithinMargin(4, activeImage, MARGIN_ITEMS) ? {"hidden": true} : [])} className={'carousel-image'}>
+                <h1>Fifth</h1>
+            </div>
+
         </div>
 
         <a className={'image-switch-anchor'} onClick={(event) => switchImageOnClick(1, event)}>Next</a>

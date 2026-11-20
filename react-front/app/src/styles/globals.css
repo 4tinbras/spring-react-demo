@@ -224,6 +224,10 @@ footer {
 
 .carousel-container {
   height: 300px;
+  align-items: center;
+  align-content: center;
+  display: flex;
+  gap: 10px;
 }
 
 .carousel-image {
@@ -237,6 +241,8 @@ footer {
 .image-switch-anchor {
   cursor: pointer;
   display: inline-block;
+  height: 100%;
+  align-self: center;
 }
 
 .fade {
