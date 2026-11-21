@@ -227,7 +227,11 @@ footer {
   align-items: center;
   align-content: center;
   display: flex;
-  gap: 10px;
+}
+
+.carousel-image-container {
+  display: flex;
+  gap: 40px;
 }
 
 .carousel-image {
@@ -239,15 +243,14 @@ footer {
   /*transform: scale(50%, 50%);*/
 }
 
-.carousel-image:hover {
-  transition-timing-function: ease-in-out;
+.carousel-image-full-size {
+  transition: transform 0.6s;
   transform: scale(150%, 150%);
 }
 
-.carousel-image-full-size {
-  /*transform: scale(100%, 100%);*/
-  width: 300px;
-  height: 300px;
+.carousel-image-margin {
+  transition: transform 0.6s;
+  transform: scale(120%, 120%);
 }
 
 .image-switch-anchor {

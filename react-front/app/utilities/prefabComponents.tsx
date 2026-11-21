@@ -17,8 +17,9 @@ export function SecondaryButton({initialButtonText, onClickHandler}: {
 
 export function ImagesCarousel() {
 
-    const NO_OF_ITEMS: number = 5;
-    const MARGIN_ITEMS: number = 1;
+    const NO_OF_ITEMS: number = 9;
+    const OUTER_MARGIN_ITEMS: number = 1;
+    const INNER_MARGIN_ITEMS: number = 1;
     const [activeImage, setActiveImage] = useState<number>(0);
 
     const switchImageOnClick = (input, event) => {
@@ -43,20 +44,32 @@ export function ImagesCarousel() {
         <a className={'image-switch-anchor'} onClick={(event) => switchImageOnClick(-1, event)}>Prev</a>
 
         <div className={'carousel-image-container'}>
-            <div {...(!isImageWithinMargin(0, activeImage, MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 0 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image"})}>
+            <div {...(!isImageWithinMargin(0, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 0 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
                 <h1>First</h1>
             </div>
-            <div {...(!isImageWithinMargin(1, activeImage, MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 1 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image"})}>
+            <div {...(!isImageWithinMargin(1, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 1 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
                 <h1>Second</h1>
             </div>
-            <div {...(!isImageWithinMargin(2, activeImage, MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 2 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image"})}>
+            <div {...(!isImageWithinMargin(2, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 2 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
                 <h1>Third</h1>
             </div>
-            <div {...(!isImageWithinMargin(3, activeImage, MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 3 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image"})}>
+            <div {...(!isImageWithinMargin(3, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 3 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
                 <h1>Fourth</h1>
             </div>
-            <div {...(!isImageWithinMargin(4, activeImage, MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 4 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image"})}>
+            <div {...(!isImageWithinMargin(4, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 4 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
                 <h1>Fifth</h1>
+            </div>
+            <div {...(!isImageWithinMargin(5, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 5 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
+                <h1>Sixth</h1>
+            </div>
+            <div {...(!isImageWithinMargin(6, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 6 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
+                <h1>Seventh</h1>
+            </div>
+            <div {...(!isImageWithinMargin(7, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 7 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
+                <h1>Eighth</h1>
+            </div>
+            <div {...(!isImageWithinMargin(8, activeImage, OUTER_MARGIN_ITEMS) ? {"hidden": true, "className": "carousel-image"} : activeImage === 8 ? {"className": "carousel-image-full-size carousel-image"} : {"className": "carousel-image carousel-image-margin"})}>
+                <h1>Ninth</h1>
             </div>
 
         </div>
