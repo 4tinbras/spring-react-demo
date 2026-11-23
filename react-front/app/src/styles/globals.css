@@ -112,6 +112,10 @@ footer {
   float: right;
 }
 
+.display-hidden {
+  display: none;
+}
+
 .link-button {
   display: inline-block;
   text-decoration: none;
@@ -241,19 +245,25 @@ footer {
   width: 150px;
   height: 150px;
   /*transform: scale(50%, 50%);*/
+  translate: 0;
 }
 
 .carousel-image-full-size {
   position: relative;
   left: 150px;
 
-  transition: transform 1s;
-  transform: translateX(-150px) scale(150%, 150%);
+  transition: translate 1s, scale 2s;
+  translate: -150px;
+  scale: 150% 150%;
+
+
 }
 
 .carousel-image-margin {
   /*transition: transform 0.1s;*/
-  transform: scale(120%, 120%);
+  transition: translate 0s, scale 1s;
+  scale: 120% 120%;
+  translate: 0;
 }
 
 .image-switch-anchor {
